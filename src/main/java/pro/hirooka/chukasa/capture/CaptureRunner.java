@@ -39,7 +39,7 @@ public class CaptureRunner implements Runnable {
                 "|",
                 chukasaModel.getSystemConfiguration().getCaptureFfmpegPath(),
                 "-i", "-",
-                "-acodec", "libfaac",
+                "-acodec", "libfdk_aac",
                 "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
                 "-ar", "44100",
                 "-ac", "2",
