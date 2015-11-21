@@ -46,7 +46,7 @@ public class FFmpegRunner implements Runnable {
                     "-i", chukasaModel.getSystemConfiguration().getUsbCameraDeviceName(),
                     "-f", "alsa",
                     "-i", "hw:0,0",
-                    "-acodec", "libfaac",
+                    "-acodec", "aac", "-strict", "experimental",
                     "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
                     "-ac", "2",
                     "-ar", "44100",
@@ -70,7 +70,7 @@ public class FFmpegRunner implements Runnable {
 
                     chukasaModel.getSystemConfiguration().getFileFfmpegPath(),
                     "-i", chukasaModel.getSystemConfiguration().getFilePath() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName(),
-                    "-acodec", "libfaac",
+                    "-acodec", "libfdk_aac",
                     "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
                     "-ac", "2",
                     "-ar", "44100",
