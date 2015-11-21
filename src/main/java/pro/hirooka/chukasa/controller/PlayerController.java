@@ -127,7 +127,11 @@ public class PlayerController {
 
 
     @RequestMapping(value = "/start", method = RequestMethod.GET)
-    String play(@RequestParam int ch, @RequestParam int videobitrate, @RequestParam boolean encrypted){
+    String play(@RequestParam StreamingType streamingtype,
+                @RequestParam int ch,
+                @RequestParam int videobitrate,
+                @RequestParam int duration,
+                @RequestParam boolean encrypted){
 
         if(chukasaModelManagementComponent.get().size() > 0){
             log.warn("cannot start streaming bacause previous one is not finished.");
@@ -144,11 +148,13 @@ public class PlayerController {
 
             ChukasaSettings chukasaSettings = new ChukasaSettings();
             chukasaSettings.setAdaptiveBitrateStreaming(0);
-            chukasaSettings.setStreamingType(StreamingType.CAPTURE);
+            chukasaSettings.setStreamingType(streamingtype);
             chukasaSettings.setCh(ch);
             chukasaSettings.setVideoBitrate(videobitrate);
             chukasaSettings.setVideoResolutionType(VideoResolutionType.HD);
+            chukasaSettings.setCaptureResolutionType(VideoResolutionType.HD);
             chukasaSettings.setAudioBitrate(128);
+            chukasaSettings.setTotalUSBCameraLiveduration(duration);
             chukasaSettings.setEncrypted(encrypted);
 
             log.info("ChukasaSettings -> {}", chukasaSettings.toString());
