@@ -38,15 +38,19 @@ var Template = function() { return `<?xml version="1.0" encoding="UTF-8" ?>
 <img src="${this.BASEURL}/images/playlist.png" width="480" height="320" />
 </lockup>
 
-<lockup videoURL="${this.BASEURL}/player/start?ch=20&amp;videobitrate=5000&amp;encrypted=true">
+<lockup videoURL="${this.BASEURL}/player/start?streamingtype=USB_CAMERA&amp;ch=20&amp;videobitrate=5000&amp;duration=300&amp;encrypted=true">
 <img src="${this.BASEURL}/images/20.png" width="480" height="320" />
 </lockup>
 
-<lockup videoURL="${this.BASEURL}/player/start?ch=23&amp;videobitrate=5000&amp;encrypted=true">
+<lockup videoURL="${this.BASEURL}/player/start?streamingtype=CAPTURE&amp;ch=20&amp;videobitrate=5000&amp;duration=0&amp;encrypted=true">
+<img src="${this.BASEURL}/images/20.png" width="480" height="320" />
+</lockup>
+
+<lockup videoURL="${this.BASEURL}/player/start?streamingtype=CAPTURE&amp;ch=23&amp;videobitrate=5000&amp;duration=0&amp;encrypted=true">
 <img src="${this.BASEURL}/images/23.png" width="480" height="320" />
 </lockup>
 
-<lockup videoURL="${this.BASEURL}/player/start?ch=22&amp;videobitrate=5000&amp;encrypted=true">
+<lockup videoURL="${this.BASEURL}/player/start?streamingtype=CAPTURE&amp;ch=22&amp;videobitrate=5000&amp;duration=0&amp;encrypted=true">
 <img src="${this.BASEURL}/images/22.png" width="480" height="320" />
 </lockup>
 
