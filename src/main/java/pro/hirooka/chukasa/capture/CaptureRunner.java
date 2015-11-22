@@ -33,7 +33,7 @@ public class CaptureRunner implements Runnable {
 
         String[] cmdArrayBase = {
                 chukasaModel.getSystemConfiguration().getCaptureProgramPath(),
-                "", "", // add parameters if you need... e.g. "--monyu", "--mokyu"
+                "--b25", "--strip",
                 Integer.toString(chukasaModel.getChukasaSettings().getCh()),
                 "-", "-",
                 "|",
