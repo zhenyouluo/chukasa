@@ -18,26 +18,72 @@
     <h1>Chukasa</h1>
 
 <ul class="nav nav-tabs">
-    <li><a href="#sampleContentA" data-toggle="tab">USB Camera</a></li>
-    <li class="active"><a href="#sampleContentB" data-toggle="tab">Capture Card</a></li>
-    <li><a href="#sampleContentC" data-toggle="tab">Video File</a></li>
+    <li><a href="#tabUSBCamera" data-toggle="tab">USB Camera</a></li>
+    <li class="active"><a href="#tabCapture" data-toggle="tab">Capture Card</a></li>
+    <li><a href="#tabFile" data-toggle="tab">Video File</a></li>
 </ul>
 
 <div class="tab-content">
-    <div class="tab-pane" id="sampleContentA">
 
-    </div>
-    <div class="tab-pane active" id="sampleContentB">
+    <!-- USB_CAMERA -->
+    <div class="tab-pane" id="tabUSBCamera">
 
         <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
 
-            <input type = "hidden" id = "streamingType" name = "streamingType" value = "CAPTURE"/>
-            <input type = "hidden" id = "audioBitrate" name = "audioBitrate" value = "128"/>
-            <input type = "hidden" id = "encrypted" name = "encrypted" value = "true"/>
+            <input type = "hidden" id = "streamingTypeUSBCamera" name = "streamingType" value = "USB_CAMERA"/>
+            <input type = "hidden" id = "audioBitrateUSBCamera" name = "audioBitrate" value = "128"/>
+            <input type = "hidden" id = "encryptedUSBCamera" name = "encrypted" value = "true"/>
 
             <div class="form-group">
-                <label for="ch">Physical Channel</label>
-                <select class="form-control" id="ch" name="ch">
+                <label for="captureResolutionTypeUSBCamera">Capture Resolution</label>
+                <select class="form-control" id="captureResolutionTypeUSBCamera" name="captureResolutionType">
+                    <option value="HD" selected="selected">HD (1280 x 720)</option>
+                    <option value="FULL_HD">Full HD (1920 x 1080)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="videoResolutionTypeUSBCamera">Video Resolution</label>
+                <select class="form-control" id="videoResolutionTypeUSBCamera" name="videoResolutionType">
+                    <option value="HD" selected="selected">HD (1280 x 720)</option>
+                    <option value="FULL_HD">Full HD (1920 x 1080)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="videoBitrateUSBCamera">Video Bitrate [Mbps]</label>
+                <select class="form-control" id="videoBitrateUSBCamera" name="videoBitrate">
+                    <option value="800">0.8</option>
+                    <option value="1500">1.5</option>
+                    <option value="3000">3</option>
+                    <option value="6000" selected="selected">6</option>
+                    <option value="10000">10</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="totalUSBCameraLivedurationUSBCamera">Live Duration [s]</label>
+                <input type="text" class="form-control" id="totalUSBCameraLivedurationUSBCamera" name="totalUSBCameraLiveduration" value="600"/>
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+
+        </form>
+
+    </div>
+
+    <!-- CAPTURE -->
+    <div class="tab-pane active" id="tabCapture">
+
+        <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
+
+            <input type = "hidden" id = "streamingTypeCapture" name = "streamingType" value = "CAPTURE"/>
+            <input type = "hidden" id = "audioBitrateCapture" name = "audioBitrate" value = "128"/>
+            <input type = "hidden" id = "encryptedCapture" name = "encrypted" value = "true"/>
+
+            <div class="form-group">
+                <label for="chCapture">Physical Channel</label>
+                <select class="form-control" id="chCapture" name="ch">
                     <option value="20">20</option>
                     <option value="21">21</option>
                     <option value="22">22</option>
@@ -52,16 +98,16 @@
             </div>
 
             <div class="form-group">
-                <label for="videoResolutionType">Video Bitrate [Mbps]</label>
-                <select class="form-control" id="videoResolutionType" name="videoResolutionType">
+                <label for="videoResolutionTypeCapture">Video Resolution</label>
+                <select class="form-control" id="videoResolutionTypeCapture" name="videoResolutionType">
                     <option value="HD">HD (1280 x 720)</option>
                     <option value="FULL_HD" selected="selected">Full HD (1920 x 1080)</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="videoBitrate">Video Bitrate [Mbps]</label>
-                <select class="form-control" id="videoBitrate" name="videoBitrate">
+                <label for="videoBitrateCapture">Video Bitrate [Mbps]</label>
+                <select class="form-control" id="videoBitrateCapture" name="videoBitrate">
                     <option value="800">0.8</option>
                     <option value="1500">1.5</option>
                     <option value="3000">3</option>
@@ -121,7 +167,7 @@
         <!--</form>-->
 
     </div>
-    <div class="tab-pane" id="sampleContentC">
+    <div class="tab-pane" id="tabFile">
 
     </div>
 </div>
