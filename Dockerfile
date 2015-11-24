@@ -76,9 +76,8 @@ RUN cd /tmp && \
     make install && \
     sudo ldconfig
 RUN cd /tmp && \
-    wget http://hg.honeyplanet.jp/pt1/archive/c8688d7d6382.tar.bz2 && \
-    tar xvlf c8688d7d6382.tar.bz2 && \
-    cd pt1-c8688d7d6382/recpt1 && \
+    git clone https://github.com/stz2012/recpt1.git && \
+    cd recpt1/recpt1 && \
     ./autogen.sh && \
     ./configure --enable-b25 && \
     make && \
