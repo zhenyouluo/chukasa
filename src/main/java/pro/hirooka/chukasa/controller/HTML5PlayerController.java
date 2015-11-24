@@ -231,7 +231,7 @@ public class HTML5PlayerController {
         ChukasaStopper chukasaStopper = new ChukasaStopper(chukasaModelManagementComponent);
         chukasaStopper.stop();
 
-        return "index";
+        return "redirect:/";
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.GET)
@@ -249,7 +249,7 @@ public class HTML5PlayerController {
             }
         }
 
-        return "index";
+        return "redirect:/";
     }
 
 }
