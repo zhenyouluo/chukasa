@@ -177,8 +177,8 @@
 
             <div class="form-group">
                 <label for="fileNameFile">File Name</label>
-                <select class="form-control" id="fileNameFile" name="fileName" th:each="videoFileModel : ${videoFileModelList}">
-                    <option th:value="${videoFileModel.name}" th:text="${videoFileModel.name}">...</option>
+                <select class="form-control" id="fileNameFile" name="fileName">
+                    <option th:value="${videoFileModel.name}" th:text="${videoFileModel.name}" th:each="videoFileModel : ${videoFileModelList}">...</option>
                 </select>
             </div>
 
