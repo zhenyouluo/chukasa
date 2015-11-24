@@ -32,7 +32,6 @@
         <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
 
             <input type = "hidden" id = "streamingType" name = "streamingType" value = "CAPTURE"/>
-            <input type = "hidden" id = "videoResolutionType" name = "videoResolutionType" value = "FULL_HD"/>
             <input type = "hidden" id = "audioBitrate" name = "audioBitrate" value = "128"/>
             <input type = "hidden" id = "encrypted" name = "encrypted" value = "true"/>
 
@@ -49,6 +48,14 @@
                     <option value="27">27</option>
                     <option value="28">28</option>
                     <option value="29">29</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="videoResolutionType">Video Bitrate [Mbps]</label>
+                <select class="form-control" id="videoResolutionType" name="videoResolutionType">
+                    <option value="HD">HD (1280 x 720)</option>
+                    <option value="FULL_HD" selected="selected">Full HD (1920 x 1080)</option>
                 </select>
             </div>
 
@@ -119,6 +126,11 @@
     </div>
 </div>
 
+    <hr/>
+
+    <form th:action="@{/video/remove}" method="get">
+        <input class="btn btn-warning" type="submit" value="remove segmented files on server"/>
+    </form>
 
 </div>
 

@@ -18,6 +18,7 @@ import pro.hirooka.chukasa.domain.HTML5PlayerModel;
 import pro.hirooka.chukasa.domain.type.PlaylistType;
 import pro.hirooka.chukasa.domain.type.StreamingType;
 import pro.hirooka.chukasa.domain.type.VideoResolutionType;
+import pro.hirooka.chukasa.handler.ChukasaRemover;
 import pro.hirooka.chukasa.handler.ChukasaStopper;
 import pro.hirooka.chukasa.handler.ChukasaThreadHandler;
 import pro.hirooka.chukasa.operator.IDirectoryCreator;
@@ -26,6 +27,8 @@ import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
@@ -214,6 +217,24 @@ public class HTML5PlayerController {
     String stop(){
         ChukasaStopper chukasaStopper = new ChukasaStopper(chukasaModelManagementComponent);
         chukasaStopper.stop();
+
+        return "index";
+    }
+
+    @RequestMapping(value = "/remove", method = RequestMethod.GET)
+    String remove(){
+
+        if(chukasaModelManagementComponent.get().size() > 0){
+            log.warn("cannot remove files bacause streaming is not finished.");
+        }else {
+            String streamRootPath = request.getSession().getServletContext().getRealPath("") + chukasaConfiguration.getStreamRootPathName();
+            if(Files.exists(new File(streamRootPath).toPath())) {
+                ChukasaRemover chukasaRemover = new ChukasaRemover(streamRootPath, systemConfiguration);
+                chukasaRemover.remove();
+            }else {
+                log.warn("cannot remove files bacause streamRootPath: {} does not exist.", streamRootPath);
+            }
+        }
 
         return "index";
     }
