@@ -114,14 +114,27 @@ public class HTML5PlayerController {
 
             chukasaModel = chukasaModelManagementComponent.get(0);
 
-            String playlistURI = "/"
-                    + chukasaModel.getChukasaConfiguration().getStreamRootPathName()
-                    + FILE_SEPARATOR
-                    + chukasaModel.getChukasaConfiguration().getLivePathName()
-                    + FILE_SEPARATOR
-                    + chukasaModel.getChukasaSettings().getVideoBitrate()
-                    + FILE_SEPARATOR
-                    + chukasaModel.getChukasaConfiguration().getM3u8PlaylistName();
+            String playlistURI = "";
+            if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.USB_CAMERA
+                    || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.CAPTURE){
+                playlistURI = "/"
+                        + chukasaModel.getChukasaConfiguration().getStreamRootPathName()
+                        + FILE_SEPARATOR
+                        + chukasaModel.getChukasaConfiguration().getLivePathName()
+                        + FILE_SEPARATOR
+                        + chukasaModel.getChukasaSettings().getVideoBitrate()
+                        + FILE_SEPARATOR
+                        + chukasaModel.getChukasaConfiguration().getM3u8PlaylistName();
+            }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE){
+                playlistURI = "/"
+                        + chukasaModel.getChukasaConfiguration().getStreamRootPathName()
+                        + FILE_SEPARATOR
+                        + chukasaModel.getChukasaSettings().getFileName()
+                        + FILE_SEPARATOR
+                        + chukasaModel.getChukasaSettings().getVideoBitrate()
+                        + FILE_SEPARATOR
+                        + chukasaModel.getChukasaConfiguration().getM3u8PlaylistName();
+            }
             log.info(playlistURI);
 
             HTML5PlayerModel html5PlayerModel = new HTML5PlayerModel();
