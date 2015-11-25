@@ -91,10 +91,30 @@ RUN apt-get -y update
 RUN apt-get -y install oracle-java8-installer
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
+# nginx
+RUN cd /tmp && \
+    apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
+    wget http://nginx.org/download/nginx-1.9.7.tar.gz && \
+    tar zxvf nginx-1.9.7.tar.gz && \
+    cd nginx-1.9.7 && \
+    ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
+    make && \
+    make install
+ADD docker/nginx/conf/nginx.conf /usr/local/nginx/conf/nginx.conf
+
+# .sh for run both Spring Boot and nginx
+ADD docker/startup.sh /startup.sh
+
 RUN rm -rf /tmp/*
 
 # chukasa
 RUN mkdir /video
 ADD ./build/libs/chukasa-0.0.1-SNAPSHOT.jar chukasa.jar
-EXPOSE 8080
-ENTRYPOINT ["java","-jar","/chukasa.jar"]
+
+# run only Spring Boot
+#EXPOSE 8080
+#ENTRYPOINT ["java","-jar","/chukasa.jar"]
+
+# run both Spring Boot and nginx
+EXPOSE 80
+ENTRYPOINT ["/bin/bash", "/startup.sh"]
