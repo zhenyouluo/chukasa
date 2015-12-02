@@ -31,9 +31,13 @@ public class RecorderService implements IRecorderService {
     public ReservedProgram create(ReservedProgram reservedProgram) {
 
         List<ReservedProgram> reservedProgramList = reservedProgramRepository.findAll();
-        reservedProgramList.stream().map(ReservedProgram::getId);
-        int n = Collections.max(reservedProgramList.stream().map(ReservedProgram::getId).collect(Collectors.toList()));
-        reservedProgram.setId(n++);
+        if(reservedProgramList.size() > 0) {
+            int n = Collections.max(reservedProgramList.stream().map(ReservedProgram::getId).collect(Collectors.toList()));
+            n++;
+            reservedProgram.setId(n);
+        }else{
+            reservedProgram.setId(0);
+        }
 
         long begin = reservedProgram.getBegin();
         long start = reservedProgram.getStart();
