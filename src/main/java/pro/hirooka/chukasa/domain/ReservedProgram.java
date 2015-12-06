@@ -13,7 +13,7 @@ public class ReservedProgram {
     private long end;
     private long start;
     private long stop;
-    private int duration;
+    private long duration;
     private String title;
     private String summury;
 }

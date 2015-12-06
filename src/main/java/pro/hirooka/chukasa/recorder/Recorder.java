@@ -1,7 +1,7 @@
 package pro.hirooka.chukasa.recorder;
 
-import groovy.util.logging.Slf4j;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
@@ -35,19 +35,20 @@ public class Recorder {
         Date date = new Date(reservedProgram.getStart());
         Runnable runnable = new RecorderRunner(systemConfiguration, reservedProgram);
         ScheduledFuture scheduledFuture = taskScheduler.schedule(runnable, date);
-        scheduledFutureMap.put(reservedProgram.getId() , scheduledFuture);
+        scheduledFutureMap.put(reservedProgram.getId(), scheduledFuture);
+        log.info("scheduler: {}", date.toString());
     }
 
     @Async
     public void reserve(List<ReservedProgram> reservedProgramList){
-
-        // todo
-        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        TaskScheduler taskScheduler = new ConcurrentTaskScheduler(scheduledExecutorService);
-        Date date = new Date(reservedProgramList.get(0).getStart());
-        Runnable runnable = new RecorderRunner(systemConfiguration, reservedProgramList.get(0));
-        ScheduledFuture scheduledFuture = taskScheduler.schedule(runnable, date);
-        scheduledFutureMap.put(0, scheduledFuture);
+        reservedProgramList.forEach(reservedProgram -> {
+            ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+            TaskScheduler taskScheduler = new ConcurrentTaskScheduler(scheduledExecutorService);
+            Date date = new Date(reservedProgram.getStart());
+            Runnable runnable = new RecorderRunner(systemConfiguration, reservedProgram);
+            ScheduledFuture scheduledFuture = taskScheduler.schedule(runnable, date);
+            scheduledFutureMap.put(reservedProgram.getId(), scheduledFuture);
+        });
     }
 
     public void cancel(int id){

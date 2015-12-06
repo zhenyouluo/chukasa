@@ -25,22 +25,25 @@ public class RecorderRunner implements Runnable {
     @Override
     public void run() {
 
+        log.info("start recording... ");
+
         int ch = reservedProgram.getCh();
         long begin = reservedProgram.getBegin();
         long start = reservedProgram.getStart();
         long end = reservedProgram.getEnd();
-        int duration = reservedProgram.getDuration();
+        long duration = reservedProgram.getDuration();
         String title = reservedProgram.getTitle();
 
         Date date = new Date();
         long now = date.getTime();
 
-        if(now > start){
+        //if(now > start){
             // start recording immediately
             // Create do-record.sh (do-record_ch_yyyyMMdd_yyyyMMdd.sh)
             String doRecordFileName = "do-record_" + ch + "_" + begin + "_" + end + ".sh";
             try{
                 File doRecordFile = new File(systemConfiguration.getFilePath() + FILE_SEPARATOR + doRecordFileName);
+                log.info("doRecordFile: {}", doRecordFileName);
                 if (!doRecordFile.exists()) {
                     doRecordFile.createNewFile();
                     BufferedWriter bw = new BufferedWriter(new FileWriter(doRecordFile));
@@ -48,6 +51,7 @@ public class RecorderRunner implements Runnable {
                     bw.newLine();
                     bw.write(systemConfiguration.getCaptureProgramPath() + " --b25 --strip " + ch + " " + duration + " \"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + ch + "_" + title + "_" + start + ".ts\"" + " >/dev/null");
                     bw.close();
+                    log.info(systemConfiguration.getCaptureProgramPath() + " --b25 --strip " + ch + " " + duration + " \"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + ch + "_" + title + "_" + start + ".ts\"" + " >/dev/null");
                 }
 
                 String[] chmod = {"chmod", "755", systemConfiguration.getFilePath() + FILE_SEPARATOR + doRecordFileName};
@@ -79,11 +83,12 @@ public class RecorderRunner implements Runnable {
                 runInputStreamReader.close();
                 runInputStream.close();
                 runProcess.destroy();
+                log.info("recording is done.");
 
             }catch(IOException e){
                 log.error("cannot run do-record.sh");
             }
-        }
+        //}
 
     }
 }

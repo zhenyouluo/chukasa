@@ -12,4 +12,5 @@ public class ChukasaConfiguration {
     String livePathName;
     String streamFileNamePrefix;
     String m3u8PlaylistName;
+    boolean recorderEnabled;
 }
