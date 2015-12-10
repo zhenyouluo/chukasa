@@ -13,4 +13,7 @@ public class ChukasaConfiguration {
     String streamFileNamePrefix;
     String m3u8PlaylistName;
     boolean recorderEnabled;
+    int epgDays;
+    int epgSpan;
+    String epgBaseUrl;
 }
