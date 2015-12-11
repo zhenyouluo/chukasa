@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id;
 @Data
 public class ProgramInformation {
     @Id
-    private int id;
+    private long id;
     private int ch;
     private int genre;
     private long begin;

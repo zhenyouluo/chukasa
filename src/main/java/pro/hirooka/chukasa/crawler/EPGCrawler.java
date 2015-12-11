@@ -6,15 +6,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.domain.EPGResponseModel;
+import pro.hirooka.chukasa.domain.ProgramInformation;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -273,10 +273,35 @@ public class EPGCrawler {
 
         }
 
-        epgResponseModelList.forEach(epgResponseModel -> {
-            log.info(epgResponseModel.toString());
-        });
+//        epgResponseModelList.forEach(epgResponseModel -> {
+//            log.info(epgResponseModel.toString());
+//        });
 
+        for(int i = 0; i < 999; i++) {
+            final int ch = i;
+            List<EPGResponseModel> filterdEPGResponseModelList = epgResponseModelList.stream().filter(epgResponseModel -> epgResponseModel.getCh() == ch).collect(Collectors.toList());
+            Collections.sort(filterdEPGResponseModelList, (o1, o2) -> Long.compare(o1.getBegin(), o2.getBegin()));
+            for (int j = 0; j < filterdEPGResponseModelList.size() - 2; j++) {
+                EPGResponseModel epgResponseModel = filterdEPGResponseModelList.get(j);
+                EPGResponseModel nextEPGResponseModel = filterdEPGResponseModelList.get(j + 1);
+                log.debug(epgResponseModel.toString());
+                ProgramInformation programInformation = new ProgramInformation();
+                programInformation.setCh(epgResponseModel.getCh());
+                programInformation.setId(epgResponseModel.getId());
+                programInformation.setGenre(epgResponseModel.getGenre());
+                programInformation.setBegin(epgResponseModel.getBegin());
+                programInformation.setEnd(nextEPGResponseModel.getBegin());
+                long start = epgResponseModel.getBegin() - chukasaConfiguration.getRecorderStartMargin();
+                long stop = nextEPGResponseModel.getBegin() - chukasaConfiguration.getRecorderStopMargin();
+                long duration = stop - start;
+                programInformation.setStart(start);
+                programInformation.setStop(stop);
+                programInformation.setDuration(duration);
+                programInformation.setTitle(epgResponseModel.getTitle());
+                programInformation.setSummury(epgResponseModel.getSummary());
+                log.info(programInformation.toString());
+            }
+        }
     }
 
     static String getNoProgStartTime(String in) throws IOException{
