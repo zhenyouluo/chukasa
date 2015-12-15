@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.domain.EPGResponseModel;
 import pro.hirooka.chukasa.domain.ProgramInformation;
+import pro.hirooka.chukasa.service.IProgramTableService;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -23,12 +24,14 @@ import static java.util.Objects.requireNonNull;
 public class EPGCrawler {
 
     private final ChukasaConfiguration chukasaConfiguration;
+    private final IProgramTableService programTableService;
 
     private final String SPLIT_WORD = "/////,/////"; // TODO
 
     @Autowired
-    public EPGCrawler(ChukasaConfiguration chukasaConfiguration){
+    public EPGCrawler(ChukasaConfiguration chukasaConfiguration, IProgramTableService programTableService){
         this.chukasaConfiguration = requireNonNull(chukasaConfiguration, "chukasaConfiguration");
+        this.programTableService = requireNonNull(programTableService, "programTableService");
     }
 
     @Scheduled(cron = "0 20 */3 * * *")
@@ -277,6 +280,7 @@ public class EPGCrawler {
 //            log.info(epgResponseModel.toString());
 //        });
 
+        List<ProgramInformation> programInformationList = new ArrayList<>();
         for(int i = 0; i < 999; i++) {
             final int ch = i;
             List<EPGResponseModel> filterdEPGResponseModelList = epgResponseModelList.stream().filter(epgResponseModel -> epgResponseModel.getCh() == ch).collect(Collectors.toList());
@@ -299,9 +303,12 @@ public class EPGCrawler {
                 programInformation.setDuration(duration);
                 programInformation.setTitle(epgResponseModel.getTitle());
                 programInformation.setSummury(epgResponseModel.getSummary());
+                programInformationList.add(programInformation);
                 log.info(programInformation.toString());
+                programTableService.create(programInformation);
             }
         }
+        log.info("programInformationList.size() = {}", programInformationList.size());
     }
 
     static String getNoProgStartTime(String in) throws IOException{
