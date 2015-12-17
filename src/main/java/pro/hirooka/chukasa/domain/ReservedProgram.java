@@ -9,6 +9,8 @@ public class ReservedProgram {
     private int id;
     private int ch;
     private String genre;
+    private String beginDate;
+    private String endDate;
     private long begin;
     private long end;
     private long start;
