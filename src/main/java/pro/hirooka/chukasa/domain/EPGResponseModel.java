@@ -6,7 +6,7 @@ import lombok.Data;
 public class EPGResponseModel {
     int ch;
     int genre;
-    long begin;
+    long begin; // yyyyMMddhhmm
     long id;
     String title;
     String summary;

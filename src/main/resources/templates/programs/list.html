@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title></title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+              th:href="@{/webjars/bootstrap/3.3.5/css/bootstrap.min.css}"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"
+              th:href="@{/webjars/bootstrap/3.3.5/css/bootstrap-theme.min.css}"/>
+    </head>
+</head>
+<body>
+
+<table class="table">
+    <tr th:each="programInformation : ${programInformationList}">
+        <form th:action="@{/programs/create}" method="post" th:object="${reservedProgram}">
+            <input th:value="${programInformation.ch}" type = "hidden" id = "ch" name = "ch"/>
+            <input th:value="${programInformation.beginDate}" type = "hidden" id = "beginDate" name = "beginDate"/>
+            <input th:value="${programInformation.endDate}" type = "hidden" id = "endDate" name = "endDate"/>
+            <input th:value="${programInformation.title}" type = "hidden" id = "title" name = "title"/>
+            <input th:value="${programInformation.summary}" type = "hidden" id = "summary" name = "summary"/>
+            <td th:text="${programInformation.ch}">ch</td>
+            <td th:text="${programInformation.beginDate}">beginDate</td>
+            <td th:text="${programInformation.endDate}">endDate</td>
+            <td th:text="${programInformation.title}">title</td>
+            <td th:text="${programInformation.summary}">summary</td>
+            <td><input class="btn btn-primary" type="submit" value="Reserve"/></td>
+        </form>
+    </tr>
+</table>
+
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"
+        th:src="@{/webjars/jquery/1.11.1/jquery.min.js}"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+        th:src="@{/webjars/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

@@ -9,6 +9,7 @@ import pro.hirooka.chukasa.domain.EPGResponseModel;
 import pro.hirooka.chukasa.domain.ProgramInformation;
 import pro.hirooka.chukasa.service.IProgramTableService;
 
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -32,6 +33,11 @@ public class EPGCrawler {
     public EPGCrawler(ChukasaConfiguration chukasaConfiguration, IProgramTableService programTableService){
         this.chukasaConfiguration = requireNonNull(chukasaConfiguration, "chukasaConfiguration");
         this.programTableService = requireNonNull(programTableService, "programTableService");
+    }
+
+    @PostConstruct
+    public void init(){
+        getEPG();
     }
 
     @Scheduled(cron = "0 20 */3 * * *")
@@ -293,16 +299,18 @@ public class EPGCrawler {
                 programInformation.setCh(epgResponseModel.getCh());
                 programInformation.setId(epgResponseModel.getId());
                 programInformation.setGenre(epgResponseModel.getGenre());
+                programInformation.setBeginDate(Long.toString(epgResponseModel.getBegin()));
+                programInformation.setEndDate(Long.toString(nextEPGResponseModel.getBegin()));
                 programInformation.setBegin(epgResponseModel.getBegin());
                 programInformation.setEnd(nextEPGResponseModel.getBegin());
-                long start = epgResponseModel.getBegin() - chukasaConfiguration.getRecorderStartMargin();
-                long stop = nextEPGResponseModel.getBegin() - chukasaConfiguration.getRecorderStopMargin();
-                long duration = stop - start;
-                programInformation.setStart(start);
-                programInformation.setStop(stop);
-                programInformation.setDuration(duration);
+//                long start = epgResponseModel.getBegin() - chukasaConfiguration.getRecorderStartMargin();
+//                long stop = nextEPGResponseModel.getBegin() - chukasaConfiguration.getRecorderStopMargin();
+//                long duration = stop - start;
+//                programInformation.setStart(start);
+//                programInformation.setStop(stop);
+//                programInformation.setDuration(duration);
                 programInformation.setTitle(epgResponseModel.getTitle());
-                programInformation.setSummury(epgResponseModel.getSummary());
+                programInformation.setSummary(epgResponseModel.getSummary());
                 programInformationList.add(programInformation);
                 log.info(programInformation.toString());
                 programTableService.create(programInformation);

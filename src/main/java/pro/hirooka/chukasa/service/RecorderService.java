@@ -94,7 +94,7 @@ public class RecorderService implements IRecorderService {
             reservedProgram.setId(0);
         }
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmm");
         try {
             long begin = simpleDateFormat.parse(reservedProgram.getBeginDate()).getTime();
             long end = simpleDateFormat.parse(reservedProgram.getEndDate()).getTime();
