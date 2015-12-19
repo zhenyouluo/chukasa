@@ -218,12 +218,14 @@ public class Segmenter extends TimerTask {
             ret[1] = seqTs; // MPEG2-TS sequences ever segmented
             return ret;
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+
+            long[] ret = new long[2];
+            ret[0] = readByteInput;
+            ret[1] = seqTsInput;
+            return ret;
+
         }
 
-        return null;
     }
 }

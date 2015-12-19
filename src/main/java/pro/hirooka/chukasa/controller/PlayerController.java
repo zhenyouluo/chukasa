@@ -68,14 +68,14 @@ public class PlayerController {
 
             log.info("ChukasaSettings -> {}", chukasaSettings.toString());
 
-            Map<String, String> env = System.getenv();
-            for(String name : env.keySet()){
-                log.info("{} {}", name, env.get(name));
-                if(name.equals("HOME")){
-                    String filePath = systemConfiguration.getFilePath().replace("$HOME", env.get(name));
-                    systemConfiguration.setFilePath(filePath);
-                }
-            }
+//            Map<String, String> env = System.getenv();
+//            for(String name : env.keySet()){
+//                log.info("{} {}", name, env.get(name));
+//                if(name.equals("HOME")){
+//                    String filePath = systemConfiguration.getFilePath().replace("$HOME", env.get(name));
+//                    systemConfiguration.setFilePath(filePath);
+//                }
+//            }
 
             ChukasaModel chukasaModel = new ChukasaModel();
 
