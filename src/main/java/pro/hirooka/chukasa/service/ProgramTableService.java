@@ -26,6 +26,22 @@ public class ProgramTableService implements IProgramTableService {
     }
 
     @Override
+    public List<ProgramInformation> read(int ch) {
+        return programInformationRepository.findAllByCh(ch);
+    }
+
+    @Override
+    public List<ProgramInformation> read(String beginDate) {
+        return programInformationRepository.findAllByBeginDateLike(beginDate);
+    }
+
+    @Override
+    public List<ProgramInformation> read(int ch, String beginDate) {
+        beginDate = "^" + beginDate + "";
+        return programInformationRepository.findAllByChAndBeginDateLike(ch, beginDate);
+    }
+
+    @Override
     public ProgramInformation read(long id) {
         return programInformationRepository.findOne(id);
     }

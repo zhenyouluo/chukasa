@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import pro.hirooka.chukasa.domain.ProgramInformation;
@@ -34,6 +35,20 @@ public class ProgramController {
     @RequestMapping(method = RequestMethod.GET)
     String read(Model model){
         List<ProgramInformation> programInformationList = programTableService.read();
+        model.addAttribute("programInformationList", programInformationList);
+        return "programs/list";
+    }
+
+    @RequestMapping(value = "{ch}", method = RequestMethod.GET)
+    String read(@PathVariable int ch, Model model){
+        List<ProgramInformation> programInformationList = programTableService.read(ch);
+        model.addAttribute("programInformationList", programInformationList);
+        return "programs/list";
+    }
+
+    @RequestMapping(value = "{ch}/{date}", method = RequestMethod.GET)
+    String read(@PathVariable int ch, @PathVariable String date, Model model){
+        List<ProgramInformation> programInformationList = programTableService.read(ch, date);
         model.addAttribute("programInformationList", programInformationList);
         return "programs/list";
     }
