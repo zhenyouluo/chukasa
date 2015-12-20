@@ -25,8 +25,8 @@ public class ReservedProgram {
     private long stop;
     private long duration;
     @NotNull
-    @Size(min = 0, max = 32)
+//    @Size(min = 0, max = 32)
     private String title;
-    @Size(min = 0, max = 256)
+//    @Size(min = 0, max = 256)
     private String summary;
 }
