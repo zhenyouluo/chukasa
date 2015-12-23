@@ -109,7 +109,7 @@ ADD docker/startup.sh /startup.sh
 RUN rm -rf /tmp/*
 
 # chukasa
-RUN mkdir /video
+RUN mkdir -p /opt/chukasa/video
 ADD ./build/libs/chukasa-0.0.1-SNAPSHOT.jar chukasa.jar
 
 # locale
