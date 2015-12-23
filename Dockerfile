@@ -52,17 +52,17 @@ RUN cd /tmp && \
     make install && \
     ldconfig
 
-# FFmpeg 2.8.2
+# FFmpeg latest
 RUN cd /tmp && \
-    wget https://www.ffmpeg.org/releases/ffmpeg-2.8.2.tar.gz && \
-    tar zxvf ffmpeg-2.8.2.tar.gz && \
-    cd ffmpeg-2.8.2 && \
+    wget https://www.ffmpeg.org/releases/ffmpeg-2.8.4.tar.gz && \
+    tar zxvf ffmpeg-2.8.4.tar.gz && \
+    cd ffmpeg-2.8.4 && \
     ./configure --enable-gpl --enable-libx264 --enable-libfdk-aac --enable-nonfree --enable-shared && \
     make && \
     make install && \
     ldconfig
 
-# USB camera (audio)
+# Web camera (audio)
 RUN touch /etc/modprobe.d/sound.conf
 RUN echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/sound.conf
 RUN echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/sound.conf
@@ -84,6 +84,7 @@ RUN cd /tmp && \
     make install
 
 # Java
+RUN apt-get -y update
 RUN apt-get -y install python-software-properties software-properties-common
 RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
 RUN add-apt-repository -y ppa:webupd8team/java
@@ -94,9 +95,9 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 # nginx
 RUN cd /tmp && \
     apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.9.7.tar.gz && \
-    tar zxvf nginx-1.9.7.tar.gz && \
-    cd nginx-1.9.7 && \
+    wget http://nginx.org/download/nginx-1.9.9.tar.gz && \
+    tar zxvf nginx-1.9.9.tar.gz && \
+    cd nginx-1.9.9 && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
     make && \
     make install
@@ -110,6 +111,12 @@ RUN rm -rf /tmp/*
 # chukasa
 RUN mkdir /video
 ADD ./build/libs/chukasa-0.0.1-SNAPSHOT.jar chukasa.jar
+
+# locale
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 # run only Spring Boot
 #EXPOSE 8080
