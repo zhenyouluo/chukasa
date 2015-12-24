@@ -5,6 +5,10 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
+springBoot {
+    executable = true
+}
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
