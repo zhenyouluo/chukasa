@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM ubuntu:15.10
 
 MAINTAINER hirooka
 
@@ -74,7 +74,7 @@ RUN cd /tmp && \
     cd pt1-ec7c87854f2f/arib25 && \
     make && \
     make install && \
-    sudo ldconfig
+    ldconfig
 RUN cd /tmp && \
     git clone https://github.com/stz2012/recpt1.git && \
     cd recpt1/recpt1 && \
@@ -84,9 +84,8 @@ RUN cd /tmp && \
     make install
 
 # Java
-RUN apt-get -y update
 RUN apt-get -y install python-software-properties software-properties-common
-RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+RUN echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | debconf-set-selections
 RUN add-apt-repository -y ppa:webupd8team/java
 RUN apt-get -y update
 RUN apt-get -y install oracle-java8-installer
