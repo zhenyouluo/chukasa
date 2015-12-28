@@ -22,7 +22,7 @@ RUN cd /tmp && \
     make install && \
     ldconfig
 
-# x264
+# x264 (latest)
 RUN cd /tmp && \
     wget http://download.videolan.org/pub/x264/snapshots/last_x264.tar.bz2 && \
     tar xjvf last_x264.tar.bz2 && \
@@ -32,7 +32,7 @@ RUN cd /tmp && \
     make install && \
     ldconfig
 
-# FDK AAC
+# Fraunhofer FDK AAC (latest)
 RUN cd /tmp && \
     wget -O fdk-aac.tar.gz https://github.com/mstorsjo/fdk-aac/tarball/master && \
     tar xzvf fdk-aac.tar.gz && \
@@ -112,10 +112,16 @@ RUN mkdir -p /opt/chukasa/video
 ADD ./build/libs/chukasa-0.0.1-SNAPSHOT.jar chukasa.jar
 
 # locale
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+#RUN locale-gen en_US.UTF-8
+#ENV LANG en_US.UTF-8
+#ENV LANGUAGE en_US:en
+#ENV LC_ALL en_US.UTF-8
+RUN locale-gen ja_JP.UTF-8
+ENV LANG ja_JP.UTF-8
+ENV LANGUAGE ja_JP:ja
+ENV LC_ALL ja_JP.UTF-8
+
+RUN echo "Asia/Tokyo" > /etc/timezone && dpkg-reconfigure tzdata
 
 # run only Spring Boot
 #EXPOSE 8080
