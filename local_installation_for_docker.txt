@@ -26,7 +26,7 @@ sudo reboot
 sudo apt-get -y install build-essential pcscd git
 
 # Ja
-sudo apt-get install language-pack-ja-base
+sudo apt-get -y install language-pack-ja-base
 
 # PT2 driver w/Linux 4.2 patch
 cd /tmp && \
