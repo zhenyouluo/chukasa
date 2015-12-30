@@ -75,9 +75,28 @@ Web camera のデバイス名は /dev/video0 を前提としています．
 iOS 9.x か OS X 10.11.x の Safari でサーバーの IP アドレスに HTTP でアクセスする．  
 Start HTTP Live Streaming ボタンを押すと何かが始まる．
 
-# 3.2 Ubuntu のサービスとして稼働
+## 3.2 Ubuntu のサービスとして稼働
 
-TBD...
+not recommended...
+
+### 動作環境
+* Ubuntu 15.10
+
+参考までに，動作環境を構築するためのサンプル手順です．  
+[local_installation_for_linux_service.txt](local_installation_for_linux_service.txt)
+
+then...    
+    
+    git clone https://github.com/hirooka/chukasa.git
+    cd chukasa
+    ./gradlew build
+    cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
+    sudo ln -s /opt/chukasa/chukasa-0.0.1-SNAPSHOT.jar /etc/init.d/chukasa
+    sudo update-rc.d chukasa defaults
+    sudo service chukasa start
+    
+iOS 9.x か OS X 10.11.x の Safari でサーバーの IP アドレスに HTTP でアクセスする．  
+Start HTTP Live Streaming ボタンを押すと何かが始まる．
 
 
 

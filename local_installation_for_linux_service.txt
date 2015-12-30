@@ -1,0 +1,147 @@
+# Ubuntu 15.10
+
+# Web Camera (Audio)
+sudo touch /etc/modprobe.d/sound.conf
+sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/sound.conf"
+sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/sound.conf"
+sudo gpasswd -a $USER audio
+
+# PT2, PT3
+sudo sh -c "echo '' >> /etc/modprobe.d/blacklist.conf"
+sudo sh -c "echo 'blacklist earth-pt1' >> /etc/modprobe.d/blacklist.conf"
+sudo sh -c "echo '' >> /etc/modprobe.d/blacklist.conf"
+sudo sh -c "echo 'blacklist earth-pt3' >> /etc/modprobe.d/blacklist.conf"
+sudo gpasswd -a $USER video
+
+sudo reboot
+
+# Package
+sudo apt-get -y update
+sudo apt-get -y upgrade
+sudo apt-get -y dist-upgrade
+
+sudo reboot
+
+# Package
+sudo apt-get -y install build-essential git wget libasound2-dev autoconf libtool pcsc-tools pkg-config libpcsclite-dev
+
+# Lib
+touch /etc/ld.so.conf.d/local.conf
+sudo sh -c "echo '/usr/local/lib' >> /etc/ld.so.conf.d/local.conf"
+sudo sh -c "echo '/usr/local/ffmpeg-0.11.5/lib' >> /etc/ld.so.conf.d/local.conf"
+
+# Yasm
+cd /tmp && \
+    wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz && \
+    tar zxvf yasm-1.3.0.tar.gz && \
+    cd yasm-1.3.0 && \
+    ./configure && \
+    make && \
+    sudo make install && \
+    sudo ldconfig
+
+# x264 (latest)
+cd /tmp && \
+    wget http://download.videolan.org/pub/x264/snapshots/last_x264.tar.bz2 && \
+    tar xjvf last_x264.tar.bz2 && \
+    cd x264-snapshot* && \
+    ./configure --enable-shared && \
+    make && \
+    sudo make install && \
+    sudo ldconfig
+
+# Fraunhofer FDK AAC (latest)
+cd /tmp && \
+    wget -O fdk-aac.tar.gz https://github.com/mstorsjo/fdk-aac/tarball/master && \
+    tar xzvf fdk-aac.tar.gz && \
+    cd mstorsjo-fdk-aac* && \
+    autoreconf -fiv && \
+    ./configure && \
+    make && \
+    sudo make install
+
+# FFmpeg 0.11.5
+cd /tmp && \
+    wget https://www.ffmpeg.org/releases/ffmpeg-0.11.5.tar.gz && \
+    tar zxvf ffmpeg-0.11.5.tar.gz && \
+    cd ffmpeg-0.11.5 && \
+    ./configure --enable-gpl --enable-libx264 --prefix=/usr/local/ffmpeg-0.11.5  && \
+    make && \
+    sudo make install && \
+    sudo ldconfig
+
+# FFmpeg latest
+cd /tmp && \
+    wget https://www.ffmpeg.org/releases/ffmpeg-2.8.4.tar.gz && \
+    tar zxvf ffmpeg-2.8.4.tar.gz && \
+    cd ffmpeg-2.8.4 && \
+    ./configure --enable-gpl --enable-libx264 --enable-libfdk-aac --enable-nonfree --enable-shared && \
+    make && \
+    sudo make install && \
+    sudo ldconfig
+
+# PT2 driver w/Linux 4.2 patch
+cd /tmp && \
+wget http://hg.honeyplanet.jp/pt1/archive/c8688d7d6382.tar.bz2 && \
+tar xvlf c8688d7d6382.tar.bz2 && \
+cd pt1-c8688d7d6382/driver && \
+git clone https://github.com/hirooka/pt1_for_linux4.2.patch.git && \
+patch pt1_pci.c < pt1_for_linux4.2.patch/pt1_for_linux4.2.patch && \
+make && \
+sudo make install && \
+sudo modprobe pt1_drv
+
+# PT3 driver
+cd /tmp && \
+git clone https://github.com/m-tsudo/pt3.git && \
+cd pt3 && \
+make && \
+sudo make install && \
+sudo modprobe pt3_drv
+
+# recpt1
+cd /tmp && \
+    wget http://hg.honeyplanet.jp/pt1/archive/ec7c87854f2f.tar.bz2 && \
+    tar xvlf ec7c87854f2f.tar.bz2 && \
+    cd pt1-ec7c87854f2f/arib25 && \
+    make && \
+    sudo make install && \
+    sudo ldconfig
+cd /tmp && \
+    git clone https://github.com/stz2012/recpt1.git && \
+    cd recpt1/recpt1 && \
+    ./autogen.sh && \
+    ./configure --enable-b25 && \
+    make && \
+    sudo make install
+
+# Docker
+sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+sudo touch /etc/apt/sources.list.d/docker.list
+sudo sh -c "echo 'deb https://apt.dockerproject.org/repo ubuntu-wily main' >> /etc/apt/sources.list.d/docker.list"
+sudo apt-get -y update
+sudo apt-get -y install linux-image-extra-$(uname -r)
+sudo apt-get -y install docker-engine
+sudo usermod -aG docker $USER
+
+# Java 8
+sudo apt-get -y install python-software-properties software-properties-common
+sudo sh -c "echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | debconf-set-selections"
+sudo add-apt-repository -y ppa:webupd8team/java
+sudo apt-get -y update
+sudo apt-get -y install oracle-java8-installer
+sudo apt-get -y install oracle-java8-set-default
+
+# MongoDB
+sudo apt-get -y install upstart-sysv
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+sudo sh -c "echo 'deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse' | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list"
+sudo apt-get -y update
+sudo apt-get -y install mongodb-org
+
+# chukasa
+sudo mkdir /opt/chukasa
+sudo chown $USER:$USER /opt/chukasa
+mkdir /opt/chukasa/video
+
+sudo reboot
