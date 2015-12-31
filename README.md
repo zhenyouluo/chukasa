@@ -72,8 +72,8 @@ Web camera のデバイス名は /dev/video0 を前提としています．
     docker run --link some-mongo:mongo --privileged --volume /dev/:/dev/ --volume /var/run/pcscd/pcscd.comm:/var/run/pcscd/pcscd.comm -v /opt/chukasa/video:/opt/chukasa/video -p 80:80 -v /etc/localtime:/etc/localtime:ro -it <your_name>/chukasa:0.0.1 /bin/bash
 
 ### アプリケーションを利用する．
-iOS 9.x か OS X 10.11.x の Safari でサーバーの IP アドレスに HTTP でアクセスする．  
-Start HTTP Live Streaming ボタンを押すと何かが始まる．
+iOS 9 か OS X 10.11 の Safari でサーバーの IP アドレスに HTTP でアクセスします．  
+**Start HTTP Live Streaming (HLS)** ボタンを押すと何かが始まります．
 
 ## 3.2 Ubuntu のサービスとして稼働
 
@@ -85,19 +85,38 @@ not recommended...
 参考までに，動作環境を構築するためのサンプル手順です．  
 [local_installation_for_linux_service.txt](local_installation_for_linux_service.txt)
 
-then...    
+GitHub からソースコードを clone してビルドして適切な場所に配置させます．  
     
     git clone https://github.com/hirooka/chukasa.git
     cd chukasa
     ./gradlew build
     cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
-    sudo ln -s /opt/chukasa/chukasa-0.0.1-SNAPSHOT.jar /etc/init.d/chukasa
-    sudo update-rc.d chukasa defaults
-    sudo update-rc.d chukasa enable
-    sudo service chukasa start
     
-iOS 9.x か OS X 10.11.x の Safari でサーバーの IP アドレスに HTTP:8080 でアクセスする．  
-Start HTTP Live Streaming ボタンを押すと何かが始まる．
+systemd 用のファイルを作成します．    
+    
+    sudo touch /etc/systemd/system/chukasa.service
+    
+内容は例えば，
+    
+    [Unit]
+    Description=chukasa
+    After=syslog.target
+    
+    [Service]
+    User=hirooka
+    ExecStart=/opt/chukasa/chukasa-0.0.1-SNAPSHOT.jar
+    SuccessExitStatus=143
+    
+    [Install]
+    WantedBy=multi-user.target
+    
+そして，サービスの自動起動設定を行い，サービスを起動します．
+
+    sudo systemctl enable chukasa
+    sudo systemctl start chukasa
+    
+iOS 9 か OS X 10.11 の Safari でサーバーの IP アドレスに HTTP でアクセスします．  
+**Start HTTP Live Streaming (HLS)** ボタンを押すと何かが始まります．
 
 
 
