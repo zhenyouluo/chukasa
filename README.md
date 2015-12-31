@@ -93,9 +93,10 @@ then...
     cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
     sudo ln -s /opt/chukasa/chukasa-0.0.1-SNAPSHOT.jar /etc/init.d/chukasa
     sudo update-rc.d chukasa defaults
+    sudo update-rc.d chukasa enable
     sudo service chukasa start
     
-iOS 9.x か OS X 10.11.x の Safari でサーバーの IP アドレスに HTTP でアクセスする．  
+iOS 9.x か OS X 10.11.x の Safari でサーバーの IP アドレスに HTTP:8080 でアクセスする．  
 Start HTTP Live Streaming ボタンを押すと何かが始まる．
 
 
