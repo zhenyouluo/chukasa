@@ -16,7 +16,7 @@ sudo gpasswd -a $USER video
 sudo reboot
 
 # Package
-sudo apt-get -y update
+sudo apt-get update
 sudo apt-get -y upgrade
 sudo apt-get -y dist-upgrade
 
@@ -119,7 +119,7 @@ cd /tmp && \
 sudo apt-get -y install python-software-properties software-properties-common
 sudo sh -c "echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | debconf-set-selections"
 sudo add-apt-repository -y ppa:webupd8team/java
-sudo apt-get -y update
+sudo apt-get update
 sudo apt-get -y install oracle-java8-installer
 sudo apt-get -y install oracle-java8-set-default
 
@@ -127,7 +127,7 @@ sudo apt-get -y install oracle-java8-set-default
 sudo apt-get -y install systemd-sysv
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
 sudo sh -c "echo 'deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.0 main' | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list"
-sudo apt-get -y update
+sudo apt-get update
 sudo apt-get -y install mongodb-org
 
 # chukasa
