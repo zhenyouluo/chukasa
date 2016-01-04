@@ -1,0 +1,18 @@
+# OS X 10.11
+
+# FFmpeg
+# https://trac.ffmpeg.org/wiki/CompilationGuide/MacOSX
+brew install yasm x264 fdk-aac
+cd /tmp && \
+    wget https://www.ffmpeg.org/releases/ffmpeg-2.8.4.tar.gz && \
+    tar zxvf ffmpeg-2.8.4.tar.gz && \
+    cd ffmpeg-2.8.4 && \
+    ./configure --enable-gpl --enable-libx264 --enable-libfdk-aac --enable-nonfree --enable-shared && \
+    make && \
+    sudo make install
+
+# MongoDB
+# https://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/
+brew install mongodb
+sudo mkdir -p /data/db
+mongod
