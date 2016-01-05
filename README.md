@@ -1,6 +1,6 @@
 # Chukasa 
 
-HTTP Live Streaming (HLS) Server for iOS, OS X and tvOS
+Web camera, PT2 and PT3 HTTP Live Streaming (HLS) Server for iOS and tvOS
 
 [![Build Status](https://travis-ci.org/hirooka/chukasa.svg?branch=master)](https://travis-ci.org/hirooka/chukasa)
 
