@@ -6,7 +6,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.domain.EPGResponseModel;
+import pro.hirooka.chukasa.domain.LastEPGCrawlerExecuted;
 import pro.hirooka.chukasa.domain.ProgramInformation;
+import pro.hirooka.chukasa.service.ILastEPGCrawlerExecutedService;
 import pro.hirooka.chukasa.service.IProgramTableService;
 
 import javax.annotation.PostConstruct;
@@ -26,20 +28,51 @@ public class EPGCrawler {
 
     private final ChukasaConfiguration chukasaConfiguration;
     private final IProgramTableService programTableService;
+    private final ILastEPGCrawlerExecutedService lastEPGCrawlerExecutedService;
 
     private final String SPLIT_WORD = "/////,/////"; // TODO
 
     @Autowired
-    public EPGCrawler(ChukasaConfiguration chukasaConfiguration, IProgramTableService programTableService){
+    public EPGCrawler(ChukasaConfiguration chukasaConfiguration, IProgramTableService programTableService, ILastEPGCrawlerExecutedService lastEPGCrawlerExecutedService){
         this.chukasaConfiguration = requireNonNull(chukasaConfiguration, "chukasaConfiguration");
         this.programTableService = requireNonNull(programTableService, "programTableService");
+        this.lastEPGCrawlerExecutedService = requireNonNull(lastEPGCrawlerExecutedService, "lastEPGCrawlerExecutedService");
     }
 
     @PostConstruct
     public void init(){
-        if(chukasaConfiguration.isEpgAccessOnBootEnabled()) {
-            getEPG();
+
+        if(chukasaConfiguration.isEpgAccessOnBootEnabled()){
+            LastEPGCrawlerExecuted lastEPGCrawlerExecuted = lastEPGCrawlerExecutedService.read(0);
+            if(lastEPGCrawlerExecuted == null){
+                getEPG();
+            }else{
+                Date date = new Date();
+                long now = date.getTime();
+                long last = lastEPGCrawlerExecuted.getDate();
+                log.info("{}, {}", now, last);
+                if(now - last > chukasaConfiguration.getEpgAccessOnBootIgnoreInterval()){
+                    getEPG();
+                }
+            }
         }
+
+//        LastEPGCrawlerExecuted lastEPGCrawlerExecuted = lastEPGCrawlerExecutedService.read(0);
+//
+//        if(lastEPGCrawlerExecuted != null) {
+//            Date date = new Date();
+//            long now = date.getTime();
+//            long last = lastEPGCrawlerExecuted.getDate();
+//            log.info("{}, {}", now, last);
+//
+//            if(chukasaConfiguration.isEpgAccessOnBootEnabled()) {
+//                getEPG();
+//            }
+//        }else{
+//            if(chukasaConfiguration.isEpgAccessOnBootEnabled()) {
+//                getEPG();
+//            }
+//        }
     }
 
     @Scheduled(cron = "0 20 */3 * * *")
@@ -70,6 +103,17 @@ public class EPGCrawler {
 
         long end = System.currentTimeMillis();
         log.info((end - begin) / 1000 + "s");
+
+        //
+        LastEPGCrawlerExecuted lastEPGCrawlerExecuted = lastEPGCrawlerExecutedService.read(0);
+        if(lastEPGCrawlerExecuted == null){
+            lastEPGCrawlerExecuted = new LastEPGCrawlerExecuted();
+            lastEPGCrawlerExecuted.setUnique(0);
+        }
+        Date date = new Date();
+        lastEPGCrawlerExecuted.setDate(date.getTime());
+        lastEPGCrawlerExecutedService.update(lastEPGCrawlerExecuted);
+        log.info("lastEPGCrawlerExecuted = {}", lastEPGCrawlerExecuted.getDate());
     }
 
     void get(List<String> dateList, String area) {

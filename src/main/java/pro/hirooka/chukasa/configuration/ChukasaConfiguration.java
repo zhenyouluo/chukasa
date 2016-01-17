@@ -19,4 +19,5 @@ public class ChukasaConfiguration {
     int epgSpan;
     String epgBaseUrl;
     boolean epgAccessOnBootEnabled;
+    long epgAccessOnBootIgnoreInterval;
 }
