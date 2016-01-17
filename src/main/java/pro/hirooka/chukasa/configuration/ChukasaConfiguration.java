@@ -18,4 +18,5 @@ public class ChukasaConfiguration {
     int epgDays;
     int epgSpan;
     String epgBaseUrl;
+    boolean epgAccessOnBootEnabled;
 }

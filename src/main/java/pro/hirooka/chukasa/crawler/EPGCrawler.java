@@ -37,7 +37,9 @@ public class EPGCrawler {
 
     @PostConstruct
     public void init(){
-        getEPG();
+        if(chukasaConfiguration.isEpgAccessOnBootEnabled()) {
+            getEPG();
+        }
     }
 
     @Scheduled(cron = "0 20 */3 * * *")
