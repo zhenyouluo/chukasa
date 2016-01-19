@@ -78,6 +78,8 @@ public class EPGCrawler {
     @Scheduled(cron = "0 20 */3 * * *")
     void getEPG(){
 
+        // TODO: enable/disable
+
         long begin = System.currentTimeMillis();
 
         Calendar calendar = Calendar.getInstance();

@@ -3,8 +3,10 @@ package pro.hirooka.chukasa.segmenter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import pro.hirooka.chukasa.domain.ChukasaModel;
+import pro.hirooka.chukasa.domain.type.StreamingType;
 import pro.hirooka.chukasa.encrypter.Encrypter;
 import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.transcoder.FFmpegRunner;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -50,6 +52,9 @@ public class Segmenter extends TimerTask {
 
         try {
             FileInputStream fis = new FileInputStream(chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension());
+            if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+                fis = new FileInputStream(chukasaModel.getSystemConfiguration().getFilePath() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName());
+            }
 
             BufferedInputStream bis = new BufferedInputStream(fis);
             bis.skip(readByte);
@@ -76,21 +81,47 @@ public class Segmenter extends TimerTask {
 
                     seqTs++;
 
-                    if (chukasaModel.getChukasaSettings().isEncrypted()) {
+                    if(chukasaModel.getChukasaSettings().getStreamingType() != StreamingType.OKKAKE) {
 
-                        File tempSegDir = new File(chukasaModel.getTempEncPath());
-                        tempSegDir.mkdirs();
-                        f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTs + chukasaModel.getHlsConfiguration().getStreamExtension());
-                        bos = new BufferedOutputStream(f, mpeg2TsPacketLength);
-                        log.info("Begin Segmentation of seqTs : {}", seqTs);
-                        flagCreateFile = false;
+                        if (chukasaModel.getChukasaSettings().isEncrypted()) {
 
-                    } else {
+                            File tempSegDir = new File(chukasaModel.getTempEncPath());
+                            tempSegDir.mkdirs();
+                            f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTs + chukasaModel.getHlsConfiguration().getStreamExtension());
+                            bos = new BufferedOutputStream(f, mpeg2TsPacketLength);
+                            log.info("Begin Segmentation of seqTs : {}", seqTs);
+                            flagCreateFile = false;
 
-                        f = new FileOutputStream(chukasaModel.getStreamPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTs + chukasaModel.getHlsConfiguration().getStreamExtension());
-                        bos = new BufferedOutputStream(f, mpeg2TsPacketLength);
-                        log.info("Begin Segmentation of seqTs : {}", seqTs);
-                        flagCreateFile = false;
+                        } else {
+
+                            f = new FileOutputStream(chukasaModel.getStreamPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTs + chukasaModel.getHlsConfiguration().getStreamExtension());
+                            bos = new BufferedOutputStream(f, mpeg2TsPacketLength);
+                            log.info("Begin Segmentation of seqTs : {}", seqTs);
+                            flagCreateFile = false;
+
+                        }
+
+                    }else{
+
+                        if (chukasaModel.getChukasaSettings().isEncrypted()) {
+
+                            File tempSegDir = new File(chukasaModel.getTempEncPath());
+                            tempSegDir.mkdirs();
+                            f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTs + chukasaModel.getHlsConfiguration().getStreamExtension());
+                            bos = new BufferedOutputStream(f, mpeg2TsPacketLength);
+                            log.info("Begin Segmentation of seqTs : {}", seqTs);
+                            flagCreateFile = false;
+
+                        } else {
+
+                            File tempSegDir = new File(chukasaModel.getTempEncPath());
+                            tempSegDir.mkdirs();
+                            f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTs + chukasaModel.getHlsConfiguration().getStreamExtension());
+                            bos = new BufferedOutputStream(f, mpeg2TsPacketLength);
+                            log.info("Begin Segmentation of seqTs : {}", seqTs);
+                            flagCreateFile = false;
+
+                        }
 
                     }
                 }
@@ -168,10 +199,18 @@ public class Segmenter extends TimerTask {
                             chukasaModel.setSeqTsEnc(seqTs);
                             chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
-                            // process after spliting MPEG2-TS
-                            if (chukasaModel.getChukasaSettings().isEncrypted()) {
-                                Encrypter encrypter = new Encrypter(adaptiveBitrateStreaming, chukasaModelManagementComponent);
-                                Thread thread = new Thread(encrypter);
+                            if(chukasaModel.getChukasaSettings().getStreamingType() != StreamingType.OKKAKE) {
+                                // process after spliting MPEG2-TS
+                                if (chukasaModel.getChukasaSettings().isEncrypted()) {
+                                    Encrypter encrypter = new Encrypter(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+                                    Thread thread = new Thread(encrypter);
+                                    thread.start();
+                                }
+                            }else{
+                                chukasaModel.setSeqTsOkkake(chukasaModel.getSeqTsEnc());
+                                chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+                                FFmpegRunner fFmpegRunner = new FFmpegRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+                                Thread thread = new Thread(fFmpegRunner);
                                 thread.start();
                             }
 
@@ -202,9 +241,17 @@ public class Segmenter extends TimerTask {
                 //chukasaModel.setSeqTsLast(seqTs - 1);
                 chukasaModel.setSeqTsLast(seqTs);
 
-                if (chukasaModel.getChukasaSettings().isEncrypted()) {
-                    Encrypter encrypter = new Encrypter(adaptiveBitrateStreaming, chukasaModelManagementComponent);
-                    Thread thread = new Thread(encrypter);
+                if(chukasaModel.getChukasaSettings().getStreamingType() != StreamingType.OKKAKE) {
+                    if (chukasaModel.getChukasaSettings().isEncrypted()) {
+                        Encrypter encrypter = new Encrypter(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+                        Thread thread = new Thread(encrypter);
+                        thread.start();
+                    }
+                }else{
+                    chukasaModel.setSeqTsOkkake(chukasaModel.getSeqTsEnc());
+                    chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+                    FFmpegRunner fFmpegRunner = new FFmpegRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+                    Thread thread = new Thread(fFmpegRunner);
                     thread.start();
                 }
 

@@ -3,6 +3,7 @@ package pro.hirooka.chukasa.handler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import pro.hirooka.chukasa.domain.ChukasaModel;
+import pro.hirooka.chukasa.domain.type.StreamingType;
 import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
 import pro.hirooka.chukasa.transcoder.FFmpegStopper;
 
@@ -31,6 +32,9 @@ public class ChukasaStopper {
         for(ChukasaModel chukasaModel : chukasaModelList){
             chukasaModel.setFlagTimerSegmenter(true);
             chukasaModel.setFlagTimerPlaylister(true);
+            if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+                chukasaModel.setFlagRemoveFile(true);
+            }
             chukasaModelManagementComponent.update(chukasaModel.getAdaptiveBitrateStreaming(), chukasaModel);
         }
 

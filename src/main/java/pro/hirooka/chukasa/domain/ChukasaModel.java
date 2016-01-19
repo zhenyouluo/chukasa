@@ -35,7 +35,7 @@ public class ChukasaModel {
     private long readBytes;
     private int seqTs;
     private int seqTsEnc;
-    private int seqTsCapturedTimeShifted;
+    private int seqTsOkkake;
     private int seqTsLast;
     private boolean flagSegFullDuration;
     private boolean flagLastTs;
@@ -87,7 +87,7 @@ public class ChukasaModel {
         this.readBytes = 0;
         this.seqTs = -1;
         this.seqTsEnc = 0;
-        this.seqTsCapturedTimeShifted = 0;
+        this.seqTsOkkake = 0;
         this.seqTsLast = 0;
         this.flagSegFullDuration = false;
         this.flagLastTs = false;

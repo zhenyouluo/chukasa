@@ -125,7 +125,8 @@ public class HTML5PlayerController {
                         + chukasaModel.getChukasaSettings().getVideoBitrate()
                         + FILE_SEPARATOR
                         + chukasaModel.getChukasaConfiguration().getM3u8PlaylistName();
-            }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE){
+            }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE
+                    || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
                 playlistURI = "/"
                         + chukasaModel.getChukasaConfiguration().getStreamRootPathName()
                         + FILE_SEPARATOR

@@ -58,6 +58,16 @@ public class ChukasaThreadHandler implements Runnable {
             Thread pThread = new Thread(playlisterRunner, "__PlaylisterRunner__");
             pThread.start();
 
+        }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+
+            SegmenterRunner segmenterRunner = new SegmenterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+            Thread sThread = new Thread(segmenterRunner, "__SegmenterRunner__");
+            sThread.start();
+
+            PlaylisterRunner playlisterRunner = new PlaylisterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+            Thread pThread = new Thread(playlisterRunner, "__PlaylisterRunner__");
+            pThread.start();
+
         }
     }
 }
