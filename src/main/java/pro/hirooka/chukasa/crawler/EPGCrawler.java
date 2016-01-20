@@ -78,44 +78,46 @@ public class EPGCrawler {
     @Scheduled(cron = "0 20 */3 * * *")
     void getEPG(){
 
-        // TODO: enable/disable
+        if(chukasaConfiguration.isEpgAccessEnabled()) {
 
-        long begin = System.currentTimeMillis();
+            long begin = System.currentTimeMillis();
 
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
 
-        List<String> dateList = new ArrayList<>();
-        for(int i = 0; i < chukasaConfiguration.getEpgDays(); i++){
-            String date = simpleDateFormat.format(calendar.getTime());
-            dateList.add(date);
-            calendar.add(Calendar.DATE, 1);
+            List<String> dateList = new ArrayList<>();
+            for (int i = 0; i < chukasaConfiguration.getEpgDays(); i++) {
+                String date = simpleDateFormat.format(calendar.getTime());
+                dateList.add(date);
+                calendar.add(Calendar.DATE, 1);
+            }
+
+            List<String> areaList = new ArrayList<>();
+            areaList.add("23");  // Tokyo
+            areaList.add("24");  // Kanagawa
+            areaList.add("27");  // Chiba
+            areaList.add("29");  // Saitama
+            areaList.add("bs1"); // BS
+
+            for (String area : areaList) {
+                get(dateList, area);
+            }
+
+            long end = System.currentTimeMillis();
+            log.info((end - begin) / 1000 + "s");
+
+            //
+            LastEPGCrawlerExecuted lastEPGCrawlerExecuted = lastEPGCrawlerExecutedService.read(0);
+            if (lastEPGCrawlerExecuted == null) {
+                lastEPGCrawlerExecuted = new LastEPGCrawlerExecuted();
+                lastEPGCrawlerExecuted.setUnique(0);
+            }
+            Date date = new Date();
+            lastEPGCrawlerExecuted.setDate(date.getTime());
+            lastEPGCrawlerExecutedService.update(lastEPGCrawlerExecuted);
+            log.info("lastEPGCrawlerExecuted = {}", lastEPGCrawlerExecuted.getDate());
+
         }
-
-        List<String> areaList = new ArrayList<>();
-        areaList.add("23");  // Tokyo
-        areaList.add("24");  // Kanagawa
-        areaList.add("27");  // Chiba
-        areaList.add("29");  // Saitama
-        areaList.add("bs1"); // BS
-
-        for(String area : areaList){
-            get(dateList, area);
-        }
-
-        long end = System.currentTimeMillis();
-        log.info((end - begin) / 1000 + "s");
-
-        //
-        LastEPGCrawlerExecuted lastEPGCrawlerExecuted = lastEPGCrawlerExecutedService.read(0);
-        if(lastEPGCrawlerExecuted == null){
-            lastEPGCrawlerExecuted = new LastEPGCrawlerExecuted();
-            lastEPGCrawlerExecuted.setUnique(0);
-        }
-        Date date = new Date();
-        lastEPGCrawlerExecuted.setDate(date.getTime());
-        lastEPGCrawlerExecutedService.update(lastEPGCrawlerExecuted);
-        log.info("lastEPGCrawlerExecuted = {}", lastEPGCrawlerExecuted.getDate());
     }
 
     void get(List<String> dateList, String area) {
