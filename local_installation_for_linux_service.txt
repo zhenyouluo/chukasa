@@ -46,7 +46,7 @@ cd /tmp && \
     tar xjvf last_x264.tar.bz2 && \
     cd x264-snapshot* && \
     ./configure --enable-shared && \
-    make && \
+    make -j8 && \
     sudo make install && \
     sudo ldconfig
 
@@ -57,7 +57,7 @@ cd /tmp && \
     cd mstorsjo-fdk-aac* && \
     autoreconf -fiv && \
     ./configure && \
-    make && \
+    make -j8 && \
     sudo make install
 
 # FFmpeg 0.11.5
@@ -66,17 +66,17 @@ cd /tmp && \
     tar zxvf ffmpeg-0.11.5.tar.gz && \
     cd ffmpeg-0.11.5 && \
     ./configure --enable-gpl --enable-libx264 --prefix=/usr/local/ffmpeg-0.11.5  && \
-    make && \
+    make -j8 && \
     sudo make install && \
     sudo ldconfig
 
 # FFmpeg latest
 cd /tmp && \
-    wget https://www.ffmpeg.org/releases/ffmpeg-2.8.4.tar.gz && \
-    tar zxvf ffmpeg-2.8.4.tar.gz && \
-    cd ffmpeg-2.8.4 && \
+    wget https://www.ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
+    tar jxvf ffmpeg-snapshot.tar.bz2 && \
+    cd ffmpeg && \
     ./configure --enable-gpl --enable-libx264 --enable-libfdk-aac --enable-nonfree --enable-shared && \
-    make && \
+    make -j8 && \
     sudo make install && \
     sudo ldconfig
 
@@ -134,5 +134,19 @@ sudo apt-get -y install mongodb-org
 sudo mkdir /opt/chukasa
 sudo chown $USER:$USER /opt/chukasa
 mkdir /opt/chukasa/video
+
+# nignx
+cd /tmp && \
+    sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
+    wget http://nginx.org/download/nginx-1.9.9.tar.gz && \
+    tar zxvf nginx-1.9.9.tar.gz && \
+    cd nginx-1.9.9 && \
+    ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
+    make && \
+    make install
+# use "docker/nginx/conf/nginx.conf" instead of "/usr/local/nginx/conf/nginx.conf"
+# copy "nginx.service" to "/etc/systemd/system/"
+# sudo systemctl enable nginx
+# sudo systemctl start nginx
 
 sudo reboot

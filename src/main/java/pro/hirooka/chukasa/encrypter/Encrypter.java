@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import pro.hirooka.chukasa.domain.ChukasaModel;
+import pro.hirooka.chukasa.domain.type.StreamingType;
 import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
 
 import javax.crypto.Cipher;
@@ -41,6 +42,9 @@ public class Encrypter implements Runnable {
 
         int seqTsEnc = 0; //getSeqTsEnc();
         seqTsEnc = chukasaModel.getSeqTsEnc();
+        if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+            seqTsEnc = chukasaModel.getSeqTsOkkake() - 1;
+        }
         if(chukasaModel.isFlagLastTs()) {
             seqTsEnc = chukasaModel.getSeqTsLast();
         }
@@ -93,6 +97,13 @@ public class Encrypter implements Runnable {
             bis = new BufferedInputStream(fis);
             fos = new FileOutputStream(streamPath + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTsEnc + chukasaModel.getHlsConfiguration().getStreamExtension());
             cos = new CipherOutputStream(fos, c);
+            if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+                // TODO:
+                fis = new FileInputStream(tempEncPath + FILE_SEPARATOR + "fileSequenceEncoded" + seqTsEnc + chukasaModel.getHlsConfiguration().getStreamExtension());
+                bis = new BufferedInputStream(fis);
+                fos = new FileOutputStream(streamPath + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTsEnc + chukasaModel.getHlsConfiguration().getStreamExtension());
+                cos = new CipherOutputStream(fos, c);
+            }
 
             byte[] buf = new byte[tsPacketLength];
 

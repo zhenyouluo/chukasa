@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import pro.hirooka.chukasa.domain.*;
 import pro.hirooka.chukasa.domain.type.StreamingType;
+import pro.hirooka.chukasa.encrypter.Encrypter;
 import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
 
 import java.io.BufferedReader;
@@ -32,6 +33,8 @@ public class FFmpegRunner implements Runnable {
     public void run() {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+
+        int seqCapturedTimeShifted = chukasaModel.getSeqTsOkkake();
 
         String[] cmdArray = null;
 
@@ -86,6 +89,36 @@ public class FFmpegRunner implements Runnable {
             };
             cmdArray = cmdArrayTemporary;
 
+        }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+
+            if(chukasaModel.getChukasaSettings().isEncrypted()){
+
+                String[] cmdArrayTemporary = {
+
+                        chukasaModel.getSystemConfiguration().getFileFfmpegPath(),
+                        "-i", chukasaModel.getTempEncPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqCapturedTimeShifted + chukasaModel.getHlsConfiguration().getStreamExtension(),
+                        "-acodec", "libfdk_aac",
+                        "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
+                        "-ac", "2",
+                        "-ar", "44100",
+                        "-s", chukasaModel.getChukasaSettings().getVideoResolutionType().getName(),
+                        "-vcodec", "libx264",
+                        "-profile:v", "high",
+                        "-level", "4.2",
+                        "-preset", "ultrafast",
+                        "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
+                        "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
+                        "-f", "mpegts",
+                        "-y", chukasaModel.getTempEncPath() + FILE_SEPARATOR + "fileSequenceEncoded" + seqCapturedTimeShifted + chukasaModel.getHlsConfiguration().getStreamExtension() // TODO
+                };
+                cmdArray = cmdArrayTemporary;
+
+            }else{
+
+                // TODO:
+
+            }
+
         }
 
         String cmd = "";
@@ -116,6 +149,19 @@ public class FFmpegRunner implements Runnable {
             //pb = null;
             log.info("End FFmpeg");
             log.info("{} is completed.", this.getClass().getName());
+
+            if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+                if(chukasaModel.getChukasaSettings().isEncrypted()){
+                    seqCapturedTimeShifted = seqCapturedTimeShifted + 1;
+                    chukasaModel.setSeqTsOkkake(seqCapturedTimeShifted);
+                    chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+
+                    Encrypter encrypter = new Encrypter(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+                    Thread thread = new Thread(encrypter);
+                    thread.start();
+                }
+            }
+
         }
         catch (IOException e) {
             e.printStackTrace();
