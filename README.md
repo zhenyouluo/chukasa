@@ -1,6 +1,6 @@
-# Chukasa 
+# chukasa 
 
-Web camera, PT2 and PT3 HTTP Live Streaming (HLS) Server for iOS and tvOS
+Web camera, PT2 and PT3 HTTP Live Streaming (HLS) Server for OS X, iOS and tvOS
 
 [![Build Status](https://travis-ci.org/hirooka/chukasa.svg?branch=master)](https://travis-ci.org/hirooka/chukasa)
 
@@ -10,12 +10,13 @@ Web camera, PT2 and PT3 HTTP Live Streaming (HLS) Server for iOS and tvOS
 * Video file transcoding and streaming
 * PT2 / PT3 real-time transcoding and streaming
 * PT2 / PT3 recording (EXPERIMENTAL)
+* PT2 / PT3 追っかけ再生 (EXPERIMENTAL)
 
 # 2. Client
 
-* iOS 9 Safari
 * OX 11.10 Safari
-* iOS App (under developing...) 
+* iOS 9 Safari
+* iOS App (chukasa-ios) [https://github.com/hirooka/chukasa-ios](https://github.com/hirooka/chukasa-ios)
 * tvOS (under developing...)
 
 # 3. Server Installation
@@ -117,6 +118,3 @@ systemd 用のファイルを作成します．
     
 iOS 9 か OS X 10.11 の Safari でサーバーの IP アドレスに HTTP でアクセスします．  
 **Start HTTP Live Streaming (HLS)** ボタンを押すと何かが始まります．
-
-
-
