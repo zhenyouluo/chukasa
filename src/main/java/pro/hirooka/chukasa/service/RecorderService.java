@@ -37,48 +37,51 @@ public class RecorderService implements IRecorderService {
     @PostConstruct
     public void init(){
 
-        List<ReservedProgram> reservedProgramList = read();
-        for(ReservedProgram reservedProgram : reservedProgramList){
+        if(chukasaConfiguration.isRecorderEnabled()) {
 
-             if(!RecorderChecker.isAlreadyRun(reservedProgram)) {
+            List<ReservedProgram> reservedProgramList = read();
+            for (ReservedProgram reservedProgram : reservedProgramList) {
 
-                 long begin = reservedProgram.getBegin();
-                 long start = reservedProgram.getStart();
-                 long end = reservedProgram.getEnd();
-                 long stop = reservedProgram.getStop();
-                 Date date = new Date();
-                 long now = date.getTime();
-                 if (start > now && stop > now) {
+                if (!RecorderChecker.isAlreadyRun(reservedProgram)) {
 
-                     // reserve
-                     log.info("reservation: {}", reservedProgram.toString());
+                    long begin = reservedProgram.getBegin();
+                    long start = reservedProgram.getStart();
+                    long end = reservedProgram.getEnd();
+                    long stop = reservedProgram.getStop();
+                    Date date = new Date();
+                    long now = date.getTime();
+                    if (start > now && stop > now) {
 
-                     Recorder recorder = new Recorder(systemConfiguration);
-                     recorder.reserve(reservedProgram);
+                        // reserve
+                        log.info("reservation: {}", reservedProgram.toString());
 
-                 } else if (now > start && stop > now) {
+                        Recorder recorder = new Recorder(systemConfiguration);
+                        recorder.reserve(reservedProgram);
 
-                     // start recording immediately
-                     log.info("no reservation, direct recording");
+                    } else if (now > start && stop > now) {
 
-                     long duration = (stop - now) / 1000;
-                     reservedProgram.setDuration(duration);
-                     RecorderRunner recorderRunner = new RecorderRunner(systemConfiguration, reservedProgram);
-                     Thread thread = new Thread(recorderRunner);
-                     thread.start();
+                        // start recording immediately
+                        log.info("no reservation, direct recording");
 
-                 } else if (now > start && now > stop) {
+                        long duration = (stop - now) / 1000;
+                        reservedProgram.setDuration(duration);
+                        RecorderRunner recorderRunner = new RecorderRunner(systemConfiguration, reservedProgram);
+                        Thread thread = new Thread(recorderRunner);
+                        thread.start();
 
-                     //  nothing to do... (as error)
-                     log.info("no reservation, no recording");
+                    } else if (now > start && now > stop) {
 
-                 } else {
-                     // todo
-                 }
+                        //  nothing to do... (as error)
+                        log.info("no reservation, no recording");
 
-             }else{
-                 log.info("skip (in recording...) {}", reservedProgram.toString());
-             }
+                    } else {
+                        // todo
+                    }
+
+                } else {
+                    log.info("skip (in recording...) {}", reservedProgram.toString());
+                }
+            }
         }
     }
 
