@@ -74,7 +74,7 @@ Web camera のデバイス名は /dev/video0 を前提としています．
 
 ### アプリケーションを利用する．
 iOS 9 か OS X 10.11 の Safari でサーバーの IP アドレスに HTTP でアクセスします．  
-**Start HTTP Live Streaming (HLS)** ボタンを押すと何かが始まります．
+**Start HTTP Live Streaming (HLS)** ボタンを押すとストリーミングが始まります．
 
 ## 3.2 Ubuntu のサービスとして稼働
 
@@ -117,4 +117,4 @@ systemd 用のファイルを作成します．
     sudo systemctl start chukasa
     
 iOS 9 か OS X 10.11 の Safari でサーバーの IP アドレスに HTTP でアクセスします．  
-**Start HTTP Live Streaming (HLS)** ボタンを押すと何かが始まります．
+**Start HTTP Live Streaming (HLS)** ボタンを押すとストリーミングが始まります．
