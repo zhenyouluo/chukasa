@@ -51,8 +51,10 @@ public class Segmenter extends TimerTask {
         double segmentedTsDuration = (double) chukasaModel.getHlsConfiguration().getDuration();
 
         try {
-            FileInputStream fis = new FileInputStream(chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension());
-            if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+            FileInputStream fis = null;
+            if(chukasaModel.getChukasaSettings().getStreamingType() != StreamingType.OKKAKE) {
+                fis = new FileInputStream(chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension());
+            }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
                 fis = new FileInputStream(chukasaModel.getSystemConfiguration().getFilePath() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName());
             }
 

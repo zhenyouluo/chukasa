@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id;
 
 @Data
 public class LastEPGCrawlerExecuted {
-    //@Id
+    @Id
     private int unique;
     private long date;
 }
