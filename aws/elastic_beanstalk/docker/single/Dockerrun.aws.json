@@ -1,0 +1,14 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Ports": [
+    {
+      "ContainerPort": "80"
+    }
+  ],
+  "Volumes": [
+    {
+      "HostDirectory": "/opt/chukasa/video",
+      "ContainerDirectory": "/opt/chukasa/video"
+    }
+  ]
+}
