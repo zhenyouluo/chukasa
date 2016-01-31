@@ -54,9 +54,9 @@ RUN cd /tmp && \
 
 # FFmpeg latest
 RUN cd /tmp && \
-    wget https://www.ffmpeg.org/releases/ffmpeg-2.8.4.tar.gz && \
-    tar zxvf ffmpeg-2.8.4.tar.gz && \
-    cd ffmpeg-2.8.4 && \
+    wget https://www.ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
+    tar jxvf ffmpeg-snapshot.tar.bz2 && \
+    cd ffmpeg && \
     ./configure --enable-gpl --enable-libx264 --enable-libfdk-aac --enable-nonfree --enable-shared && \
     make && \
     make install && \
