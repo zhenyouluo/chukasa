@@ -2,6 +2,10 @@ machine:
   java:
     version: oraclejdk8
 
+dependencies:
+  override:
+    - gradle dependencies
+
 test:
   override:
     - gradle test
