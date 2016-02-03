@@ -4,8 +4,8 @@ machine:
 
 dependencies:
   override:
-    - gradle dependencies
+    - ./gradlew dependencies
 
 test:
   override:
-    - gradle test
+    - ./gradle test
