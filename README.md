@@ -2,7 +2,7 @@
 
 Web camera, video file, PT2 and PT3 HTTP Live Streaming (HLS) Server for OS X, iOS and tvOS
 
-[![Build Status](https://travis-ci.org/hirooka/chukasa.svg?branch=master)](https://travis-ci.org/hirooka/chukasa) [![Build Status](https://circleci.com/gh/hirooka/chukasa/tree/:branch.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/hirooka/chukasa)
+[![Build Status](https://travis-ci.org/hirooka/chukasa.svg?branch=master)](https://travis-ci.org/hirooka/chukasa) [![Build Status](https://circleci.com/gh/hirooka/chukasa.png?style=shield)](https://circleci.com/gh/hirooka/chukasa)
 
 # 1. Overview
 
