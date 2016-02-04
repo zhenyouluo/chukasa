@@ -107,10 +107,10 @@ public class EPGCrawler {
             log.info((end - begin) / 1000 + "s");
 
             //
-            LastEPGCrawlerExecuted lastEPGCrawlerExecuted = lastEPGCrawlerExecutedService.read(0);
+            LastEPGCrawlerExecuted lastEPGCrawlerExecuted = lastEPGCrawlerExecutedService.read(1);
             if (lastEPGCrawlerExecuted == null) {
                 lastEPGCrawlerExecuted = new LastEPGCrawlerExecuted();
-                lastEPGCrawlerExecuted.setUnique(0);
+                lastEPGCrawlerExecuted.setUnique(1);
             }
             Date date = new Date();
             lastEPGCrawlerExecuted.setDate(date.getTime());
