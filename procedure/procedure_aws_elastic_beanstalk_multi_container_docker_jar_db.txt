@@ -1,0 +1,37 @@
+#*******************************************************************************************************************
+# Preparation
+#*******************************************************************************************************************
+# clone project and edit configuration file
+git clone https://github.com/hirooka/chukasa.git
+cd chukasa
+sed -i -e "s/spring.data.mongodb.host=localhost/spring.data.mongodb.host=mongo/g" src/main/resources/application.properties
+
+# build chukasa application
+./gradlew build
+
+# build chukasa Docker image
+docker build -t hirooka/chukasa:0.0.1-SNAPSHOT-DOCKER .
+
+# push Docker image
+docker push hirooka/chukasa:0.0.1-SNAPSHOT-DOCKER
+
+#*******************************************************************************************************************
+# AWS
+#*******************************************************************************************************************
+AWS Management Console
+
+Elastic Beanstalk
+
+Create New Application
+
+New Environment - Web Server Environment - Create web server
+
+Environment Type - Predefined configuration - Multi-container Docker
+
+Application Version - Source - Upload your own
+
+use "aws/elastic_beanstalk/docker/multiple/Dockerrun.aws.json"
+
+Configuration Details - Instance type - t2.medium
+
+Launch ---> about 10 min.
