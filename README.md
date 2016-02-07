@@ -17,23 +17,30 @@ Web camera, video file, PT2 and PT3 HTTP Live Streaming (HLS) Server for OS X, i
 * OX 11.10 Safari
 * iOS 9 Safari
 * iOS App (chukasa-ios) [https://github.com/hirooka/chukasa-ios](https://github.com/hirooka/chukasa-ios)
-* tvOS (under developing...)
+* tvOS (play video via AirPlay)
 
 # 3. Server Installation
 
-このソフトウェアは MIT License です．  
-[LICENSE](LICENSE)
+Ubuntu, Docker, AWS Elastic Beanstalk といった様々な環境で動作します．  
 
-## 3.1 Docker によるお試し起動
+## Examples of use
 
-### 動作環境
+|   | Streaming only<br>(Runnable jar) | Streaming and Recording<br>(Runnable jar + MongoDB) |
+|:---:|:---:|:---:|
+| Ubuntu<br>(Local) | [procedure](procedure/procedure_ubuntu_local_jar.txt) | [procedure](procedure/procedure_ubuntu_local_jar_db.txt) |
+| Ubuntu<br>(Docker) | [procedure](procedure/procedure_ubuntu_local_docker_jar.txt) | [procedure](procedure/procedure_ubuntu_local_docker_jar_db.txt) |
+| AWS Elastic Beanstalk<br>(Java) | [procedure](procedure/procedure_aws_elastic_beanstalk_jar.txt) | N/A |
+| AWS Elastic Beanstalk<br>(Docker) | [procedure](procedure/procedure_aws_elastic_beanstalk_docker_jar.txt) | N/A |
+| AWS Elastic Beanstalk<br>(Multi-container Docker) | N/A | [procedure](procedure/procedure_aws_elastic_beanstalk_multi_container_docker_jar_db.txt) |
+
+
+# 4. Server Requirements
+
 * Ubuntu 15.10
 * Oracle Java 8
-* Docker 1.9.1
+* Docker 1.10.0
 * PT2 driver or PT3 driver (PT2/PT3 ストリーミングを行う場合)
-* Web camera (Web camera ストリーミングを行う場合)
-
-なお，コンテナを停止するとデータベースの内容はすべて消えます．  
+* Web camera (Web camera ストリーミングを行う場合) 
  
 サーバーのスペックとしては，Core i7 (Sandy Bridge) クラス，SSD を推奨します．  
 サーバーのスペックが低すぎるとリアルタイムのトランスコードが間に合わず，正常に動作しない可能性が高いです．  
@@ -48,73 +55,3 @@ Web camera のデバイス名は /dev/video0 を前提としています．
     sudo mkdir /opt/chukasa
     sudo chown $USER:$USER /opt/chukasa
     mkdir /opt/chukasa/video
-
-参考までに，動作環境を構築するためのサンプル手順です．  
-[local_installation_for_docker.txt](local_installation_for_docker.txt)
-
-### GitHub から clone して設定ファイルを一部編集する．
-    git clone https://github.com/hirooka/chukasa.git
-    cd chukasa
-    sed -i -e "s/spring.data.mongodb.host=localhost/spring.data.mongodb.host=mongo/g" src/main/resources/application.properties
-
-### アプリケーションをビルドする．
-    ./gradlew build
-
-### アプリケーションの Docker イメージをビルドする．
-    docker build -t <your_name>/chukasa:0.0.1 .
-
-35min...
-
-### MongoDB の Docker イメージを pull して実行する．
-    docker pull mongo
-    docker run --name some-mongo -d mongo
-
-### アプリケーションの Docker イメージを実行する．
-    docker run --link some-mongo:mongo --privileged --volume /dev/:/dev/ --volume /var/run/pcscd/pcscd.comm:/var/run/pcscd/pcscd.comm -v /opt/chukasa/video:/opt/chukasa/video -p 80:80 -v /etc/localtime:/etc/localtime:ro -it <your_name>/chukasa:0.0.1 /bin/bash
-
-### アプリケーションを利用する．
-iOS 9 か OS X 10.11 の Safari でサーバーの IP アドレスに HTTP でアクセスします．  
-**Start HTTP Live Streaming (HLS)** ボタンを押すとストリーミングが始まります．
-
-## 3.2 Ubuntu のサービスとして稼働
-
-not recommended...
-
-### 動作環境
-* Ubuntu 15.10
-
-参考までに，動作環境を構築するためのサンプル手順です．  
-[local_installation_for_linux_service.txt](local_installation_for_linux_service.txt)
-
-GitHub からソースコードを clone してビルドして適切な場所に配置させます．  
-    
-    git clone https://github.com/hirooka/chukasa.git
-    cd chukasa
-    ./gradlew build
-    cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
-    
-systemd 用のファイルを作成します．    
-    
-    sudo touch /etc/systemd/system/chukasa.service
-    
-内容は例えば，
-    
-    [Unit]
-    Description=chukasa
-    After=syslog.target
-    
-    [Service]
-    User=hirooka
-    ExecStart=/opt/chukasa/chukasa-0.0.1-SNAPSHOT.jar
-    SuccessExitStatus=143
-    
-    [Install]
-    WantedBy=multi-user.target
-    
-そして，サービスの自動起動設定を行い，サービスを起動します．
-
-    sudo systemctl enable chukasa
-    sudo systemctl start chukasa
-    
-iOS 9 か OS X 10.11 の Safari でサーバーの IP アドレスに HTTP でアクセスします．  
-**Start HTTP Live Streaming (HLS)** ボタンを押すとストリーミングが始まります．
