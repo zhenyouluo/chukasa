@@ -36,22 +36,14 @@ Ubuntu, Docker, AWS Elastic Beanstalk といった様々な環境で動作しま
 
 # 4. Server Requirements
 
+## 4.1. Software
+
 * Ubuntu 15.10
 * Oracle Java 8
-* Docker 1.10.0
+* Docker 1.10.0 (アプリケーションを Docker で実行する場合）
 * PT2 driver or PT3 driver (PT2/PT3 ストリーミングを行う場合)
 * Web camera (Web camera ストリーミングを行う場合) 
- 
-サーバーのスペックとしては，Core i7 (Sandy Bridge) クラス，SSD を推奨します．  
-サーバーのスペックが低すぎるとリアルタイムのトランスコードが間に合わず，正常に動作しない可能性が高いです．  
 
-同様に Web camera のスペックもそれなりのものを推奨します．  
-Web camera は Logicool C910 で動作確認しています．  
-Web camera のデバイス名は /dev/video0 を前提としています．  
-それ以外の場合，src/main/resources/application.properties の system.usb-camera-device-name の値を適切に変更してください．
+## 4.1. Hardware
 
-任意のビデオファイルをトランスコードする場合，/opt/chukasa/video というディレクトリを作成し，そこにビデオファイルを配置してください．  
-
-    sudo mkdir /opt/chukasa
-    sudo chown $USER:$USER /opt/chukasa
-    mkdir /opt/chukasa/video
+* TBD
