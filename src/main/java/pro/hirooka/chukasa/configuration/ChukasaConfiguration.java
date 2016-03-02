@@ -21,4 +21,5 @@ public class ChukasaConfiguration {
     boolean epgAccessOnBootEnabled;
     long epgAccessOnBootIgnoreInterval;
     boolean epgAccessEnabled;
+    Integer[] physicalChannel;
 }
