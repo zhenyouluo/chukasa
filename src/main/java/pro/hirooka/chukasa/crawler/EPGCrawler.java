@@ -43,7 +43,7 @@ public class EPGCrawler {
     public void init(){
 
         if(chukasaConfiguration.isEpgAccessOnBootEnabled()){
-            LastEPGCrawlerExecuted lastEPGCrawlerExecuted = lastEPGCrawlerExecutedService.read(0);
+            LastEPGCrawlerExecuted lastEPGCrawlerExecuted = lastEPGCrawlerExecutedService.read(1);
             if(lastEPGCrawlerExecuted == null){
                 getEPG();
             }else{
@@ -114,7 +114,7 @@ public class EPGCrawler {
             }
             Date date = new Date();
             lastEPGCrawlerExecuted.setDate(date.getTime());
-            lastEPGCrawlerExecutedService.update(lastEPGCrawlerExecuted);
+            lastEPGCrawlerExecuted = lastEPGCrawlerExecutedService.update(lastEPGCrawlerExecuted);
             log.info("lastEPGCrawlerExecuted = {}", lastEPGCrawlerExecuted.getDate());
 
         }
