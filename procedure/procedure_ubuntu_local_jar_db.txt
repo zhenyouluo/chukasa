@@ -188,9 +188,9 @@ sudo systemctl start chukasa
 #*******************************************************************************************************************
 cd /tmp && \
     sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.9.10.tar.gz && \
-    tar zxvf nginx-1.9.10.tar.gz && \
-    cd nginx-1.9.10 && \
+    wget http://nginx.org/download/nginx-1.9.12.tar.gz && \
+    tar zxvf nginx-1.9.12.tar.gz && \
+    cd nginx-1.9.12 && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
     make -j8 && \
     sudo make install
