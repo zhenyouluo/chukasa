@@ -113,7 +113,7 @@ public class CaptureRunner implements Runnable {
                 BufferedReader br = new BufferedReader(isr);
                 String s = "";
                 while((s = br.readLine()) != null){
-                    log.debug("{}", s);
+                    log.info("{}", s);
                 }
                 br.close();
                 isr.close();
