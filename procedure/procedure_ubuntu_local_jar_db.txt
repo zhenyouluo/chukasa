@@ -171,9 +171,12 @@ mkdir /opt/chukasa/video
 
 # clone project and edit configuration file
 git clone https://github.com/hirooka/chukasa.git
+cd chukasa
+sed -i -e "s/chukasa.recorder-enabled=false/chukasa.recorder-enabled=true/g" src/main/resources/application.properties
+sed -i -e "s/chukasa.epg-access-enabled=false/chukasa.epg-access-enabled=true/g" src/main/resources/application.properties
+sed -i -e "s/chukasa.epg-access-on-boot-enabled=false/chukasa.epg-access-on-boot-enabled=true/g" src/main/resources/application.properties
 
 # build chukasa application and deploy it
-cd chukasa
 ./gradlew build
 cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
 

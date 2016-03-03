@@ -96,15 +96,21 @@ mkdir /opt/chukasa/video
 # clone project and edit configuration file
 git clone https://github.com/hirooka/chukasa.git
 cd chukasa
+sed -i -e "s/chukasa.recorder-enabled=false/chukasa.recorder-enabled=true/g" src/main/resources/application.properties
+sed -i -e "s/chukasa.epg-access-enabled=false/chukasa.epg-access-enabled=true/g" src/main/resources/application.properties
+sed -i -e "s/chukasa.epg-access-on-boot-enabled=false/chukasa.epg-access-on-boot-enabled=true/g" src/main/resources/application.properties
 sed -i -e "s/spring.data.mongodb.host=localhost/spring.data.mongodb.host=mongo/g" src/main/resources/application.properties
 
 # build chukasa application
 ./gradlew build
 
 # build chukasa Docker image
-docker build -t hirooka/chukasa:0.0.1-SNAPSHOT-DOCKER .
+docker build -t hirooka/chukasa:0.0.1-SNAPSHOT-DB .
 # or pull Docker image
-# docker pull hirooka/chukasa:0.0.1-SNAPSHOT-DOCKER
+# docker pull hirooka/chukasa:0.0.1-SNAPSHOT-DB
+
+# push if needed
+# docker push hirooka/chukasa:0.0.1-SNAPSHOT-DB
 
 # pull and run MongoDB Docker image
 docker pull mongo

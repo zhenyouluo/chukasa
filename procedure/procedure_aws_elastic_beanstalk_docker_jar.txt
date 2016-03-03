@@ -1,21 +1,18 @@
 #*******************************************************************************************************************
 # Preparation
 #*******************************************************************************************************************
-# clone project and edit configuration file
+# clone project
 git clone https://github.com/hirooka/chukasa.git
-cd chukasa
-sed -i -e "s/chukasa.recorder-enabled=true/chukasa.recorder-enabled=false/g" src/main/resources/application.properties
-sed -i -e "s/chukasa.epg-access-enabled=true/chukasa.epg-access-enabled=false/g" src/main/resources/application.properties
-sed -i -e "s/chukasa.epg-access-on-boot-enabled=true/chukasa.epg-access-on-boot-enabled=false/g" src/main/resources/application.properties
 
 # build chukasa application
+cd chukasa
 ./gradlew build
 
 # build chukasa Docker image
-docker build -t hirooka/chukasa:0.0.1-SNAPSHOT-NO-DB .
+docker build -t hirooka/chukasa:0.0.1-SNAPSHOT .
 
 # push Docker image
-docker push hirooka/chukasa:0.0.1-SNAPSHOT-NO-DB
+docker push hirooka/chukasa:0.0.1-SNAPSHOT
 
 # create zip file to upload AWS Elastic Beanstalk
 ./gradlew build
