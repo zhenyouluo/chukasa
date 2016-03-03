@@ -84,7 +84,7 @@
 
             <div class="form-group">
                 <label for="chCapture">Physical Channel</label>
-                <select class="form-control" id="fileNameFile" name="fileName">
+                <select class="form-control" id="chCapture" name="ch">
                     <option th:value="${physicalChannelModel.number}" th:text="${physicalChannelModel.name}" th:each="physicalChannelModel : ${physicalChannelModelList}">...</option>
                 </select>
             </div>
