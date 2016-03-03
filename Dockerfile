@@ -94,9 +94,9 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 # nginx
 RUN cd /tmp && \
     apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.9.9.tar.gz && \
-    tar zxvf nginx-1.9.9.tar.gz && \
-    cd nginx-1.9.9 && \
+    wget http://nginx.org/download/nginx-1.9.12.tar.gz && \
+    tar zxvf nginx-1.9.12.tar.gz && \
+    cd nginx-1.9.12 && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
     make && \
     make install
