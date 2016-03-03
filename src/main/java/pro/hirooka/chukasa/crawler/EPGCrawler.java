@@ -42,17 +42,19 @@ public class EPGCrawler {
     @PostConstruct
     public void init(){
 
-        if(chukasaConfiguration.isEpgAccessOnBootEnabled()){
-            LastEPGCrawlerExecuted lastEPGCrawlerExecuted = lastEPGCrawlerExecutedService.read(1);
-            if(lastEPGCrawlerExecuted == null){
-                getEPG();
-            }else{
-                Date date = new Date();
-                long now = date.getTime();
-                long last = lastEPGCrawlerExecuted.getDate();
-                log.info("{}, {}", now, last);
-                if(now - last > chukasaConfiguration.getEpgAccessOnBootIgnoreInterval()){
+        if(chukasaConfiguration.isRecorderEnabled()) {
+            if (chukasaConfiguration.isEpgAccessOnBootEnabled()) {
+                LastEPGCrawlerExecuted lastEPGCrawlerExecuted = lastEPGCrawlerExecutedService.read(1);
+                if (lastEPGCrawlerExecuted == null) {
                     getEPG();
+                } else {
+                    Date date = new Date();
+                    long now = date.getTime();
+                    long last = lastEPGCrawlerExecuted.getDate();
+                    log.info("{}, {}", now, last);
+                    if (now - last > chukasaConfiguration.getEpgAccessOnBootIgnoreInterval()) {
+                        getEPG();
+                    }
                 }
             }
         }
