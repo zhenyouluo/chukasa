@@ -48,11 +48,16 @@ public class IndexController {
         File fileDirectory = new File(systemConfiguration.getFilePath());
         File[] fileArray = fileDirectory.listFiles();
         if(fileArray != null) {
+            String[] videoFileExtensionArray = chukasaConfiguration.getVideoFileExtension();
+            List<String> videoFileExtensionList = Arrays.asList(videoFileExtensionArray);
             for (File file : fileArray) {
-                // TODO filter by extension
-                VideoFileModel videoFileModel = new VideoFileModel();
-                videoFileModel.setName(file.getName());
-                videoFileModelList.add(videoFileModel);
+                for(String videoFileExtension : videoFileExtensionList){
+                   if(file.getName().endsWith("." + videoFileExtension)){
+                       VideoFileModel videoFileModel = new VideoFileModel();
+                       videoFileModel.setName(file.getName());
+                       videoFileModelList.add(videoFileModel);
+                   }
+                }
             }
         }else{
             log.warn("'{}' does not exist.", fileDirectory);
