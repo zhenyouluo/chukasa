@@ -117,7 +117,7 @@ docker pull mongo
 docker run --name some-mongo -d mongo
 
 # run chukasa Docker image with MongoDB Docker image
-docker run --link some-mongo:mongo --privileged --volume /dev/:/dev/ --volume /var/run/pcscd/pcscd.comm:/var/run/pcscd/pcscd.comm -v /opt/chukasa/video:/opt/chukasa/video -p 80:80 -v /etc/localtime:/etc/localtime:ro -it hirooka/chukasa:0.0.1-SNAPSHOT-DOCKER /bin/bash
+docker run --link some-mongo:mongo --privileged --volume /dev/:/dev/ --volume /var/run/pcscd/pcscd.comm:/var/run/pcscd/pcscd.comm -v /opt/chukasa/video:/opt/chukasa/video -p 80:80 -v /etc/localtime:/etc/localtime:ro -it hirooka/chukasa:0.0.1-SNAPSHOT-DB /bin/bash
 
 #*******************************************************************************************************************
 # use chukasa
