@@ -40,7 +40,8 @@ RUN cd /tmp && \
     autoreconf -fiv && \
     ./configure && \
     make && \
-    make install
+    make install && \
+    ldconfig
 
 # FFmpeg 0.11.5
 RUN cd /tmp && \

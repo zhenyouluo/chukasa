@@ -76,7 +76,8 @@ cd /tmp && \
     autoreconf -fiv && \
     ./configure && \
     make -j8 && \
-    sudo make install
+    sudo make install && \
+    sudo ldconfig
 
 #*******************************************************************************************************************
 # FFmpeg 0.11.5
