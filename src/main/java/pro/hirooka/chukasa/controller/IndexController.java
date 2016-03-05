@@ -47,11 +47,15 @@ public class IndexController {
 
         File fileDirectory = new File(systemConfiguration.getFilePath());
         File[] fileArray = fileDirectory.listFiles();
-        for(File file : fileArray){
-            // TODO filter by extension
-            VideoFileModel videoFileModel = new VideoFileModel();
-            videoFileModel.setName(file.getName());
-            videoFileModelList.add(videoFileModel);
+        if(fileArray != null) {
+            for (File file : fileArray) {
+                // TODO filter by extension
+                VideoFileModel videoFileModel = new VideoFileModel();
+                videoFileModel.setName(file.getName());
+                videoFileModelList.add(videoFileModel);
+            }
+        }else{
+            log.warn("'{}' does not exist.", fileDirectory);
         }
 
         model.addAttribute("physicalChannelModelList", physicalChannelModelList);
