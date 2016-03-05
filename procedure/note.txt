@@ -12,3 +12,38 @@ gateway 192.168.x.x
 dns-nameservers 192.168.x.x
 
 sudo ifdown enp2s0 && sudo ifup enp2s0
+
+sudo mkdir /mnt/hdd
+sudo mount /dev/sdb1 /mnt/hdd
+
+
+/******************************
+POST/GET request example
+ ******************************/
+WEB_CAMERA
+curl --header "Content-type: application/json" --request POST --data '{ "adaptiveBitrateStreaming":0, "streamingType":"WEB_CAMERA", "videoBitrate":3000, "videoResolutionType":"HD", "captureResolutionType":"HD", "totalWebCameraLiveduration":300, "audioBitrate":128, "encrypted":true } ' http://localhost:8080/player/start
+
+CAPTURE
+curl --header "Content-type: application/json" --request POST --data '{ "adaptiveBitrateStreaming":0, "streamingType":"CAPTURE", "videoBitrate":3000, "videoResolutionType":"HD", "audioBitrate":128, "ch":20, "encrypted":true } ' http://localhost:8080/player/start
+
+FILE
+curl --header "Content-type: application/json" --request POST --data '{ "adaptiveBitrateStreaming":0, "streamingType":"FILE", "videoBitrate":500, "videoResolutionType":"HD", "audioBitrate":64, "fileName":"now_transcoding.mp4", "encrypted":false } ' http://localhost:8080/player/start
+
+curl http://localhost:8080/player/stop
+curl http://localhost:8080/player/remove
+
+http://localhost:8080/video/?streamingtype=CAPTURE&ch=20&videobitrate=5000&duration=0&encrypted=true
+
+curl --header "Content-type: application/json" --request POST --data '{ "id":0, "ch":20, "genre":"genre", "begin":1449387600000, "end":1449387900000, "start":1449387600000, "stop":1449387900000, "duration":10, "title":"たいとる3", "summury":"さまりー" } ' http://localhost:8080/recorder/
+
+curl --header "Content-type: application/json" --request POST --data '{ "id":0, "ch":20, "beginDate":"20151218234100", "endDate":"20151218234500", "title":"たいとる3", "summury":"さまりー" } ' http://localhost:8080/recorder/
+
+
+/******************************
+ MongoDB memo
+ ******************************/
+// /etc/mongod.conf
+docker run -d -v /var/lib/mongodb --name storage ubuntu true
+docker run -v /var/lib/mongodb:/var/lib/mongodb --name some-mongo -d mongo
+docker run --volumes-from storage --name some-mongo -d mongo
+// sudo apt-get -y install upstart-sysv
