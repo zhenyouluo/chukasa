@@ -115,7 +115,7 @@ public class HTML5PlayerController {
             chukasaModel = chukasaModelManagementComponent.get(0);
 
             String playlistURI = "";
-            if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.USB_CAMERA
+            if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEB_CAMERA
                     || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.CAPTURE){
                 playlistURI = "/"
                         + chukasaModel.getChukasaConfiguration().getStreamRootPathName()
@@ -177,7 +177,7 @@ public class HTML5PlayerController {
             chukasaSettings.setVideoResolutionType(VideoResolutionType.HD);
             chukasaSettings.setCaptureResolutionType(VideoResolutionType.HD);
             chukasaSettings.setAudioBitrate(128);
-            chukasaSettings.setTotalUSBCameraLiveduration(duration);
+            chukasaSettings.setTotalWebCameraLiveduration(duration);
             chukasaSettings.setEncrypted(encrypted);
 
             log.info("ChukasaSettings -> {}", chukasaSettings.toString());

@@ -18,7 +18,7 @@
     <h1>chukasa</h1>
 
 <ul class="nav nav-tabs">
-    <li><a href="#tabUSBCamera" data-toggle="tab">USB Camera</a></li>
+    <li><a href="#tabWebCamera" data-toggle="tab">Web Camera</a></li>
     <li class="active"><a href="#tabCapture" data-toggle="tab">Capture Card</a></li>
     <li><a href="#tabFile" data-toggle="tab">Video File</a></li>
     <li><a href="#tabOkkake" data-toggle="tab">Okkake(EXPERIMENTAL)</a></li>
@@ -26,18 +26,18 @@
 
 <div class="tab-content">
 
-    <!-- USB_CAMERA -->
-    <div class="tab-pane" id="tabUSBCamera">
+    <!-- WEB_CAMERA -->
+    <div class="tab-pane" id="tabWebCamera">
 
         <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
 
-            <input type = "hidden" id = "streamingTypeUSBCamera" name = "streamingType" value = "USB_CAMERA"/>
-            <input type = "hidden" id = "audioBitrateUSBCamera" name = "audioBitrate" value = "128"/>
-            <input type = "hidden" id = "encryptedUSBCamera" name = "encrypted" value = "true"/>
+            <input type = "hidden" id = "streamingTypeWebCamera" name = "streamingType" value = "WEB_CAMERA"/>
+            <input type = "hidden" id = "audioBitrateWebCamera" name = "audioBitrate" value = "128"/>
+            <input type = "hidden" id = "encryptedWebCamera" name = "encrypted" value = "true"/>
 
             <div class="form-group">
-                <label for="captureResolutionTypeUSBCamera">Capture Resolution</label>
-                <select class="form-control" id="captureResolutionTypeUSBCamera" name="captureResolutionType">
+                <label for="captureResolutionTypeWebCamera">Capture Resolution</label>
+                <select class="form-control" id="captureResolutionTypeWebCamera" name="captureResolutionType">
                     <option value="CELLULAR" selected="selected">CELLULAR (400 x 224)</option>
                     <option value="WIFI_LOW">WIFI LOW (640 x 360)</option>
                     <option value="WIFI_HIGH">WIFI HIGH (960 x 540)</option>
@@ -47,8 +47,8 @@
             </div>
 
             <div class="form-group">
-                <label for="videoResolutionTypeUSBCamera">Video Resolution</label>
-                <select class="form-control" id="videoResolutionTypeUSBCamera" name="videoResolutionType">
+                <label for="videoResolutionTypeWebCamera">Video Resolution</label>
+                <select class="form-control" id="videoResolutionTypeWebCamera" name="videoResolutionType">
                     <option value="CELLULAR" selected="selected">CELLULAR (400 x 224)</option>
                     <option value="WIFI_LOW">WIFI LOW (640 x 360)</option>
                     <option value="WIFI_HIGH">WIFI HIGH (960 x 540)</option>
@@ -58,8 +58,8 @@
             </div>
 
             <div class="form-group">
-                <label for="videoBitrateUSBCamera">Video Bitrate [Mbps]</label>
-                <select class="form-control" id="videoBitrateUSBCamera" name="videoBitrate">
+                <label for="videoBitrateWebCamera">Video Bitrate [Mbps]</label>
+                <select class="form-control" id="videoBitrateWebCamera" name="videoBitrate">
                     <option value="100">0.15</option>
                     <option value="200">0.24</option>
                     <option value="400" selected="selected">0.44</option>
@@ -75,8 +75,8 @@
             </div>
 
             <div class="form-group">
-                <label for="totalUSBCameraLivedurationUSBCamera">Live Duration [s]</label>
-                <input type="text" class="form-control" id="totalUSBCameraLivedurationUSBCamera" name="totalUSBCameraLiveduration" value="600"/>
+                <label for="totalWebCameraLivedurationWebCamera">Live Duration [s]</label>
+                <input type="text" class="form-control" id="totalWebCameraLivedurationWebCamera" name="totalWebCameraLiveduration" value="600"/>
             </div>
 
             <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>

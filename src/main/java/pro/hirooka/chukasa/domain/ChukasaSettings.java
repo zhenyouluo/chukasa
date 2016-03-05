@@ -18,7 +18,7 @@ public class ChukasaSettings {
     private VideoResolutionType videoResolutionType;
     private VideoProfileType videoProfileType;
     private VideoResolutionType captureResolutionType;
-    private int totalUSBCameraLiveduration;
+    private int totalWebCameraLiveduration;
 
     private int audioBitrate;
 

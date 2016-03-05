@@ -154,7 +154,7 @@ public class PlayerController {
             chukasaSettings.setVideoResolutionType(VideoResolutionType.HD);
             chukasaSettings.setCaptureResolutionType(VideoResolutionType.HD);
             chukasaSettings.setAudioBitrate(128);
-            chukasaSettings.setTotalUSBCameraLiveduration(duration);
+            chukasaSettings.setTotalWebCameraLiveduration(duration);
             chukasaSettings.setEncrypted(encrypted);
 
             log.info("ChukasaSettings -> {}", chukasaSettings.toString());

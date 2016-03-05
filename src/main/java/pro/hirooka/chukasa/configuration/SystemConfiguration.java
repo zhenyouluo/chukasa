@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "system")
 public class SystemConfiguration {
-    String usbCameraFfmpegPath;
+    String webCameraFfmpegPath;
     String fileFfmpegPath;
     String captureFfmpegPath;
     String captureProgramPath;
-    String usbCameraDeviceName;
+    String webCameraDeviceName;
     String tempPath;
     String filePath;
     int ffmpegThreads;

@@ -38,7 +38,7 @@ var Template = function() { return `<?xml version="1.0" encoding="UTF-8" ?>
 <img src="${this.BASEURL}/images/playlist.png" width="480" height="320" />
 </lockup>
 
-<lockup videoURL="${this.BASEURL}/player/start?streamingtype=USB_CAMERA&amp;ch=20&amp;videobitrate=5000&amp;duration=300&amp;encrypted=true">
+<lockup videoURL="${this.BASEURL}/player/start?streamingtype=WEB_CAMERA&amp;ch=20&amp;videobitrate=5000&amp;duration=300&amp;encrypted=true">
 <img src="${this.BASEURL}/images/20.png" width="480" height="320" />
 </lockup>
 

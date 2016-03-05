@@ -30,7 +30,7 @@ public class ChukasaThreadHandler implements Runnable {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
 
-        if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.USB_CAMERA || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
+        if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEB_CAMERA || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
 
             FFmpegRunner ffmpegRunner = new FFmpegRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
             Thread fThread = new Thread(ffmpegRunner, "__FFmpegRunner__");

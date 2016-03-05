@@ -38,15 +38,15 @@ public class FFmpegRunner implements Runnable {
 
         String[] cmdArray = null;
 
-        if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.USB_CAMERA) {
+        if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEB_CAMERA) {
 
             String[] cmdArrayTemporary = {
 
-                    chukasaModel.getSystemConfiguration().getUsbCameraFfmpegPath(),
+                    chukasaModel.getSystemConfiguration().getWebCameraFfmpegPath(),
                     "-f", "video4linux2",
                     "-s", chukasaModel.getChukasaSettings().getCaptureResolutionType().getName(),
                     "-r", "30",
-                    "-i", chukasaModel.getSystemConfiguration().getUsbCameraDeviceName(),
+                    "-i", chukasaModel.getSystemConfiguration().getWebCameraDeviceName(),
                     "-f", "alsa",
                     "-i", "hw:0,0",
                     "-acodec", "aac", "-strict", "experimental",
@@ -61,7 +61,7 @@ public class FFmpegRunner implements Runnable {
                     "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
                     "-pix_fmt", "yuv420p",
                     "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
-                    "-t", Integer.toString(chukasaModel.getChukasaSettings().getTotalUSBCameraLiveduration()),
+                    "-t", Integer.toString(chukasaModel.getChukasaSettings().getTotalWebCameraLiveduration()),
                     "-f", "mpegts",
                     "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension()
             };
