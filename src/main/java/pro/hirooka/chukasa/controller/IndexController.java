@@ -9,6 +9,7 @@ import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.PhysicalChannelModel;
 import pro.hirooka.chukasa.domain.VideoFileModel;
+import pro.hirooka.chukasa.service.ISystemService;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,15 +24,19 @@ public class IndexController {
 
     private final SystemConfiguration systemConfiguration;
     private final ChukasaConfiguration chukasaConfiguration;
+    private final ISystemService systemService;
 
     @Autowired
-    public IndexController(SystemConfiguration systemConfiguration, ChukasaConfiguration chukasaConfiguration){
+    public IndexController(SystemConfiguration systemConfiguration, ChukasaConfiguration chukasaConfiguration, ISystemService systemService){
         this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
         this.chukasaConfiguration = requireNonNull(chukasaConfiguration, "chukasaConfiguration");
+        this.systemService = requireNonNull(systemService, "systemService");
     }
 
     @RequestMapping("/")
     String index(Model model){
+
+        boolean isWebCamera = systemService.isWebCamera();
 
         Integer[] physicalChannelArray = chukasaConfiguration.getPhysicalChannel();
         List<Integer> physicalChannelList = Arrays.asList(physicalChannelArray);
@@ -63,6 +68,7 @@ public class IndexController {
             log.warn("'{}' does not exist.", fileDirectory);
         }
 
+        model.addAttribute("isWebCamera", isWebCamera);
         model.addAttribute("physicalChannelModelList", physicalChannelModelList);
         model.addAttribute("videoFileModelList", videoFileModelList);
 

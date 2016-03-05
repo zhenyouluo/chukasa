@@ -1,0 +1,6 @@
+package pro.hirooka.chukasa.service;
+
+public interface ISystemService {
+    boolean isWebCamera();
+    String getWebCameraDeviceName();
+}
