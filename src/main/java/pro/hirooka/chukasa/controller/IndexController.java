@@ -71,6 +71,7 @@ public class IndexController {
         model.addAttribute("isWebCamera", isWebCamera);
         model.addAttribute("physicalChannelModelList", physicalChannelModelList);
         model.addAttribute("videoFileModelList", videoFileModelList);
+        model.addAttribute("isRecorder", chukasaConfiguration.isRecorderEnabled());
 
         return "index";
     }
