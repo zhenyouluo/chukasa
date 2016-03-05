@@ -38,7 +38,10 @@
             <div class="form-group">
                 <label for="captureResolutionTypeUSBCamera">Capture Resolution</label>
                 <select class="form-control" id="captureResolutionTypeUSBCamera" name="captureResolutionType">
-                    <option value="HD" selected="selected">HD (1280 x 720)</option>
+                    <option value="CELLULAR" selected="selected">CELLULAR (400 x 224)</option>
+                    <option value="WIFI_LOW">WIFI LOW (640 x 360)</option>
+                    <option value="WIFI_HIGH">WIFI HIGH (960 x 540)</option>
+                    <option value="HD">HD (1280 x 720)</option>
                     <option value="FULL_HD">Full HD (1920 x 1080)</option>
                 </select>
             </div>
@@ -46,7 +49,10 @@
             <div class="form-group">
                 <label for="videoResolutionTypeUSBCamera">Video Resolution</label>
                 <select class="form-control" id="videoResolutionTypeUSBCamera" name="videoResolutionType">
-                    <option value="HD" selected="selected">HD (1280 x 720)</option>
+                    <option value="CELLULAR" selected="selected">CELLULAR (400 x 224)</option>
+                    <option value="WIFI_LOW">WIFI LOW (640 x 360)</option>
+                    <option value="WIFI_HIGH">WIFI HIGH (960 x 540)</option>
+                    <option value="HD">HD (1280 x 720)</option>
                     <option value="FULL_HD">Full HD (1920 x 1080)</option>
                 </select>
             </div>
@@ -54,11 +60,17 @@
             <div class="form-group">
                 <label for="videoBitrateUSBCamera">Video Bitrate [Mbps]</label>
                 <select class="form-control" id="videoBitrateUSBCamera" name="videoBitrate">
-                    <option value="800">0.8</option>
-                    <option value="1500">1.5</option>
-                    <option value="3000">3</option>
-                    <option value="6000" selected="selected">6</option>
-                    <option value="10000">10</option>
+                    <option value="100">0.15</option>
+                    <option value="200">0.24</option>
+                    <option value="400" selected="selected">0.44</option>
+                    <option value="600">0.64</option>
+                    <option value="1200">1.24</option>
+                    <option value="1800">1.84</option>
+                    <option value="2500">2.54</option>
+                    <option value="4500">4.54</option>
+                    <option value="11000">12</option>
+                    <option value="24000">25</option>
+                    <option value="39000">40</option>
                 </select>
             </div>
 
@@ -92,19 +104,28 @@
             <div class="form-group">
                 <label for="videoResolutionTypeCapture">Video Resolution</label>
                 <select class="form-control" id="videoResolutionTypeCapture" name="videoResolutionType">
+                    <option value="CELLULAR" selected="selected">CELLULAR (400 x 224)</option>
+                    <option value="WIFI_LOW">WIFI LOW (640 x 360)</option>
+                    <option value="WIFI_HIGH">WIFI HIGH (960 x 540)</option>
                     <option value="HD">HD (1280 x 720)</option>
-                    <option value="FULL_HD" selected="selected">Full HD (1920 x 1080)</option>
+                    <option value="FULL_HD">Full HD (1920 x 1080)</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="videoBitrateCapture">Video Bitrate [Mbps]</label>
                 <select class="form-control" id="videoBitrateCapture" name="videoBitrate">
-                    <option value="800">0.8</option>
-                    <option value="1500">1.5</option>
-                    <option value="3000">3</option>
-                    <option value="6000" selected="selected">6</option>
-                    <option value="10000">10</option>
+                    <option value="100">0.15</option>
+                    <option value="200">0.24</option>
+                    <option value="400" selected="selected">0.44</option>
+                    <option value="600">0.64</option>
+                    <option value="1200">1.24</option>
+                    <option value="1800">1.84</option>
+                    <option value="2500">2.54</option>
+                    <option value="4500">4.54</option>
+                    <option value="11000">12</option>
+                    <option value="24000">25</option>
+                    <option value="39000">40</option>
                 </select>
             </div>
 
@@ -179,19 +200,28 @@
             <div class="form-group">
                 <label for="videoResolutionTypeFile">Video Resolution</label>
                 <select class="form-control" id="videoResolutionTypeFile" name="videoResolutionType">
+                    <option value="CELLULAR" selected="selected">CELLULAR (400 x 224)</option>
+                    <option value="WIFI_LOW">WIFI LOW (640 x 360)</option>
+                    <option value="WIFI_HIGH">WIFI HIGH (960 x 540)</option>
                     <option value="HD">HD (1280 x 720)</option>
-                    <option value="FULL_HD" selected="selected">Full HD (1920 x 1080)</option>
+                    <option value="FULL_HD">Full HD (1920 x 1080)</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="videoBitrateFile">Video Bitrate [Mbps]</label>
                 <select class="form-control" id="videoBitrateFile" name="videoBitrate">
-                    <option value="800">0.8</option>
-                    <option value="1500">1.5</option>
-                    <option value="3000">3</option>
-                    <option value="6000" selected="selected">6</option>
-                    <option value="10000">10</option>
+                    <option value="100">0.15</option>
+                    <option value="200">0.24</option>
+                    <option value="400" selected="selected">0.44</option>
+                    <option value="600">0.64</option>
+                    <option value="1200">1.24</option>
+                    <option value="1800">1.84</option>
+                    <option value="2500">2.54</option>
+                    <option value="4500">4.54</option>
+                    <option value="11000">12</option>
+                    <option value="24000">25</option>
+                    <option value="39000">40</option>
                 </select>
             </div>
 
@@ -220,19 +250,28 @@
             <div class="form-group">
                 <label for="videoResolutionTypeFile">Video Resolution</label>
                 <select class="form-control" id="videoResolutionTypeOkkake" name="videoResolutionType">
+                    <option value="CELLULAR" selected="selected">CELLULAR (400 x 224)</option>
+                    <option value="WIFI_LOW">WIFI LOW (640 x 360)</option>
+                    <option value="WIFI_HIGH">WIFI HIGH (960 x 540)</option>
                     <option value="HD">HD (1280 x 720)</option>
-                    <option value="FULL_HD" selected="selected">Full HD (1920 x 1080)</option>
+                    <option value="FULL_HD">Full HD (1920 x 1080)</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="videoBitrateFile">Video Bitrate [Mbps]</label>
                 <select class="form-control" id="videoBitrateOkkake" name="videoBitrate">
-                    <option value="800">0.8</option>
-                    <option value="1500">1.5</option>
-                    <option value="3000">3</option>
-                    <option value="6000" selected="selected">6</option>
-                    <option value="10000">10</option>
+                    <option value="100">0.15</option>
+                    <option value="200">0.24</option>
+                    <option value="400" selected="selected">0.44</option>
+                    <option value="600">0.64</option>
+                    <option value="1200">1.24</option>
+                    <option value="1800">1.84</option>
+                    <option value="2500">2.54</option>
+                    <option value="4500">4.54</option>
+                    <option value="11000">12</option>
+                    <option value="24000">25</option>
+                    <option value="39000">40</option>
                 </select>
             </div>
 
