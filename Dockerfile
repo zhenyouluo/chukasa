@@ -5,7 +5,7 @@ MAINTAINER hirooka
 # Package
 RUN apt-get -y update && apt-get -y upgrade
 RUN apt-get -y dist-upgrade
-RUN apt-get -y install build-essential git wget libasound2-dev autoconf libtool pcsc-tools pkg-config libpcsclite-dev
+RUN apt-get -y install build-essential git wget libasound2-dev autoconf libtool pcsc-tools pkg-config libpcsclite-dev unzip
 
 # Lib
 RUN touch /etc/ld.so.conf.d/local.conf
