@@ -107,24 +107,24 @@ cd /tmp && \
 # PT2 driver w/Linux 4.2 patch
 #*******************************************************************************************************************
 cd /tmp && \
-  wget http://hg.honeyplanet.jp/pt1/archive/c8688d7d6382.tar.bz2 && \
-  tar xvlf c8688d7d6382.tar.bz2 && \
-  cd pt1-c8688d7d6382/driver && \
-  git clone https://github.com/hirooka/pt1_for_linux4.2.patch.git && \
-  patch pt1_pci.c < pt1_for_linux4.2.patch/pt1_for_linux4.2.patch && \
-  make && \
-  sudo make install && \
-  sudo modprobe pt1_drv
+    wget http://hg.honeyplanet.jp/pt1/archive/c8688d7d6382.tar.bz2 && \
+    tar xvlf c8688d7d6382.tar.bz2 && \
+    cd pt1-c8688d7d6382/driver && \
+    git clone https://github.com/hirooka/pt1_for_linux4.2.patch.git && \
+    patch pt1_pci.c < pt1_for_linux4.2.patch/pt1_for_linux4.2.patch && \
+    make && \
+    sudo make install && \
+    sudo modprobe pt1_drv
 
 #*******************************************************************************************************************
 # PT3 driver
 #*******************************************************************************************************************
 cd /tmp && \
-  git clone https://github.com/m-tsudo/pt3.git && \
-  cd pt3 && \
-  make && \
-  sudo make install && \
-  sudo modprobe pt3_drv
+    git clone https://github.com/m-tsudo/pt3.git && \
+    cd pt3 && \
+    make && \
+    sudo make install && \
+    sudo modprobe pt3_drv
 
 #*******************************************************************************************************************
 # recpt1
@@ -165,6 +165,7 @@ sudo chown $USER:$USER /opt/chukasa
 mkdir /opt/chukasa/video
 
 # clone project
+cd /tmp
 git clone https://github.com/hirooka/chukasa.git
 
 # build chukasa application and deploy it
