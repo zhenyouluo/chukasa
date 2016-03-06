@@ -79,7 +79,12 @@
                 <input type="text" class="form-control" id="totalWebCameraLivedurationWebCamera" name="totalWebCameraLiveduration" value="600"/>
             </div>
 
-            <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            <span th:if="${isSupported == true}">
+                <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
+            <span th:if="${isSupported == false}">
+                <input class="btn btn-primary disabled" type="button" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
 
         </form>
 
@@ -129,7 +134,12 @@
                 </select>
             </div>
 
-            <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            <span th:if="${isSupported == true}">
+                <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
+            <span th:if="${isSupported == false}">
+                <input class="btn btn-primary disabled" type="button" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
 
         </form>
 
@@ -225,7 +235,12 @@
                 </select>
             </div>
 
-            <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            <span th:if="${isSupported == true}">
+                <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
+            <span th:if="${isSupported == false}">
+                <input class="btn btn-primary disabled" type="button" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
 
         </form>
 
@@ -275,7 +290,12 @@
                 </select>
             </div>
 
-            <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            <span th:if="${isSupported == true}">
+                <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
+            <span th:if="${isSupported == false}">
+                <input class="btn btn-primary disabled" type="button" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
 
         </form>
 
@@ -285,9 +305,15 @@
 
     <hr/>
 
-    <form th:action="@{/video/remove}" method="get">
-        <input class="btn btn-warning" type="submit" value="remove segmented files on server"/>
-    </form>
+    <span th:if="${isSupported == true}">
+        <form th:action="@{/video/remove}" method="get">
+            <input class="btn btn-warning" type="submit" value="Remove segmented files on server"/>
+        </form>
+    </span>
+    <span th:if="${isSupported == false}">
+        <input class="btn btn-warning disabled" type="button" value="Remove segmented files on server"/>
+    </span>
+
 
 </div>
 

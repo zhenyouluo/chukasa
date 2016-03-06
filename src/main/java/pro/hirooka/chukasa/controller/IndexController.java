@@ -11,6 +11,7 @@ import pro.hirooka.chukasa.domain.PhysicalChannelModel;
 import pro.hirooka.chukasa.domain.VideoFileModel;
 import pro.hirooka.chukasa.service.ISystemService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +28,9 @@ public class IndexController {
     private final ISystemService systemService;
 
     @Autowired
+    private HttpServletRequest httpServletRequest;
+
+    @Autowired
     public IndexController(SystemConfiguration systemConfiguration, ChukasaConfiguration chukasaConfiguration, ISystemService systemService){
         this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
         this.chukasaConfiguration = requireNonNull(chukasaConfiguration, "chukasaConfiguration");
@@ -35,6 +39,20 @@ public class IndexController {
 
     @RequestMapping("/")
     String index(Model model){
+
+        // TODO: 正確に判断する
+        boolean isSupported = false;
+        String userAgent = httpServletRequest.getHeader("user-agent");
+        if(userAgent.contains("Mac OS X 10_11") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9"))){
+            isSupported = true;
+            log.info("{}", userAgent);
+        }else if(userAgent.contains("iPhone OS 9") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9"))){
+            isSupported = true;
+            log.info("{}", userAgent);
+        }else if(userAgent.contains("iPad; CPU OS 9") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9"))){
+            isSupported = true;
+            log.info("{}", userAgent);
+        }
 
         boolean isWebCamera = systemService.isWebCamera();
 
@@ -68,6 +86,7 @@ public class IndexController {
             log.warn("'{}' does not exist.", fileDirectory);
         }
 
+        model.addAttribute("isSupported", isSupported);
         model.addAttribute("isWebCamera", isWebCamera);
         model.addAttribute("physicalChannelModelList", physicalChannelModelList);
         model.addAttribute("videoFileModelList", videoFileModelList);
