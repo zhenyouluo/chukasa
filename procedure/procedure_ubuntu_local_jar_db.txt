@@ -84,7 +84,7 @@ cd /tmp && \
 #*******************************************************************************************************************
 cd /tmp && \
     wget https://www.ffmpeg.org/releases/ffmpeg-0.11.5.tar.bz2 && \
-    tar jxvf ffmpeg-0.11.5.tar.gz && \
+    tar jxvf ffmpeg-0.11.5.tar.bz2 && \
     cd ffmpeg-0.11.5 && \
     ./configure --enable-gpl --enable-libx264 --prefix=/usr/local/ffmpeg-0.11.5  && \
     make -j8 && \
