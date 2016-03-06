@@ -137,14 +137,14 @@ public class PlayerController {
             log.warn("cannot start streaming bacause previous one is not finished.");
         }else {
 
-            Map<String, String> env = System.getenv();
-            for(String name : env.keySet()){
-                log.info("{} {}", name, env.get(name));
-                if(name.equals("HOME")){
-                    String filePath = systemConfiguration.getFilePath().replace("$HOME", env.get(name));
-                    systemConfiguration.setFilePath(filePath);
-                }
-            }
+//            Map<String, String> env = System.getenv();
+//            for(String name : env.keySet()){
+//                log.info("{} {}", name, env.get(name));
+//                if(name.equals("HOME")){
+//                    String filePath = systemConfiguration.getFilePath().replace("$HOME", env.get(name));
+//                    systemConfiguration.setFilePath(filePath);
+//                }
+//            }
 
             ChukasaSettings chukasaSettings = new ChukasaSettings();
             chukasaSettings.setAdaptiveBitrateStreaming(0);
