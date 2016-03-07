@@ -18,6 +18,14 @@ sudo mount /dev/sdb1 /mnt/hdd
 
 
 /******************************
+ Web Camera
+ ******************************/
+046d:0821 Logitech, Inc. HD Webcam C910
+046d:0825 Logitech, Inc. Webcam C270
+1e4e:0103 Cubeternet ... (iBUFFALO BSW13K08H)
+
+
+/******************************
 POST/GET request example
  ******************************/
 WEB_CAMERA

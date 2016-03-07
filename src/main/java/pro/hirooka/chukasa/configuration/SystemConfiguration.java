@@ -13,6 +13,7 @@ public class SystemConfiguration {
     String captureFfmpegPath;
     String captureProgramPath;
     String webCameraDeviceName;
+    int webCameraAudioChannel;
     String tempPath;
     String filePath;
     int ffmpegThreads;
