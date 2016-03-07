@@ -1,4 +1,4 @@
-FROM hirooka/chukasa:0.0.1-SNAPSHOT-NO-DB
+FROM hirooka/chukasa:0.0.1-SNAPSHOT
 
 MAINTAINER hirooka
 

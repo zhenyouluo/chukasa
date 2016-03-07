@@ -9,7 +9,7 @@
     },
     {
       "name": "chukasa",
-      "image": "hirooka/chukasa:0.0.1-SNAPSHOT-DOCKER",
+      "image": "hirooka/chukasa:0.0.1-SNAPSHOT-DB",
       "essential": true,
       "memory": 2048,
       "portMappings": [
