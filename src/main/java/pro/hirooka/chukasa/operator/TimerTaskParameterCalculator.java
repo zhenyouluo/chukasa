@@ -41,6 +41,8 @@ public class TimerTaskParameterCalculator implements ITimerTaskParameterCalculat
 
         if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.CAPTURE) {
             timerSegmenterDelay = (long) (duration * 1000 * (uriInPlaylist)) + 1000;
+            timerSegmenterDelay = (long) (duration * 1000);
+            // timerSegmenterDelay = 0;
         }
 
         long timerSegmenterPeriod = (long) (duration * 1000);

@@ -62,6 +62,9 @@ public class ChukasaModel {
     // Remover
     private boolean flagRemoveFile;
 
+    private boolean isTrascoding;
+    private int ffmpegPID;
+
     public ChukasaModel(){
 
         adaptiveBitrateStreaming = 0;
@@ -113,6 +116,9 @@ public class ChukasaModel {
 
         // Remover
         this.flagRemoveFile = false;
+
+        this.isTrascoding = false;
+        this.ffmpegPID = -1;
     }
 
 }
