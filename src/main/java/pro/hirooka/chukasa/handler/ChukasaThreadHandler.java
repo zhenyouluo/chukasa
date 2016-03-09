@@ -36,9 +36,9 @@ public class ChukasaThreadHandler implements Runnable {
             Thread fThread = new Thread(ffmpegRunner, "__FFmpegRunner__");
             fThread.start();
 
-            SegmenterRunner segmenterRunner = new SegmenterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
-            Thread sThread = new Thread(segmenterRunner, "__SegmenterRunner__");
-            sThread.start();
+//            SegmenterRunner segmenterRunner = new SegmenterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+//            Thread sThread = new Thread(segmenterRunner, "__SegmenterRunner__");
+//            sThread.start();
 
             PlaylisterRunner playlisterRunner = new PlaylisterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
             Thread pThread = new Thread(playlisterRunner, "__PlaylisterRunner__");

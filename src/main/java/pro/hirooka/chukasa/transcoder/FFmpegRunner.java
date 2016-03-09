@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pro.hirooka.chukasa.domain.*;
 import pro.hirooka.chukasa.domain.type.StreamingType;
 import pro.hirooka.chukasa.encrypter.Encrypter;
+import pro.hirooka.chukasa.segmenter.SegmenterRunner;
 import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
 
 import java.io.BufferedReader;
@@ -137,10 +138,37 @@ public class FFmpegRunner implements Runnable {
             BufferedReader br = new BufferedReader(isr);
 
             String str = "";
+            boolean isTranscoding = false;
+            boolean isSegmenterStarted = false;
             while((str = br.readLine()) != null){
                 log.info(str);
                 // TODO Input/output error (in use...)
+                if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEB_CAMERA || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
+                    if(str.startsWith("frame=")){
+                        if(!isTranscoding){
+                            isTranscoding = true;
+                            chukasaModel.setTrascoding(isTranscoding);
+                            chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+                            if(!isSegmenterStarted) {
+                                isSegmenterStarted = true;
+                                SegmenterRunner segmenterRunner = new SegmenterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+                                Thread sThread = new Thread(segmenterRunner, "__SegmenterRunner__");
+                                sThread.start();
+                            }
+                        }
+                    }
+                    if(str.startsWith("pid = ")){
+                        String pidString = str.split("pid = ")[1].trim();
+                        int pid = Integer.parseInt(pidString);
+                        chukasaModel.setFfmpegPID(pid);
+                        chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+                    }
+                }
             }
+            isTranscoding = false;
+            chukasaModel.setTrascoding(isTranscoding);
+            chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+            isSegmenterStarted = false;
             br.close();
             isr.close();
             is.close();
