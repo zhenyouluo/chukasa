@@ -33,7 +33,7 @@ dependencies {
     compile 'org.webjars:bootstrap:3.3.6'
     compile 'org.projectlombok:lombok:1.16.6'
     compile 'org.springframework.data:spring-data-mongodb:1.8.4.RELEASE'
-    compile 'org.springframework:springloaded:1.2.5.RELEASE'
+    compile 'org.springframework.boot:spring-boot-devtools'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'commons-io:commons-io:2.4'
     compile 'org.bouncycastle:bcprov-jdk15on:1.54'
