@@ -86,7 +86,8 @@ public class IndexController {
             log.warn("'{}' does not exist.", fileDirectory);
         }
 
-        model.addAttribute("isSupported", isSupported);
+        model.addAttribute("isSupported", true);
+        //model.addAttribute("isSupported", isSupported);
         model.addAttribute("isWebCamera", isWebCamera);
         model.addAttribute("physicalChannelModelList", physicalChannelModelList);
         model.addAttribute("videoFileModelList", videoFileModelList);

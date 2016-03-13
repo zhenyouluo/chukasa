@@ -52,6 +52,7 @@ public class CaptureRunner implements Runnable {
                 "-preset:v", "ultrafast",
                 "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                 "-f", "mpegts",
+                "-x264opts", "keyint=100:min-keyint=100", // TODO: 最適化
                 "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension()
         };
         cmdArray = cmdArrayBase;

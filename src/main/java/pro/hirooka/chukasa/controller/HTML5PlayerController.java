@@ -48,7 +48,7 @@ public class HTML5PlayerController {
     private final ITimerTaskParameterCalculator timerTaskParameterCalculator;
 
     @Autowired
-    private HttpServletRequest request;
+    private HttpServletRequest httpServletRequest;
 
     @Autowired
     public HTML5PlayerController(
@@ -89,6 +89,20 @@ public class HTML5PlayerController {
 //                }
 //            }
 
+            // TODO: 正確に判断する
+            boolean isSupported = false;
+            String userAgent = httpServletRequest.getHeader("user-agent");
+            if(userAgent.contains("Mac OS X 10_11") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9"))){
+                isSupported = true;
+                log.info("{}", userAgent);
+            }else if(userAgent.contains("iPhone OS 9") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9"))){
+                isSupported = true;
+                log.info("{}", userAgent);
+            }else if(userAgent.contains("iPad; CPU OS 9") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9"))){
+                isSupported = true;
+                log.info("{}", userAgent);
+            }
+
             ChukasaModel chukasaModel = new ChukasaModel();
 
             // TODO: adaptive
@@ -99,7 +113,7 @@ public class HTML5PlayerController {
             chukasaModel.setHlsConfiguration(hlsConfiguration);
             chukasaModel.setChukasaSettings(chukasaSettings);
 
-            String streamRootPath = request.getSession().getServletContext().getRealPath("") + chukasaConfiguration.getStreamRootPathName();
+            String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + chukasaConfiguration.getStreamRootPathName();
             chukasaModel.setStreamRootPath(streamRootPath);
 
             chukasaModel = chukasaModelManagementComponent.create(0, chukasaModel);
@@ -142,7 +156,12 @@ public class HTML5PlayerController {
             html5PlayerModel.setPlaylistURI(playlistURI);
             model.addAttribute("html5PlayerModel", html5PlayerModel);
 
-            return "player";
+            if(isSupported){
+                return "player";
+            }else{
+                return chukasaConfiguration.getAlternativeHlsPlayer() + "-player";
+            }
+
         }
 
         return null;
@@ -193,7 +212,7 @@ public class HTML5PlayerController {
             chukasaModel.setChukasaSettings(chukasaSettings);
             chukasaModel.setPlaylistType(PlaylistType.EVENT);
 
-            String streamRootPath = request.getSession().getServletContext().getRealPath("") + chukasaConfiguration.getStreamRootPathName();
+            String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + chukasaConfiguration.getStreamRootPathName();
             chukasaModel.setStreamRootPath(streamRootPath);
 
             chukasaModel = chukasaModelManagementComponent.create(0, chukasaModel);
@@ -241,7 +260,7 @@ public class HTML5PlayerController {
         if(chukasaModelManagementComponent.get().size() > 0){
             log.warn("cannot remove files bacause streaming is not finished.");
         }else {
-            String streamRootPath = request.getSession().getServletContext().getRealPath("") + chukasaConfiguration.getStreamRootPathName();
+            String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + chukasaConfiguration.getStreamRootPathName();
             if(Files.exists(new File(streamRootPath).toPath())) {
                 ChukasaRemover chukasaRemover = new ChukasaRemover(streamRootPath, systemConfiguration);
                 chukasaRemover.remove();
