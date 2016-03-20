@@ -70,13 +70,16 @@ public class Segmenter extends TimerTask {
             chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
             int countPacket = 0;
+            boolean isPAT = false;
             boolean flagFirstPCR = false;
+            boolean isElapsed = false;
+            boolean isNextPAT = false;
 
             int ch;
             loop:
             while ((ch = bis.read(buf)) != -1) {
 
-                countPacket++;
+                //countPacket++;
                 String syncWordString = String.format("%02x", buf[0]).toUpperCase();
 
                 if (flagCreateFile) {
@@ -128,7 +131,58 @@ public class Segmenter extends TimerTask {
                     }
                 }
 
-                bos.write(buf, 0, buf.length);
+                int payloadUnitStartIndicator = ((buf[1] >>> 6) & 0x01);
+                int pid = ((buf[1] << 8) & 0x1f00 | buf[2]);
+                if((payloadUnitStartIndicator == 1) && (pid == 0)){
+                    isPAT = true;
+                    if(isElapsed){
+                        isNextPAT = true;
+                    }
+                }
+
+                if(isNextPAT){
+
+                    chukasaModel.setDiffPcrSecond(chukasaModel.getLastPcrSecond().subtract(chukasaModel.getInitPcrSecond()).subtract(new BigDecimal(Double.toString(segmentedTsDuration))));
+                    chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+
+                    log.info("[chukasaModel.getInitPcrSecond()] {}", chukasaModel.getInitPcrSecond());
+                    log.info("[chukasaModel.getLastPcrSecond()] {}", chukasaModel.getLastPcrSecond());
+                    log.info("[chukasaModel.getDiffPcrSecond()] {}", chukasaModel.getDiffPcrSecond());
+                    log.info("[Double.toString(DURATION))] {}", new BigDecimal(Double.toString(segmentedTsDuration)));
+
+                    bos.close();
+                    f.close();
+
+                    //chukasaModel.setSeqTsEnc(seqTs - 1);
+                    chukasaModel.setSeqTsEnc(seqTs);
+                    chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+
+                    if(chukasaModel.getChukasaSettings().getStreamingType() != StreamingType.OKKAKE) {
+                        // process after spliting MPEG2-TS
+                        if (chukasaModel.getChukasaSettings().isEncrypted()) {
+                            Encrypter encrypter = new Encrypter(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+                            Thread thread = new Thread(encrypter);
+                            thread.start();
+                        }
+                    }else{
+                        chukasaModel.setSeqTsOkkake(chukasaModel.getSeqTsEnc());
+                        chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+                        FFmpegRunner fFmpegRunner = new FFmpegRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+                        Thread thread = new Thread(fFmpegRunner);
+                        thread.start();
+                    }
+
+                    flagCreateFile = true;
+                    chukasaModel.setFlagSegFullDuration(true);
+                    chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+
+                    break loop;
+                }
+
+                if(isPAT) {
+                    bos.write(buf, 0, buf.length);
+                }
+                countPacket++;
 
                 boolean flagAFE = false; // Adaptation Field
                 boolean flagPCR = false;
@@ -184,8 +238,10 @@ public class Segmenter extends TimerTask {
                         // if readDuration crosses DURATION to be segmented, Output segmented ts (close OutputStream)
                         if (Double.parseDouble(readDuration.toString()) >= segmentedTsDuration) {
 
+                            isElapsed = true;
+
                             chukasaModel.setLastPcrSecond(pcrSec);
-                            chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+                            chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);/*
                             chukasaModel.setDiffPcrSecond(chukasaModel.getLastPcrSecond().subtract(chukasaModel.getInitPcrSecond()).subtract(new BigDecimal(Double.toString(segmentedTsDuration))));
                             chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
@@ -220,7 +276,7 @@ public class Segmenter extends TimerTask {
                             chukasaModel.setFlagSegFullDuration(true);
                             chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
-                            break loop;
+                            break loop;*/
                         }
 
                     } // if flagPCR
