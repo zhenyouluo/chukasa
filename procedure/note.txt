@@ -55,3 +55,90 @@ docker run -d -v /var/lib/mongodb --name storage ubuntu true
 docker run -v /var/lib/mongodb:/var/lib/mongodb --name some-mongo -d mongo
 docker run --volumes-from storage --name some-mongo -d mongo
 // sudo apt-get -y install upstart-sysv
+
+
+---
+hls-js-player.html
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>hls.js</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap-theme.min.css}"/>
+    <style>
+        video {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <script src="/js/clappr/dist/clappr.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+
+<script src="/js/hlsjs/hls.js"></script>
+<video id="video"></video>
+
+    <div id="player"></div>
+    <script th:inline="javascript">
+        var m3u8 = [[${html5PlayerModel.PlaylistURI}]];
+        console.log(m3u8);
+        var player = new Clappr.Player({source: m3u8, parentId: "#player"});
+    </script>
+
+</div>
+
+<div class="container">
+    <form th:action="@{/video/stop}" method="get">
+        <input class="btn btn-warning" type="submit" value="stop transcoding"/>
+    </form>
+</div>
+
+</body>
+</html>
+
+---
+videojs-player.html
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap-theme.min.css}"/>
+    <style>
+        video {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <link href="/js/videojs/dist/video-js.css" rel="stylesheet" />
+    <script src="/js/videojs/dist/video.js"></script>
+    <script src="/js/videojs-contrib-hls/node_modules/videojs-contrib-media-sources/dist/videojs-media-sources.js"></script>
+    <script src="/js/videojs-contrib-hls/dist/videojs.hls.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <video id="player" class="video-js vjs-default-skin" height="1000" width="1000" controls="controls" autoplay="autoplay">
+            <source th:src="${html5PlayerModel.PlaylistURI}" type="application/x-mpegURL" />
+        </video>
+        <form th:action="@{/video/stop}" method="get">
+            <input class="btn btn-warning" type="submit" value="stop transcoding"/>
+        </form>
+    </div>
+    <script>
+        var player = videojs('player');
+        player.play();
+    </script>
+</body>
+</html>
