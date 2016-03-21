@@ -16,10 +16,10 @@
     <h1>chukasa</h1>
 
 <ul class="nav nav-tabs">
-    <li th:if="${isWebCamera == true}"><a href="#tabWebCamera" data-toggle="tab">Web Camera</a></li>
     <li class="active"><a href="#tabCapture" data-toggle="tab">Capture Card</a></li>
     <li><a href="#tabFile" data-toggle="tab">Video File</a></li>
     <li th:if="${isRecorder == true}"><a href="#tabOkkake" data-toggle="tab">Okkake(EXPERIMENTAL)</a></li>
+    <li th:if="${isWebCamera == true}"><a href="#tabWebCamera" data-toggle="tab">Web Camera</a></li>
 </ul>
 
 <div class="tab-content">
