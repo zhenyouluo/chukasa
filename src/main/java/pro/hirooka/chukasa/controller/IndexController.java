@@ -52,6 +52,9 @@ public class IndexController {
         }else if(userAgent.contains("iPad; CPU OS 9") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9"))){
             isSupported = true;
             log.info("{}", userAgent);
+        }else if(userAgent.contains("Windows") && userAgent.contains("Edge/")){
+            isSupported = true;
+            log.info("{}", userAgent);
         }
 
         boolean isWebCamera = systemService.isWebCamera();
