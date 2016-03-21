@@ -73,10 +73,8 @@ Native
 
 via MediaElement.js
 
-* Google Chrome
-* Internet Explorer
-* Firefox
-* Opera
+* Google Chrome 49 (OS X 11.10, Ubuntu 15.10, Windows 10)
+* Internet Explorer 11 (Windows 10)
 
 # Run Anywhere
 
