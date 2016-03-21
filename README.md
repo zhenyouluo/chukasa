@@ -64,7 +64,7 @@ Access server IP address or FQDN via HTTP.
 
 Support cross-platform (OS X, iOS, tvOS, Linux and Windows)
 
-Native
+Native HLS
 
 * Safari (OX 11.10, iOS 9)
 * iOS App (chukasa-ios) [https://github.com/hirooka/chukasa-ios](https://github.com/hirooka/chukasa-ios)
