@@ -31,7 +31,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
     compile 'org.webjars:bootstrap:3.3.6'
-    compile 'org.projectlombok:lombok:1.16.6'
+    compile 'org.projectlombok:lombok:1.16.8'
     compile 'org.springframework.data:spring-data-mongodb:1.8.4.RELEASE'
     compile 'org.springframework.boot:spring-boot-devtools'
     compile 'org.apache.commons:commons-lang3:3.4'

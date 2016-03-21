@@ -1,10 +1,10 @@
 # chukasa 
 
-Web camera, video file, PT2 and PT3 HTTP Live Streaming (HLS) Server for OS X, iOS and tvOS
+Web camera, video file, PT2 and PT3 HTTP Live Streaming (HLS) Server for OS X, iOS, tvOS, Linux and Windows
 
 [![Build Status](https://travis-ci.org/hirooka/chukasa.svg?branch=master)](https://travis-ci.org/hirooka/chukasa) [![Build Status](https://circleci.com/gh/hirooka/chukasa.png?style=shield)](https://circleci.com/gh/hirooka/chukasa)
 
-# 1. Overview
+# Overview
 
 * Web camera real-time transcoding and streaming
 * Video file transcoding and streaming
@@ -12,18 +12,75 @@ Web camera, video file, PT2 and PT3 HTTP Live Streaming (HLS) Server for OS X, i
 * PT2 / PT3 recording (EXPERIMENTAL)
 * PT2 / PT3 追っかけ再生 (EXPERIMENTAL)
 
-# 2. Client
+# Quick Start on Docker
 
-* OX 11.10 Safari
-* iOS 9 Safari
+## 1. Requirement
+
+Mandatory
+
+* Linux computer
+* Java 8
+* Docker 1.10
+
+Option
+
+* PT2 / PT3 environment (for PT2/PT3 streaming)
+* Web camera (for web camera streaming)
+
+## 2. Build & Run on Docker
+
+Create direcory for application
+
+    sudo mkdir /opt/chukasa
+    sudo chown $USER:$USER /opt/chukasa
+    mkdir /opt/chukasa/video
+
+Clone project
+
+    cd /tmp
+    git clone https://github.com/hirooka/chukasa.git
+
+Build application
+
+    cd chukasa
+    ./gradlew build
+
+Build chukasa Docker image
+
+    docker build -t <yourName>/chukasa:0.0.1-SNAPSHOT .
+
+
+Run application on Docker
+
+    docker run --privileged --volume /dev/:/dev/ --volume /var/run/pcscd/pcscd.comm:/var/run/pcscd/pcscd.comm -v /opt/chukasa/video:/opt/chukasa/video -p 80:80 -v /etc/localtime:/etc/localtime:ro -it <yourName>/chukasa:0.0.1-SNAPSHOT /bin/bash
+
+## 3. Usage
+
+When you want to do video file streaming, put video file(s) to /opt/chukasa/video.  
+
+Access server IP address or FQDN via HTTP.
+
+## 4. Client
+
+Support cross-platform (OS X, iOS, tvOS, Linux and Windows)
+
+Native
+
+* Safari (OX 11.10, iOS 9)
 * iOS App (chukasa-ios) [https://github.com/hirooka/chukasa-ios](https://github.com/hirooka/chukasa-ios)
 * tvOS (play video via AirPlay)
+* Microsoft Edge (Windows 10)
 
-# 3. Server Installation
+via MediaElement.js
 
-Ubuntu, Docker, AWS Elastic Beanstalk といった様々な環境で動作します．  
+* Google Chrome
+* Internet Explorer
+* Firefox
+* Opera
 
-## Examples of use
+# Run Anywhere
+
+Ubuntu, Docker and AWS Elastic Beanstalk
 
 |   | Streaming only<br>(Runnable jar) | Streaming and Recording<br>(Runnable jar + MongoDB) |
 |:---:|:---:|:---:|
@@ -32,18 +89,3 @@ Ubuntu, Docker, AWS Elastic Beanstalk といった様々な環境で動作しま
 | AWS Elastic Beanstalk<br>(Java) | [procedure](procedure/procedure_aws_elastic_beanstalk_jar.txt) | N/A |
 | AWS Elastic Beanstalk<br>(Docker) | [procedure](procedure/procedure_aws_elastic_beanstalk_docker_jar.txt) | N/A |
 | AWS Elastic Beanstalk<br>(Multi-container Docker) | N/A | [procedure](procedure/procedure_aws_elastic_beanstalk_multi_container_docker_jar_db.txt) |
-
-
-# 4. Server Requirements
-
-## 4.1. Software
-
-* Ubuntu 15.10
-* Oracle Java 8
-* Docker 1.10.0 (アプリケーションを Docker で実行する場合）
-* PT2 driver or PT3 driver (PT2/PT3 ストリーミングを行う場合)
-* Web camera (Web camera ストリーミングを行う場合) 
-
-## 4.1. Hardware
-
-* TBD
