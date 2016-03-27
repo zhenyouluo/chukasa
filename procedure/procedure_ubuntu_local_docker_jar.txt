@@ -64,7 +64,7 @@ cd /tmp && \
     sudo modprobe pt3_drv
 
 #*******************************************************************************************************************
-# Docker
+# Docker 1.10.x
 #*******************************************************************************************************************
 sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
 sudo touch /etc/apt/sources.list.d/docker.list
@@ -75,7 +75,7 @@ sudo apt-get -y install docker-engine
 sudo usermod -aG docker $USER
 
 #*******************************************************************************************************************
-# Java 8
+# Java 8 (1.8.0_x)
 #*******************************************************************************************************************
 sudo apt-get -y install python-software-properties software-properties-common
 sudo sh -c "echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | debconf-set-selections"

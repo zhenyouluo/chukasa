@@ -55,12 +55,12 @@ cd /tmp && \
     sudo ldconfig
 
 #*******************************************************************************************************************
-# x264 (0.148.x (20160305-2245-stable))
+# x264 (0.148.x (x264-snapshot-20160326-2245-stable))
 #*******************************************************************************************************************
 cd /tmp && \
-    wget http://download.videolan.org/pub/x264/snapshots/x264-snapshot-20160305-2245-stable.tar.bz2 && \
-    tar xjvf x264-snapshot-20160305-2245-stable.tar.bz2 && \
-    cd x264-snapshot-20160305-2245-stable && \
+    wget http://download.videolan.org/pub/x264/snapshots/x264-snapshot-20160326-2245-stable.tar.bz2 && \
+    tar xjvf x264-snapshot-20160326-2245-stable.tar.bz2 && \
+    cd x264-snapshot-20160326-2245-stable && \
     ./configure --enable-shared && \
     make -j8 && \
     sudo make install && \
@@ -92,7 +92,7 @@ cd /tmp && \
     sudo ldconfig
 
 #*******************************************************************************************************************
-# FFmpeg (3.0)
+# FFmpeg 3.0
 #*******************************************************************************************************************
 cd /tmp && \
     wget https://www.ffmpeg.org/releases/ffmpeg-3.0.tar.bz2 && \
@@ -146,7 +146,7 @@ cd /tmp && \
     sudo make install
 
 #*******************************************************************************************************************
-# Java 8 (1.8.0_74)
+# Java 8 (1.8.0_x)
 #*******************************************************************************************************************
 sudo apt-get -y install python-software-properties software-properties-common
 sudo sh -c "echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | debconf-set-selections"

@@ -22,11 +22,11 @@ RUN cd /tmp && \
     make install && \
     ldconfig
 
-# x264 0.148.x (20160305-2245-stable)
+# x264 0.148.x (20160326-2245-stable)
 RUN cd /tmp && \
-    wget http://download.videolan.org/pub/x264/snapshots/x264-snapshot-20160305-2245-stable.tar.bz2 && \
-    tar xjvf x264-snapshot-20160305-2245-stable.tar.bz2 && \
-    cd x264-snapshot-20160305-2245-stable && \
+    wget http://download.videolan.org/pub/x264/snapshots/x264-snapshot-20160326-2245-stable.tar.bz2  && \
+    tar xjvf x264-snapshot-20160326-2245-stable.tar.bz2 && \
+    cd x264-snapshot-20160326-2245-stable && \
     ./configure --enable-shared && \
     make && \
     make install && \
@@ -93,7 +93,7 @@ RUN apt-get -y update
 RUN apt-get -y install oracle-java8-installer
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
-# nginx
+# nginx 1.9.12
 RUN cd /tmp && \
     apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
     wget http://nginx.org/download/nginx-1.9.12.tar.gz && \
