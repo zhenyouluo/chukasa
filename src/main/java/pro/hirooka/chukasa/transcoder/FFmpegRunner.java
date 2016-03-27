@@ -64,7 +64,7 @@ public class FFmpegRunner implements Runnable {
                     "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                     "-t", Integer.toString(chukasaModel.getChukasaSettings().getTotalWebCameraLiveduration()),
                     "-f", "mpegts",
-                    "-x264opts", "keyint=30:min-keyint=30",
+                    "-x264opts", "keyint=10:min-keyint=10",
                     "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension()
             };
             cmdArray = cmdArrayTemporary;
@@ -87,7 +87,7 @@ public class FFmpegRunner implements Runnable {
                     "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
                     "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                     "-f", "mpegts",
-                    "-x264opts", "keyint=30:min-keyint=30",
+                    "-x264opts", "keyint=10:min-keyint=10",
                     "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension()
             };
             cmdArray = cmdArrayTemporary;
@@ -112,7 +112,7 @@ public class FFmpegRunner implements Runnable {
                         "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
                         "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                         "-f", "mpegts",
-                        "-x264opts", "keyint=30:min-keyint=30",
+                        "-x264opts", "keyint=10:min-keyint=10",
                         "-y", chukasaModel.getTempEncPath() + FILE_SEPARATOR + "fileSequenceEncoded" + seqCapturedTimeShifted + chukasaModel.getHlsConfiguration().getStreamExtension() // TODO
                 };
                 cmdArray = cmdArrayTemporary;
