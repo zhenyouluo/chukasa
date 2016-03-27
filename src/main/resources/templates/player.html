@@ -17,7 +17,7 @@
 </head>
 <body>
     <div class="container">
-        <video th:src="${html5PlayerModel.PlaylistURI}" height="2880" width="5120" controls="controls" autoplay="autoplay"></video>
+        <video th:src="${html5PlayerModel.PlaylistURI}" height="2880" width="5120" controls="controls" autoplay="autoplay" type="application/x-mpegURL"></video>
         <form th:action="@{/video/stop}" method="get">
             <input class="btn btn-warning" type="submit" value="stop transcoding"/>
         </form>
