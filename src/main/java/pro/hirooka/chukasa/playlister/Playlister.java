@@ -110,7 +110,8 @@ public class Playlister extends TimerTask {
                                 bw.write("\"" + "" + chukasaModel.getKeyArrayList().get(i) + i + ".key\"" + ",IV=0x");
                                 bw.write(chukasaModel.getIvArrayList().get(i));
                                 bw.newLine();
-                                bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
+                                //bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
+                                bw.write("#EXTINF:" + chukasaModel.getExtinfList().get(i) + ",");
                                 bw.newLine();
                                 bw.write(chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + i + chukasaModel.getHlsConfiguration().getStreamExtension());
                                 bw.newLine();
@@ -167,7 +168,8 @@ public class Playlister extends TimerTask {
                                 bw.write("\"" + "" + chukasaModel.getKeyArrayList().get(i) + i + ".key\"" + ",IV=0x");
                                 bw.write(chukasaModel.getIvArrayList().get(i));
                                 bw.newLine();
-                                bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
+                                //bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
+                                bw.write("#EXTINF:" + chukasaModel.getExtinfList().get(i) + ",");
                                 bw.newLine();
                                 bw.write(chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + i + chukasaModel.getHlsConfiguration().getStreamExtension());
                                 bw.newLine();
@@ -261,7 +263,8 @@ public class Playlister extends TimerTask {
 
                         if (playlistType == PlaylistType.LIVE) {
                             for (int i = 0 ; i < sequenceTs + 1; i++) {
-                                bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
+                                //bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
+                                bw.write("#EXTINF:" + chukasaModel.getExtinfList().get(i) + ",");
                                 bw.newLine();
                                 bw.write(chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + i + chukasaModel.getHlsConfiguration().getStreamExtension());
                                 bw.newLine();
@@ -310,7 +313,8 @@ public class Playlister extends TimerTask {
                         if (playlistType == PlaylistType.LIVE) {
                             initSeqPl = initSeqPl - (uriInPlaylist - 1);
                             for (int i = initSeqPl; i < (initSeqPl + uriInPlaylist); i++) {
-                                bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
+                                //bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
+                                bw.write("#EXTINF:" + chukasaModel.getExtinfList().get(i) + ",");
                                 bw.newLine();
                                 bw.write(chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + i + chukasaModel.getHlsConfiguration().getStreamExtension());
                                 bw.newLine();

@@ -8,6 +8,7 @@ import pro.hirooka.chukasa.domain.type.PlaylistType;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class ChukasaModel {
@@ -43,6 +44,9 @@ public class ChukasaModel {
     private BigDecimal lastPcrSecond;
     private BigDecimal diffPcrSecond;
     private BigDecimal lastPcrSec;
+    private double duration;
+    private List<Double> extinfList;
+    private BigDecimal nextInit;
 
     // Encrypter
     private ArrayList<String> keyArrayList;
@@ -98,6 +102,9 @@ public class ChukasaModel {
         this.lastPcrSecond = new BigDecimal("0.0");
         this.diffPcrSecond = new BigDecimal("0.0");
         this.lastPcrSec = new BigDecimal("0.0");
+        this.duration = 0;
+        this.extinfList = new ArrayList<>();
+        this.nextInit = new BigDecimal("0.0");
 
         // Encrypter
         keyArrayList = new ArrayList<>();
