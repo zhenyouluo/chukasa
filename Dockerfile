@@ -10,7 +10,6 @@ RUN apt-get -y install build-essential git wget libasound2-dev autoconf libtool 
 # Lib
 RUN touch /etc/ld.so.conf.d/local.conf
 RUN echo '/usr/local/lib' >> /etc/ld.so.conf.d/local.conf
-RUN echo '/usr/local/ffmpeg-0.11.5/lib' >> /etc/ld.so.conf.d/local.conf
 
 # Yasm 1.3.0
 RUN cd /tmp && \
@@ -22,43 +21,22 @@ RUN cd /tmp && \
     make install && \
     ldconfig
 
-# x264 0.148.x (20160326-2245-stable)
+# x264 0.148.x (20160328-2245-stable)
 RUN cd /tmp && \
-    wget http://download.videolan.org/pub/x264/snapshots/x264-snapshot-20160326-2245-stable.tar.bz2  && \
-    tar xjvf x264-snapshot-20160326-2245-stable.tar.bz2 && \
-    cd x264-snapshot-20160326-2245-stable && \
+    wget http://download.videolan.org/pub/x264/snapshots/x264-snapshot-20160328-2245-stable.tar.bz2  && \
+    tar xjvf x264-snapshot-20160328-2245-stable.tar.bz2 && \
+    cd x264-snapshot-20160328-2245-stable && \
     ./configure --enable-shared && \
     make && \
     make install && \
     ldconfig
 
-# Fraunhofer FDK AAC 0.14
+# FFmpeg 3.0.1
 RUN cd /tmp && \
-    wget https://github.com/mstorsjo/fdk-aac/archive/v0.1.4.zip && \
-    unzip v0.1.4.zip && \
-    cd fdk-aac-0.1.4 && \
-    autoreconf -fiv && \
-    ./configure && \
-    make && \
-    make install && \
-    ldconfig
-
-# FFmpeg 0.11.5
-RUN cd /tmp && \
-    wget https://www.ffmpeg.org/releases/ffmpeg-0.11.5.tar.bz2 && \
-    tar jxvf ffmpeg-0.11.5.tar.bz2 && \
-    cd ffmpeg-0.11.5 && \
-    ./configure --enable-gpl --enable-libx264 --prefix=/usr/local/ffmpeg-0.11.5  && \
-    make -j8 && \
-    make install && \
-    ldconfig
-
-# FFmpeg 3.0
-RUN cd /tmp && \
-    wget https://www.ffmpeg.org/releases/ffmpeg-3.0.tar.bz2 && \
-    tar jxvf ffmpeg-3.0.tar.bz2 && \
-    cd ffmpeg-3.0 && \
-    ./configure --enable-gpl --enable-libx264 --enable-libfdk-aac --enable-nonfree --enable-shared && \
+    wget https://www.ffmpeg.org/releases/ffmpeg-3.0.1.tar.bz2 && \
+    tar jxvf ffmpeg-3.0.1.tar.bz2 && \
+    cd ffmpeg-3.0.1 && \
+    ./configure --enable-gpl --enable-libx264 && \
     make -j8 && \
     make install && \
     ldconfig
