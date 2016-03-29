@@ -8,9 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "system")
 public class SystemConfiguration {
-    String webCameraFfmpegPath;
-    String fileFfmpegPath;
-    String captureFfmpegPath;
+    String ffmpegPath;
     String captureProgramPath;
     String webCameraDeviceName;
     int webCameraAudioChannel;

@@ -43,15 +43,15 @@ public class FFmpegRunner implements Runnable {
 
             String[] cmdArrayTemporary = {
 
-                    chukasaModel.getSystemConfiguration().getWebCameraFfmpegPath(),
+                    chukasaModel.getSystemConfiguration().getFfmpegPath(),
                     "-f", "video4linux2",
                     "-s", chukasaModel.getChukasaSettings().getCaptureResolutionType().getName(),
-                    "-r", "30",
+                    //"-r", "30",
                     "-i", chukasaModel.getSystemConfiguration().getWebCameraDeviceName(),
                     "-f", "alsa",
                     "-ac", Integer.toString(chukasaModel.getSystemConfiguration().getWebCameraAudioChannel()),
                     "-i", "hw:0,0",
-                    "-acodec", "aac", "-strict", "experimental",
+                    "-acodec", "aac",
                     "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
                     "-ar", "44100",
                     "-s", chukasaModel.getChukasaSettings().getVideoResolutionType().getName(),
@@ -73,9 +73,9 @@ public class FFmpegRunner implements Runnable {
 
             String[] cmdArrayTemporary = {
 
-                    chukasaModel.getSystemConfiguration().getFileFfmpegPath(),
+                    chukasaModel.getSystemConfiguration().getFfmpegPath(),
                     "-i", chukasaModel.getSystemConfiguration().getFilePath() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName(),
-                    "-acodec", "libfdk_aac",
+                    "-acodec", "aac",
                     "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
                     "-ac", "2",
                     "-ar", "44100",
@@ -98,9 +98,9 @@ public class FFmpegRunner implements Runnable {
 
                 String[] cmdArrayTemporary = {
 
-                        chukasaModel.getSystemConfiguration().getFileFfmpegPath(),
+                        chukasaModel.getSystemConfiguration().getFfmpegPath(),
                         "-i", chukasaModel.getTempEncPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqCapturedTimeShifted + chukasaModel.getHlsConfiguration().getStreamExtension(),
-                        "-acodec", "libfdk_aac",
+                        "-acodec", "aac",
                         "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
                         "-ac", "2",
                         "-ar", "44100",
