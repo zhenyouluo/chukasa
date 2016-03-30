@@ -12,4 +12,6 @@ public interface IProgramInformationRepository extends MongoRepository<ProgramIn
     // ex. {$and:[{'ch':{$eq:123}},{'beginDate':{$regex:/^201512/}}]}
     @Query("{$and:[{'ch':{$eq:?0}},{'beginDate':{$regex:?1}}]}")
     List<ProgramInformation> findAllByChAndBeginDateLike(int ch, String beginDate);
+
+    List<ProgramInformation> findAllByBeginDate(String beginDate);
 }
