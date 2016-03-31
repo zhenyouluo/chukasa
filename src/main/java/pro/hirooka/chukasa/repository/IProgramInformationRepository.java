@@ -14,4 +14,10 @@ public interface IProgramInformationRepository extends MongoRepository<ProgramIn
     List<ProgramInformation> findAllByChAndBeginDateLike(int ch, String beginDate);
 
     List<ProgramInformation> findAllByBeginDate(String beginDate);
+
+    @Query("{$and:[{'ch':{$eq:?0}},{'begin':{$lte:?1}},{'end':{$gte:?1}}]}")
+    ProgramInformation findOneNowByChAndNowLike(int ch, long now);
+
+    @Query("{$and:[{'begin':{$lte:?0}},{'end':{$gte:?0}}]}")
+    List<ProgramInformation> findAllNowByChAndNowLike(long now);
 }

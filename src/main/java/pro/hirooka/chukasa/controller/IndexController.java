@@ -8,13 +8,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.PhysicalChannelModel;
+import pro.hirooka.chukasa.domain.ProgramInformation;
 import pro.hirooka.chukasa.domain.VideoFileModel;
+import pro.hirooka.chukasa.service.IProgramTableService;
 import pro.hirooka.chukasa.service.ISystemService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -26,15 +30,17 @@ public class IndexController {
     private final SystemConfiguration systemConfiguration;
     private final ChukasaConfiguration chukasaConfiguration;
     private final ISystemService systemService;
+    private final IProgramTableService programTableService;
 
     @Autowired
     private HttpServletRequest httpServletRequest;
 
     @Autowired
-    public IndexController(SystemConfiguration systemConfiguration, ChukasaConfiguration chukasaConfiguration, ISystemService systemService){
+    public IndexController(SystemConfiguration systemConfiguration, ChukasaConfiguration chukasaConfiguration, ISystemService systemService, IProgramTableService programTableService){
         this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
         this.chukasaConfiguration = requireNonNull(chukasaConfiguration, "chukasaConfiguration");
         this.systemService = requireNonNull(systemService, "systemService");
+        this.programTableService = requireNonNull(programTableService, ".programTableService");
     }
 
     @RequestMapping("/")
@@ -89,12 +95,21 @@ public class IndexController {
             log.warn("'{}' does not exist.", fileDirectory);
         }
 
+        boolean isRecorder = chukasaConfiguration.isRecorderEnabled();
+        List<ProgramInformation> programInformationList = new ArrayList<>();
+        if(isRecorder){
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddhhmm");
+            String nowString = simpleDateFormat.format(new Date());
+            programInformationList = programTableService.readNow(Long.parseLong(nowString));
+        }
+
         model.addAttribute("isSupported", true);
         //model.addAttribute("isSupported", isSupported);
         model.addAttribute("isWebCamera", isWebCamera);
         model.addAttribute("physicalChannelModelList", physicalChannelModelList);
         model.addAttribute("videoFileModelList", videoFileModelList);
-        model.addAttribute("isRecorder", chukasaConfiguration.isRecorderEnabled());
+        model.addAttribute("isRecorder", isRecorder);
+        model.addAttribute("programInformationList", programInformationList);
 
         return "index";
     }

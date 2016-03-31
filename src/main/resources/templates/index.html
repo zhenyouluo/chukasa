@@ -16,6 +16,7 @@
     <h1>chukasa</h1>
 
 <ul class="nav nav-tabs">
+    <li th:if="${isRecorder == true}"><a href="#tabNow" data-toggle="tab">Now</a></li>
     <li class="active"><a href="#tabCapture" data-toggle="tab">Capture Card</a></li>
     <li><a href="#tabFile" data-toggle="tab">Video File</a></li>
     <li th:if="${isRecorder == true}"><a href="#tabOkkake" data-toggle="tab">Okkake(EXPERIMENTAL)</a></li>
@@ -23,6 +24,63 @@
 </ul>
 
 <div class="tab-content">
+
+    <!-- Now -->
+
+    <div class="tab-pane" id="tabNow">
+
+        <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
+
+            <input type = "hidden" id = "streamingTypeNow" name = "streamingType" value = "CAPTURE"/>
+            <input type = "hidden" id = "audioBitrateNow" name = "audioBitrate" value = "128"/>
+            <input type = "hidden" id = "encryptedNow" name = "encrypted" value = "true"/>
+
+            <div class="form-group">
+                <label for="chCapture">Physical Channel</label>
+                <select class="form-control" id="chNow" name="ch">
+                    <option th:value="${programInformation.ch}" th:text="${programInformation.title}" th:each="programInformation : ${programInformationList}">...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="videoResolutionTypeNow">Video Resolution</label>
+                <select class="form-control" id="videoResolutionTypeNow" name="videoResolutionType">
+                    <option value="CELLULAR" selected="selected">CELLULAR (400 x 224)</option>
+                    <option value="WIFI_LOW">WIFI LOW (640 x 360)</option>
+                    <option value="WIFI_HIGH">WIFI HIGH (960 x 540)</option>
+                    <option value="HD">HD (1280 x 720)</option>
+                    <option value="FULL_HD">Full HD (1920 x 1080)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="videoBitrateNow">Video Bitrate [Mbps]</label>
+                <select class="form-control" id="videoBitrateNow" name="videoBitrate">
+                    <option value="100">0.15</option>
+                    <option value="200">0.24</option>
+                    <option value="400" selected="selected">0.44</option>
+                    <option value="600">0.64</option>
+                    <option value="1200">1.24</option>
+                    <option value="1800">1.84</option>
+                    <option value="2500">2.54</option>
+                    <option value="4500">4.54</option>
+                    <option value="11000">12</option>
+                    <option value="24000">25</option>
+                    <option value="39000">40</option>
+                </select>
+            </div>
+
+            <span th:if="${isSupported == true}">
+                <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
+            <span th:if="${isSupported == false}">
+                <input class="btn btn-primary disabled" type="button" value="Start HTTP Live Streaming (HLS)"/>
+                <p>Only Safari (iOS 9 or OS X 10.11) is supported.</p>
+            </span>
+
+        </form>
+
+    </div>
 
     <!-- WEB_CAMERA -->
     <div class="tab-pane" id="tabWebCamera">

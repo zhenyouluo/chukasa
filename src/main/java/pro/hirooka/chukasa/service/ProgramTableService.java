@@ -42,8 +42,18 @@ public class ProgramTableService implements IProgramTableService {
     }
 
     @Override
+    public List<ProgramInformation> readNow(long now) {
+        return programInformationRepository.findAllNowByChAndNowLike(now);
+    }
+
+    @Override
     public ProgramInformation read(long id) {
         return programInformationRepository.findOne(id);
+    }
+
+    @Override
+    public ProgramInformation readNow(int ch, long now) {
+        return programInformationRepository.findOneNowByChAndNowLike(ch, now);
     }
 
     @Override

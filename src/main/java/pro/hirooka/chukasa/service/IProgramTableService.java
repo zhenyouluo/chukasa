@@ -10,7 +10,9 @@ public interface IProgramTableService {
     List<ProgramInformation> read(int ch);
     List<ProgramInformation> read(String beginDate);
     List<ProgramInformation> read(int ch, String beginDate);
+    List<ProgramInformation> readNow(long now);
     ProgramInformation read(long id);
+    ProgramInformation readNow(int ch, long now);
     ProgramInformation update(ProgramInformation programInformation);
     void delete(long id);
     void deleteAll();
