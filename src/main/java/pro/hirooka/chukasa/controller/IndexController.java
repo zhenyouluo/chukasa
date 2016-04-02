@@ -63,6 +63,8 @@ public class IndexController {
             log.info("{}", userAgent);
         }
 
+        boolean isPTx = systemService.isPTx();
+
         boolean isWebCamera = systemService.isWebCamera();
 
         Integer[] physicalChannelArray = chukasaConfiguration.getPhysicalChannel();
@@ -105,6 +107,7 @@ public class IndexController {
 
         model.addAttribute("isSupported", true);
         //model.addAttribute("isSupported", isSupported);
+        model.addAttribute("isPTx", isPTx);
         model.addAttribute("isWebCamera", isWebCamera);
         model.addAttribute("physicalChannelModelList", physicalChannelModelList);
         model.addAttribute("videoFileModelList", videoFileModelList);

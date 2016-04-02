@@ -31,4 +31,14 @@ public class SystemService implements ISystemService {
     public String getWebCameraDeviceName() {
         return systemConfiguration.getWebCameraDeviceName();
     }
+
+    @Override
+    public boolean isPTx() {
+        File pt2 = new File("/dev/pt1video0");
+        File pt3 = new File("/dev/pt3video0");
+        if(pt2.exists() || pt3.exists()){
+            return false;
+        }
+        return false;
+    }
 }
