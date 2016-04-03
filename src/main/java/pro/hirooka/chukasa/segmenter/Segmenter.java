@@ -34,8 +34,8 @@ public class Segmenter extends TimerTask {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
 
-//        long[] infoReadData = readPCR(chukasaModel.getReadBytes(), chukasaModel.getSeqTs());
-        long[] infoReadData = readDTS(chukasaModel.getReadBytes(), chukasaModel.getSeqTs());
+        long[] infoReadData = readPCR(chukasaModel.getReadBytes(), chukasaModel.getSeqTs());
+//        long[] infoReadData = readDTS(chukasaModel.getReadBytes(), chukasaModel.getSeqTs());
         chukasaModel.setReadBytes(infoReadData[0]);
         chukasaModel.setSeqTs((int) infoReadData[1]);
         chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
@@ -723,6 +723,12 @@ public class Segmenter extends TimerTask {
                 }
 
                 if(isNextPAT){
+
+                    double duration = (double)chukasaModel.getHlsConfiguration().getDuration();
+                    List<Double> extinfList = chukasaModel.getExtinfList();
+                    extinfList.add(duration);
+                    chukasaModel.setExtinfList(extinfList);
+                    chukasaModel.setDuration(duration);
 
                     chukasaModel.setDiffPcrSecond(chukasaModel.getLastPcrSecond().subtract(chukasaModel.getInitPcrSecond()).subtract(new BigDecimal(Double.toString(segmentedTsDuration))));
                     chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
