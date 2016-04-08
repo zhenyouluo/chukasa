@@ -34,13 +34,14 @@ public class Segmenter extends TimerTask {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
 
-        long[] infoReadData = readPCR(chukasaModel.getReadBytes(), chukasaModel.getSeqTs());
-//        long[] infoReadData = readDTS(chukasaModel.getReadBytes(), chukasaModel.getSeqTs());
+//        long[] infoReadData = readPCR(chukasaModel.getReadBytes(), chukasaModel.getSeqTs());
+        long[] infoReadData = readDTS(chukasaModel.getReadBytes(), chukasaModel.getSeqTs());
         chukasaModel.setReadBytes(infoReadData[0]);
         chukasaModel.setSeqTs((int) infoReadData[1]);
         chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
     }
 
+    // NOTE; VOD では問題ないが，EVENT で Segment の先頭で再生が一時的に止まるケースがあり，解決できていない
     long[] readDTS(long readByteInput, int seqTsInput){
 
         List<byte []> temporaryBufList = new ArrayList<>();
@@ -182,7 +183,10 @@ public class Segmenter extends TimerTask {
                     chukasaModel.setExtinfList(extinfList);
                     chukasaModel.setDuration(duration);
 
+                    bos.flush();
                     bos.close();
+                    bis.close();
+                    fis.close();
                     f.close();
 
                     chukasaModel.setSeqTsEnc(seqTs);
@@ -262,19 +266,19 @@ public class Segmenter extends TimerTask {
                                     int sectionLength = (buf[6] << 8 & 0x300 | buf[7]) & 0x2ff;
 
                                     if(sectionLength > 1021){
-                                        break;
+                                        //break;
                                     }
 
                                     // PAT は 1 パケット単位のみ見るという制限．
                                     // section_length が 1021 byte 以下であっても 180 byte (188 - 8) より大きい場合は
                                     // プログラム側の都合でエラーとする．
                                     if(sectionLength > 180){
-                                        break;
+                                        //break;
                                     }
 
                                     int numberOfPID = (sectionLength - 9) / 4; // 5byte(transport_stream_id, reserved, version_number, current_next_indicator, section_number, last_section_number) + 4byte(CRC32)
                                     if(((sectionLength - 9) % 4) != 0){
-                                        break;
+                                        //break;
                                     }
 
                                     int i = 0;
@@ -287,13 +291,13 @@ public class Segmenter extends TimerTask {
                                     flagPMTExists = true;
 
                                 }else{
-                                    break;
+                                    //break;
                                 } // if First two bits of Section Length
                             }else{
-                                break;
+                                //break;
                             } // if Syntax Indicator, 0, Reserved
                         }else{
-                            break;
+                            //break;
                         } // if table_id
                     }
 
@@ -317,14 +321,14 @@ public class Segmenter extends TimerTask {
                                     int sectionLength = (buf[6] << 8 & 0x300 | buf[7]) & 0x2ff;
 
                                     if(sectionLength > 1021){
-                                        break;
+                                        //break;
                                     }
 
                                     // PMT は 1 パケット単位のみ見るという制限．
                                     // section_length が 1021 byte 以下であっても 180 byte (188 - 8) より大きい場合は
                                     // プログラム側の都合でエラーとする．
                                     if(sectionLength > 180){
-                                        break;
+                                        //break;
                                     }
 
                                     // section_length が 180 以下で 176 より大きい場合は CRC が無いとみなす．
@@ -355,13 +359,13 @@ public class Segmenter extends TimerTask {
                                         readPMT = readPMT + 5 + esInfoLength;
                                     }
                                 }else{
-                                    break;
+                                    //break;
                                 } // if First two bits of Senction Length
                             }else{
-                                break;
+                                //break;
                             } // if Syntax Indicator, 0, Reserved
                         }else{
-                            break;
+                            //break;
                         } // if table_id
                         flagPMT = false;
                     }
@@ -408,6 +412,8 @@ public class Segmenter extends TimerTask {
                     if(((payloadUnitStartIndicator == 1) && flagPayloadOnly) || ((payloadUnitStartIndicator == 1) && flagAdaptationFieldAndPayload)){
                         if((pid != 0)){
 
+                            boolean isVideo = false;
+
                             //int readPes = 4; //TS_PACKET_HEADER_LENGTH
                             int readPES = 4 + adaptationFieldLength;
                             while(readPES < (mpeg2TsPacketLength - 4)){ //TS_PACKET_HEADER_LENGTH
@@ -422,8 +428,10 @@ public class Segmenter extends TimerTask {
                                     if((192 <= streamID) && (streamID <= 239)){
                                         if((192 <= streamID) && (streamID <= 223)){ // 0xC0=192 0xDF=223 Audio
                                             //log.info("{}, {}, {}, PES start code (Audo), {}, {}", countPacket, countPacket*mpeg2TsPacketLength, pid, streamID, streamIDHex);
+                                            break ;
                                         }else if((224 <= streamID) && (streamID <= 239)){ // 0xE0=224 0xEF=239 Video
                                             //log.info("{}, {}, {}, PES start code (Video), {}, {}", countPacket, countPacket*mpeg2TsPacketLength, pid, streamID, streamIDHex);
+                                            isVideo = true;
                                         }
                                     }
 
@@ -437,114 +445,117 @@ public class Segmenter extends TimerTask {
                                         break;
                                     }
 
-                                    // Optional PES Header
-                                    int pesHeaderMarkerBits = buf[readPES + 6] >> 6 & 0x3 & 0xff;
+                                    if(isVideo) {
 
-                                    if((192 <= streamID) && (streamID <= 239)){   // 0xC0=192 0xDF=223 0xE0=224 0xEF=239
-                                        if((192 <= streamID) && (streamID <= 223)){ // 0xC0=192 0xDF=223
-                                        }else if((224 <= streamID) && (streamID <= 239)){ // 0xE0=224 0xEF=239
-                                        }
+                                        // Optional PES Header
+                                        int pesHeaderMarkerBits = buf[readPES + 6] >> 6 & 0x3 & 0xff;
 
-                                        if(pesHeaderMarkerBits == 2){
+                                        if ((192 <= streamID) && (streamID <= 239)) {   // 0xC0=192 0xDF=223 0xE0=224 0xEF=239
+                                            if ((192 <= streamID) && (streamID <= 223)) { // 0xC0=192 0xDF=223
+                                            } else if ((224 <= streamID) && (streamID <= 239)) { // 0xE0=224 0xEF=239
+                                            }
 
-                                            int ptsDTSIndicator = buf[readPES + 7] >> 6 & 0x3 & 0xff;
+                                            if (pesHeaderMarkerBits == 2) {
 
-                                            int pesHeaderLength = buf[readPES + 8] & 0xff;
+                                                int ptsDTSIndicator = buf[readPES + 7] >> 6 & 0x3 & 0xff;
 
-                                            // PTS のみ存在する．
-                                            if(ptsDTSIndicator == 2){
-                                                long ptsLong =
-                                                        (((buf[readPES + 9] >>> 1) & 0x7 & 0xff) * 1073741824) +
-                                                                ((buf[readPES + 10] & 0xff) * 4194304) +
-                                                                (((buf[readPES + 11] >>> 1) & 0x7f & 0xff) * 32768) +
-                                                                ((buf[readPES + 12] & 0xff) * 128) +
-                                                                ((buf[readPES + 13] >>> 1) & 0x7f & 0xff);
-                                                double pts = new BigDecimal(ptsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
-                                                //log.info("{}, {}, PTS, {}, {}, {}, {}", countPacket, countPacket*mpeg2TsPacketLength, Long.toBinaryString(ptsLong), Long.toHexString(ptsLong), ptsLong, String.format("%.4f", pts));
-                                                if(pesPacketLength != 0){
-                                                    readPES = readPES + pesPacketLength;
-                                                }else{
-                                                    readPES = readPES + 14;
-                                                }
+                                                int pesHeaderLength = buf[readPES + 8] & 0xff;
 
-                                                // PTS, DTS 両方が存在する．
-                                            }else if(ptsDTSIndicator == 3){
-                                                long ptsLong =
-                                                        (((buf[readPES + 9] >>> 1) & 0x7 & 0xff) * 1073741824) +
-                                                                ((buf[readPES + 10] & 0xff) * 4194304) +
-                                                                (((buf[readPES + 11] >>> 1) & 0x7f & 0xff) * 32768) +
-                                                                ((buf[readPES + 12] & 0xff) * 128) +
-                                                                ((buf[readPES + 13] >>> 1) & 0x7f & 0xff);
-                                                double pts = new BigDecimal(ptsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
-                                                //log.info("{}, {}, PTS, {}, {}, {}, {}", countPacket, countPacket*mpeg2TsPacketLength, Long.toBinaryString(ptsLong), Long.toHexString(ptsLong), ptsLong, String.format("%.4f", pts));
-                                                long dtsLong =
-                                                        (((buf[readPES + 14] >>> 1) & 0x7 & 0xff) * 1073741824) +
-                                                                ((buf[readPES + 15] & 0xff) * 4194304) +
-                                                                (((buf[readPES + 16] >>> 1) & 0x7f & 0xff) * 32768) +
-                                                                ((buf[readPES + 17] & 0xff) * 128) +
-                                                                ((buf[readPES + 18] >>> 1) & 0x7f & 0xff);
-                                                double dts = new BigDecimal(dtsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
-                                                log.info("{}, {}, DTS, {}, {}, {}, {}", countPacket, countPacket*mpeg2TsPacketLength, Long.toBinaryString(dtsLong), Long.toHexString(dtsLong), dtsLong, String.format("%.4f", dts));
+                                                // PTS のみ存在する．
+                                                if (ptsDTSIndicator == 2) {
+                                                    long ptsLong =
+                                                            (((buf[readPES + 9] >>> 1) & 0x7 & 0xff) * 1073741824) +
+                                                                    ((buf[readPES + 10] & 0xff) * 4194304) +
+                                                                    (((buf[readPES + 11] >>> 1) & 0x7f & 0xff) * 32768) +
+                                                                    ((buf[readPES + 12] & 0xff) * 128) +
+                                                                    ((buf[readPES + 13] >>> 1) & 0x7f & 0xff);
+                                                    double pts = new BigDecimal(ptsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+                                                    //log.info("{}, {}, PTS, {}, {}, {}, {}", countPacket, countPacket*mpeg2TsPacketLength, Long.toBinaryString(ptsLong), Long.toHexString(ptsLong), ptsLong, String.format("%.4f", pts));
 
-                                                BigDecimal pcrSec = new BigDecimal(dtsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP);
-                                                chukasaModel.setLastPcrSec(pcrSec);
-                                                chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+                                                    break;
 
-                                                if (!flagFirstPCR) {
+                                                    // PTS, DTS 両方が存在する．
+                                                } else if (ptsDTSIndicator == 3) {
+                                                    long ptsLong =
+                                                            (((buf[readPES + 9] >>> 1) & 0x7 & 0xff) * 1073741824) +
+                                                                    ((buf[readPES + 10] & 0xff) * 4194304) +
+                                                                    (((buf[readPES + 11] >>> 1) & 0x7f & 0xff) * 32768) +
+                                                                    ((buf[readPES + 12] & 0xff) * 128) +
+                                                                    ((buf[readPES + 13] >>> 1) & 0x7f & 0xff);
+                                                    double pts = new BigDecimal(ptsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+                                                    log.info("{}, {}, PTS, {}, {}, {}, {}", countPacket, countPacket*mpeg2TsPacketLength, Long.toBinaryString(ptsLong), Long.toHexString(ptsLong), ptsLong, String.format("%.4f", pts));
 
-                                                    //if (seqTs == 1) {
-                                                    if (seqTs == 0) {
-                                                        chukasaModel.setInitPcrSecond(pcrSec);
-                                                        chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-                                                        flagFirstPCR = true;
-                                                    } else {
-                                                        //chukasaModel.setInitPcrSecond(chukasaModel.getLastPcrSecond().subtract(chukasaModel.getDiffPcrSecond()));
-                                                        chukasaModel.setInitPcrSecond(chukasaModel.getNextInit());
-                                                        chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-                                                        flagFirstPCR = true;
+                                                    long dtsLong =
+                                                            (((buf[readPES + 14] >>> 1) & 0x7 & 0xff) * 1073741824) +
+                                                                    ((buf[readPES + 15] & 0xff) * 4194304) +
+                                                                    (((buf[readPES + 16] >>> 1) & 0x7f & 0xff) * 32768) +
+                                                                    ((buf[readPES + 17] & 0xff) * 128) +
+                                                                    ((buf[readPES + 18] >>> 1) & 0x7f & 0xff);
+                                                    double dts = new BigDecimal(dtsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+                                                    log.info("{}, {}, DTS, {}, {}, {}, {}", countPacket, countPacket * mpeg2TsPacketLength, Long.toBinaryString(dtsLong), Long.toHexString(dtsLong), dtsLong, String.format("%.4f", dts));
+
+                                                    BigDecimal pcrSec = new BigDecimal(dtsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP);
+                                                    chukasaModel.setLastPcrSec(pcrSec);
+                                                    chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+
+                                                    if (!flagFirstPCR) {
+
+                                                        //if (seqTs == 1) {
+                                                        if (seqTs == 0) {
+                                                            log.info("######################## init DTS {}", pcrSec);
+                                                            chukasaModel.setInitPcrSecond(pcrSec);
+                                                            chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+                                                            flagFirstPCR = true;
+                                                        } else {
+                                                            log.info("######################## init DTS {}", pcrSec);
+                                                            //chukasaModel.setInitPcrSecond(chukasaModel.getLastPcrSecond().subtract(chukasaModel.getDiffPcrSecond()));
+                                                            chukasaModel.setInitPcrSecond(chukasaModel.getNextInit());
+                                                            chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+                                                            flagFirstPCR = true;
+                                                        }
                                                     }
-                                                }
 
-                                                // Calculate time that has been read before
-                                                BigDecimal readDuration = null;
-                                                readDuration = pcrSec.subtract(chukasaModel.getInitPcrSecond());
+                                                    // Calculate time that has been read before
+                                                    BigDecimal readDuration = null;
+                                                    readDuration = pcrSec.subtract(chukasaModel.getInitPcrSecond());
 
-                                                if (countPacket - pmtPosition == 1 && countPacket - patPosition == 2) {
-                                                    canSegment = true;
-                                                }
-
-                                                if (Double.parseDouble(readDuration.toString()) >= segmentedTsDuration && canSegment) {
-                                                    isElapsed = true;
-                                                }
-
-                                                if(!isElapsed){
                                                     if (countPacket - pmtPosition == 1 && countPacket - patPosition == 2) {
-                                                        toBeSegmentedPostion = countPacket - 2;
-                                                        chukasaModel.setNextInit(new BigDecimal(dtsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP));
-                                                        chukasaModel.setLastPcrSecond(new BigDecimal(dtsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP));
-                                                        double duration = new BigDecimal(dtsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP).subtract(chukasaModel.getInitPcrSecond()).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
-                                                        chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
                                                         canSegment = true;
+                                                    }else{
+                                                        canSegment = false;
                                                     }
-                                                }
 
-                                                if(pesPacketLength != 0){
-                                                    readPES = readPES + pesPacketLength;
-                                                }else{
-                                                    readPES = readPES + 18;
-                                                    for(int y = 0; y < (155); y++){
+                                                    if (Double.parseDouble(readDuration.toString()) >= segmentedTsDuration && canSegment) {
+                                                        isElapsed = true;
                                                     }
-                                                    readPES = readPES + mpeg2TsPacketLength; // while PES packet からの追い出し
+
+                                                    if (!isElapsed) {
+                                                        if (countPacket - pmtPosition == 1 && countPacket - patPosition == 2) {
+                                                            toBeSegmentedPostion = countPacket - 2;
+                                                            chukasaModel.setNextInit(new BigDecimal(dtsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP));
+                                                            chukasaModel.setLastPcrSecond(new BigDecimal(dtsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP));
+                                                            double duration = new BigDecimal(dtsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP).subtract(chukasaModel.getInitPcrSecond()).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+                                                            chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+                                                            canSegment = true;
+                                                            log.info("canChange");
+                                                        }else{
+                                                            canSegment = false;
+                                                        }
+                                                    }
+
+                                                    break;
                                                 }
                                             }
-                                        }
+                                        } else {
+                                            if (pesPacketLength != 0) {
+                                                readPES = readPES + pesPacketLength;
+                                            } else {
+                                                readPES = readPES + mpeg2TsPacketLength; // while PES packet からの追い出し
+                                            }
+                                        } // if streamid
                                     }else{
-                                        if(pesPacketLength != 0){
-                                            readPES = readPES + pesPacketLength;
-                                        }else{
-                                            readPES = readPES + mpeg2TsPacketLength; // while PES packet からの追い出し
-                                        }
-                                    } // if streamid
+                                        break;
+                                    }
                                 } // if start bit
                                 readPES = readPES + 1;
                             } // while PES packet
@@ -553,11 +564,15 @@ public class Segmenter extends TimerTask {
 
                     if(!isElapsed) {
                         if(canSegment) {
-                            for(byte[] b : temporaryBufList){
-                                bos.write(b, 0, b.length);
+                            for(int i = 0; i < temporaryBufList.size() - 2; i ++){
+                                bos.write(temporaryBufList.get(i), 0, temporaryBufList.get(i).length);
                             }
+                            byte[] bufNextPAT = Arrays.copyOf(temporaryBufList.get(temporaryBufList.size() - 2), temporaryBufList.get(temporaryBufList.size() - 2).length);
+                            byte[] bufNextPMT = Arrays.copyOf(temporaryBufList.get(temporaryBufList.size() - 1), temporaryBufList.get(temporaryBufList.size() - 1).length);
                             temporaryBufList = new ArrayList<>();
                             byte[] bufDeep = Arrays.copyOf(buf, buf.length);
+                            temporaryBufList.add(bufNextPAT);
+                            temporaryBufList.add(bufNextPMT);
                             temporaryBufList.add(bufDeep);
                             canSegment = false;
                         }else {
@@ -574,6 +589,7 @@ public class Segmenter extends TimerTask {
 
             } // loop : while
 
+            bos.flush();
             bos.close();
             bis.close();
             fis.close();
