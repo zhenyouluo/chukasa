@@ -30,32 +30,60 @@ public class CaptureRunner implements Runnable {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
 
+        boolean isQSV = chukasaModel.getSystemConfiguration().isQuickSyncVideoEnabled();
+
         String[] cmdArray = null;
 
-        String[] cmdArrayBase = {
-                chukasaModel.getSystemConfiguration().getCaptureProgramPath(),
-                "--b25", "--strip",
-                Integer.toString(chukasaModel.getChukasaSettings().getCh()),
-                "-", "-",
-                "|",
-                chukasaModel.getSystemConfiguration().getFfmpegPath(),
-                "-i", "-",
-                "-acodec", "aac",
-                "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
-                "-ar", "44100",
-                "-ac", "2",
-                "-s", chukasaModel.getChukasaSettings().getVideoResolutionType().getName(),
-                "-vcodec", "libx264",
-                "-profile:v", "high",
-                "-level", "4.2",
-                "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate()+"k",
-                "-preset:v", "superfast",
-                "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
-                "-f", "mpegts",
-                "-x264opts", "keyint=10:min-keyint=10",
-                "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension()
-        };
-        cmdArray = cmdArrayBase;
+        // TODO: seiri
+        if(isQSV){
+            String[] cmdArrayBase =  {
+                    chukasaModel.getSystemConfiguration().getCaptureProgramPath(),
+                    "--b25", "--strip",
+                    Integer.toString(chukasaModel.getChukasaSettings().getCh()),
+                    "-", "-",
+                    "|",
+                    chukasaModel.getSystemConfiguration().getFfmpegPath(),
+                    "-i", "-",
+                    "-acodec", "aac",
+                    "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
+                    "-ar", "44100",
+                    "-ac", "2",
+                    "-s", chukasaModel.getChukasaSettings().getVideoResolutionType().getName(),
+                    "-vcodec", "h264_qsv",
+                    "-profile:v", "high",
+                    "-level", "4.2",
+                    "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate()+"k",
+                    "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
+                    "-f", "mpegts",
+                    "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension()
+            };
+            cmdArray = cmdArrayBase;
+        }else{
+            String[] cmdArrayBase = {
+                    chukasaModel.getSystemConfiguration().getCaptureProgramPath(),
+                    "--b25", "--strip",
+                    Integer.toString(chukasaModel.getChukasaSettings().getCh()),
+                    "-", "-",
+                    "|",
+                    chukasaModel.getSystemConfiguration().getFfmpegPath(),
+                    "-i", "-",
+                    "-acodec", "aac",
+                    "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
+                    "-ar", "44100",
+                    "-ac", "2",
+                    "-s", chukasaModel.getChukasaSettings().getVideoResolutionType().getName(),
+                    "-vcodec", "libx264",
+                    "-profile:v", "high",
+                    "-level", "4.2",
+                    "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate()+"k",
+                    "-preset:v", "superfast",
+                    "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
+                    "-f", "mpegts",
+                    "-x264opts", "keyint=10:min-keyint=10",
+                    "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension()
+            };
+            cmdArray = cmdArrayBase;
+        }
 
         String cmd = "";
         for(int i = 0; i < cmdArray.length; i++){

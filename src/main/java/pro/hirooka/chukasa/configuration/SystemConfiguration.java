@@ -15,4 +15,5 @@ public class SystemConfiguration {
     String tempPath;
     String filePath;
     int ffmpegThreads;
+    boolean quickSyncVideoEnabled;
 }
