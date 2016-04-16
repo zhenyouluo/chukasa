@@ -151,7 +151,12 @@ sed -i -e "s/csystem.quick-sync-video-enabled=false/system.quick-sync-video-enab
 cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
 
 sudo touch /etc/sysconfig/chukasa
+# use "centos/etc/sysconfig/chukasa"
+# or
 sudo sh -c "echo 'JAVA_HOME=\"/usr/java/default\"' >> /etc/sysconfig/chukasa"
+sudo sh -c "echo 'LIBVA_DRIVER_NAME=\"iHD\"' >> /etc/sysconfig/chukasa"
+sudo sh -c "echo 'MFX_HOME=\"/opt/intel/mediasdk\"' >> /etc/sysconfig/chukasa"
+sudo sh -c "echo 'LIBVA_DRIVERS_PATH=\"/opt/intel/mediasdk/lib64\"' >> /etc/sysconfig/chukasa"
 
 sudo touch /etc/systemd/system/chukasa.service
 # use "centos/systemd/chukasa.service"
