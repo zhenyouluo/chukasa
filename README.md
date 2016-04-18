@@ -87,3 +87,9 @@ Ubuntu, Docker and AWS Elastic Beanstalk
 | AWS Elastic Beanstalk<br>(Java) | [procedure](procedure/procedure_aws_elastic_beanstalk_jar.txt) | N/A |
 | AWS Elastic Beanstalk<br>(Docker) | [procedure](procedure/procedure_aws_elastic_beanstalk_docker_jar.txt) | N/A |
 | AWS Elastic Beanstalk<br>(Multi-container Docker) | N/A | [procedure](procedure/procedure_aws_elastic_beanstalk_multi_container_docker_jar_db.txt) |
+
+# QSV Support
+
+QSV support on CentOS 7.1
+
+[procedure example](procedure/procedure_centos_qsv_local_jar.txt)
