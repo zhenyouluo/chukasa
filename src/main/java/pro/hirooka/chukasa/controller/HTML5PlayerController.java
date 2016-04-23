@@ -116,6 +116,14 @@ public class HTML5PlayerController {
             chukasaModel.setHlsConfiguration(hlsConfiguration);
             chukasaModel.setChukasaSettings(chukasaSettings);
 
+            String encodingSettings = chukasaModel.getChukasaSettings().getEncodingSettingsType().getName();
+            String videoResolution = encodingSettings.split("-")[0];
+            int videoBitrate = Integer.parseInt(encodingSettings.split("-")[1]);
+            int audioBitrate = Integer.parseInt(encodingSettings.split("-")[2]);
+            chukasaModel.getChukasaSettings().setVideoResolution(videoResolution);
+            chukasaModel.getChukasaSettings().setVideoBitrate(videoBitrate);
+            chukasaModel.getChukasaSettings().setAudioBitrate(audioBitrate);
+
             String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + chukasaConfiguration.getStreamRootPathName();
             chukasaModel.setStreamRootPath(streamRootPath);
 
@@ -196,8 +204,8 @@ public class HTML5PlayerController {
             chukasaSettings.setStreamingType(streamingtype);
             chukasaSettings.setCh(ch);
             chukasaSettings.setVideoBitrate(videobitrate);
-            chukasaSettings.setVideoResolutionType(VideoResolutionType.HD);
-            chukasaSettings.setCaptureResolutionType(VideoResolutionType.HD);
+            //chukasaSettings.setVideoResolutionType(VideoResolutionType.HD);
+            //chukasaSettings.setCaptureResolutionType(VideoResolutionType.HD);
             chukasaSettings.setAudioBitrate(128);
             chukasaSettings.setTotalWebCameraLiveduration(duration);
             chukasaSettings.setEncrypted(encrypted);

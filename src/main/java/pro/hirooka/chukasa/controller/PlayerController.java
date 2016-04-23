@@ -151,8 +151,8 @@ public class PlayerController {
             chukasaSettings.setStreamingType(streamingtype);
             chukasaSettings.setCh(ch);
             chukasaSettings.setVideoBitrate(videobitrate);
-            chukasaSettings.setVideoResolutionType(VideoResolutionType.HD);
-            chukasaSettings.setCaptureResolutionType(VideoResolutionType.HD);
+            //chukasaSettings.setVideoResolutionType(VideoResolutionType.HD);
+            //chukasaSettings.setCaptureResolutionType(VideoResolutionType.HD);
             chukasaSettings.setAudioBitrate(128);
             chukasaSettings.setTotalWebCameraLiveduration(duration);
             chukasaSettings.setEncrypted(encrypted);
