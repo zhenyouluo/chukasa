@@ -252,7 +252,7 @@ public class FFmpegRunner implements Runnable {
             log.info("End FFmpeg");
             log.info("{} is completed.", this.getClass().getName());
 
-            if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+            if(chukasaModel != null && chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
                 if(chukasaModel.getChukasaSettings().isEncrypted()){
                     seqCapturedTimeShifted = seqCapturedTimeShifted + 1;
                     chukasaModel.setSeqTsOkkake(seqCapturedTimeShifted);
@@ -266,7 +266,7 @@ public class FFmpegRunner implements Runnable {
 
         }
         catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
 
     }
