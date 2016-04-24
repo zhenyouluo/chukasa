@@ -79,6 +79,15 @@ cd /tmp && \
 
 # use "ubuntu/nginx/nginx.conf" instead of "/usr/local/nginx/conf/nginx.conf"
 
+
+brew remove openssl
+brew install openssl
+#wget ...
+#dyld: Library not loaded: /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+#  Referenced from: /usr/local/bin/wget
+#  Reason: image not found
+#Trace/BPT trap: 5
+
 #*******************************************************************************************************************
 # End Of File
 #*******************************************************************************************************************
