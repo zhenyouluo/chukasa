@@ -10,4 +10,5 @@ public class EPGResponseModel {
     long id;
     String title;
     String summary;
+    String station;
 }

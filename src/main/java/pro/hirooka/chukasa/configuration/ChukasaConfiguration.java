@@ -22,6 +22,7 @@ public class ChukasaConfiguration {
     long epgAccessOnBootIgnoreInterval;
     boolean epgAccessEnabled;
     Integer[] physicalChannel;
+    String[] physicalChannelName;
     String[] videoFileExtension;
     String alternativeHlsPlayer;
 }

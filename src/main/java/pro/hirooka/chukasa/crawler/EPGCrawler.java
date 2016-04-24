@@ -214,7 +214,7 @@ public class EPGCrawler {
                                 String schedule = str.split("system-cell-schedule-head-")[1].split(" ")[0].split("\"")[0];
 
                                 // info Rec : output format
-                                infoRec = ch + SPLIT_WORD + genre + SPLIT_WORD + schedule;
+                                infoRec = ch + SPLIT_WORD + station + SPLIT_WORD + genre + SPLIT_WORD + schedule;
 
                                 // save start time in arrayList
                                 listStart.add(schedule);
@@ -239,11 +239,12 @@ public class EPGCrawler {
                                         String idPrefix = getIdPrefix(ch);
 
                                         // genre is 999999
-                                        infoRec = ch + SPLIT_WORD + "999999" + SPLIT_WORD + schedule + SPLIT_WORD + idPrefix + schedule + SPLIT_WORD + "NoProgramInformation" + SPLIT_WORD;
+                                        infoRec = ch + SPLIT_WORD + station + SPLIT_WORD + "999999" + SPLIT_WORD + schedule + SPLIT_WORD + idPrefix + schedule + SPLIT_WORD + "NoProgramInformation" + SPLIT_WORD;
 
                                         // write inforec to output (because flagProg is false)
                                         EPGResponseModel epgResponseModel = new EPGResponseModel();
                                         epgResponseModel.setCh(Integer.parseInt(ch));
+                                        epgResponseModel.setStation(station);
                                         epgResponseModel.setGenre(999999);
                                         epgResponseModel.setBegin(Long.parseLong(schedule));
                                         epgResponseModel.setId(Long.parseLong(idPrefix + schedule));
@@ -308,11 +309,12 @@ public class EPGCrawler {
                             if (!flagProg) {
                                 EPGResponseModel epgResponseModel = new EPGResponseModel();
                                 epgResponseModel.setCh(Integer.parseInt(infoRec.split(SPLIT_WORD)[0]));
-                                epgResponseModel.setGenre(Integer.parseInt(infoRec.split(SPLIT_WORD)[1]));
-                                epgResponseModel.setBegin(Long.parseLong(infoRec.split(SPLIT_WORD)[2]));
-                                epgResponseModel.setId(Long.parseLong(infoRec.split(SPLIT_WORD)[3]));
-                                epgResponseModel.setTitle(infoRec.split(SPLIT_WORD)[4]);
-                                epgResponseModel.setSummary(infoRec.split(SPLIT_WORD)[5]);
+                                epgResponseModel.setStation(infoRec.split(SPLIT_WORD)[1]);
+                                epgResponseModel.setGenre(Integer.parseInt(infoRec.split(SPLIT_WORD)[2]));
+                                epgResponseModel.setBegin(Long.parseLong(infoRec.split(SPLIT_WORD)[3]));
+                                epgResponseModel.setId(Long.parseLong(infoRec.split(SPLIT_WORD)[4]));
+                                epgResponseModel.setTitle(infoRec.split(SPLIT_WORD)[5]);
+                                epgResponseModel.setSummary(infoRec.split(SPLIT_WORD)[6]);
                                 epgResponseModelList.add(epgResponseModel);
                                 infoRec = "";
                             }
@@ -349,6 +351,7 @@ public class EPGCrawler {
                 log.debug(epgResponseModel.toString());
                 ProgramInformation programInformation = new ProgramInformation();
                 programInformation.setCh(epgResponseModel.getCh());
+                programInformation.setStation(epgResponseModel.getStation());
                 programInformation.setId(epgResponseModel.getId());
                 programInformation.setGenre(epgResponseModel.getGenre());
                 programInformation.setBeginDate(Long.toString(epgResponseModel.getBegin()));

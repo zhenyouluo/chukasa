@@ -29,4 +29,6 @@ public class ProgramInformation {
     private String title;
 //    @Size(min = 0, max = 256)
     private String summary;
+
+    private String station;
 }

@@ -27,6 +27,8 @@
 
     <div class="tab-content">
 
+        <p></p>
+
         <!-- Now -->
 
         <div th:if="${isPTx == true and isRecorder == true}" class="tab-pane active" id="tabNow">
@@ -38,7 +40,7 @@
                 <div class="form-group">
                     <label for="chCapture">Program</label>
                     <select class="form-control" id="chNow" name="ch">
-                        <option th:value="${programInformation.ch}" th:text="${programInformation.title}" th:each="programInformation : ${programInformationList}">...</option>
+                        <option th:value="${programInformation.ch}" th:text="${programInformation.ch + ' (' + programInformation.station + '): ' + programInformation.title}" th:each="programInformation : ${programInformationList}">...</option>
                     </select>
                 </div>
 
@@ -210,7 +212,7 @@
                 <div class="form-group">
                     <label for="chCapture">Physical Channel</label>
                     <select class="form-control" id="chCapture" name="ch">
-                        <option th:value="${physicalChannelModel.number}" th:text="${physicalChannelModel.name}" th:each="physicalChannelModel : ${physicalChannelModelList}">...</option>
+                        <option th:value="${physicalChannelModel.number}" th:text="${physicalChannelModel.number + ': ' + physicalChannelModel.name}" th:each="physicalChannelModel : ${physicalChannelModelList}">...</option>
                     </select>
                 </div>
 

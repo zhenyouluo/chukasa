@@ -76,6 +76,13 @@ public class IndexController {
             physicalChannelModel.setName(Integer.toString(physicalChannel));
             physicalChannelModelList.add(physicalChannelModel);
         }
+        String[] physicalChannelNameArray = chukasaConfiguration.getPhysicalChannelName();
+        List<String> physicalChannelNameList = Arrays.asList(physicalChannelNameArray);
+        if(physicalChannelList.size() == physicalChannelNameList.size()){
+            for(int i = 0; i < physicalChannelModelList.size(); i++){
+                physicalChannelModelList.get(i).setName(physicalChannelNameList.get(i));
+            }
+        }
 
         List<VideoFileModel> videoFileModelList = new ArrayList<>();
 
