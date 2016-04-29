@@ -142,3 +142,15 @@ videojs-player.html
     </script>
 </body>
 </html>
+
+
+2016-04-29
+FFmpeg の出力を - として，ファイルを介さず Java の InputSream で直接処理するのは断念．
+うまく処理できずノイズが出てしまう．
+
+2016-04-29
+出力ファイルを減らしたいなら，FFmpeg の hls を使用するのも検討する．
+/usr/local/bin/recpt1 20 - - | /usr/local/bin/ffmpeg -i - -acodec aac -ab 160k -ar 44100 -ac 2 -s 1920x1080 -vcodec h264_qsv -profile:v high -level 4.2 -b:v 24000k -threads 1 out.m3u8
+
+2016-04-29
+mediaelement-2.20.1/build
