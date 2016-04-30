@@ -1,4 +1,4 @@
-FROM ubuntu:15.10
+FROM ubuntu:16.04
 
 MAINTAINER hirooka
 
@@ -21,11 +21,11 @@ RUN cd /tmp && \
     make install && \
     ldconfig
 
-# x264 0.148.x (20160328-2245-stable)
+# x264 (0.148.x (x264-snapshot-20160426-2245-stable))
 RUN cd /tmp && \
-    wget http://download.videolan.org/pub/x264/snapshots/x264-snapshot-20160328-2245-stable.tar.bz2  && \
-    tar xjvf x264-snapshot-20160328-2245-stable.tar.bz2 && \
-    cd x264-snapshot-20160328-2245-stable && \
+    wget http://download.videolan.org/pub/x264/snapshots/x264-snapshot-20160426-2245-stable.tar.bz2  && \
+    tar xjvf x264-snapshot-20160426-2245-stable.tar.bz2 && \
+    cd x264-snapshot-20160426-2245-stable && \
     ./configure --enable-shared && \
     make && \
     make install && \
@@ -42,6 +42,7 @@ RUN cd /tmp && \
     ldconfig
 
 # Web camera (audio)
+RUN mkdir /etc/modprobe.d
 RUN touch /etc/modprobe.d/sound.conf
 RUN echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/sound.conf
 RUN echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/sound.conf
@@ -71,12 +72,12 @@ RUN apt-get -y update
 RUN apt-get -y install oracle-java8-installer
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
-# nginx 1.9.12
+# nginx 1.9.15
 RUN cd /tmp && \
     apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.9.12.tar.gz && \
-    tar zxvf nginx-1.9.12.tar.gz && \
-    cd nginx-1.9.12 && \
+    wget http://nginx.org/download/nginx-1.9.15.tar.gz && \
+    tar zxvf nginx-1.9.15.tar.gz && \
+    cd nginx-1.9.15 && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
     make && \
     make install
