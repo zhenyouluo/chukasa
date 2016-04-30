@@ -746,7 +746,7 @@ public class Segmenter extends TimerTask {
                     double diff = chukasaModel.getDiffPcrSecond().setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
                     duration = duration - diff;
                     List<Double> extinfList = chukasaModel.getExtinfList();
-                    extinfList.add(duration);
+                    extinfList.add(segmentedTsDuration); // TODO: temporary
                     chukasaModel.setExtinfList(extinfList);
                     chukasaModel.setDuration(duration);
 
@@ -900,6 +900,24 @@ public class Segmenter extends TimerTask {
                 } // if SYNC_WORD
 
             } // loop : while
+
+            if(!canSegment){
+                double duration = chukasaModel.getNextInit().subtract(chukasaModel.getInitPcrSecond()).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+                double diff = chukasaModel.getDiffPcrSecond().setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+                duration = duration - diff;
+                List<Double> extinfList = chukasaModel.getExtinfList();
+                extinfList.add(segmentedTsDuration); // TODO: temporary
+                chukasaModel.setExtinfList(extinfList);
+                chukasaModel.setDuration(duration);
+
+                chukasaModel.setDiffPcrSecond(chukasaModel.getLastPcrSecond().subtract(chukasaModel.getInitPcrSecond()).subtract(new BigDecimal(Double.toString(segmentedTsDuration))));
+                chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+
+                log.info("[chukasaModel.getInitPcrSecond()] {}", chukasaModel.getInitPcrSecond());
+                log.info("[chukasaModel.getLastPcrSecond()] {}", chukasaModel.getLastPcrSecond());
+                log.info("[chukasaModel.getDiffPcrSecond()] {}", chukasaModel.getDiffPcrSecond());
+                log.info("[Double.toString(DURATION))] {}", new BigDecimal(Double.toString(segmentedTsDuration)));
+            }
 
             bos.close();
             bis.close();
