@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Controller
-@RequestMapping("ios")
+@RequestMapping("ios/player")
 public class IOSPlayerController {
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
@@ -60,7 +60,7 @@ public class IOSPlayerController {
         this.timerTaskParameterCalculator = requireNonNull(timerTaskParameterCalculator, "timerTaskParameterCalculator");
     }
 
-    @RequestMapping(value = "player/start", method = RequestMethod.POST)
+    @RequestMapping(value = "/start", method = RequestMethod.POST)
     String play(@RequestBody ChukasaSettings chukasaSettings){
 
         if(chukasaModelManagementComponent.get().size() > 0){
@@ -138,13 +138,14 @@ public class IOSPlayerController {
     }
 
     @RequestMapping(value = "/stop", method = RequestMethod.GET)
-    void stop(){
+    String stop(){
         ChukasaStopper chukasaStopper = new ChukasaStopper(chukasaModelManagementComponent);
         chukasaStopper.stop();
+        return "redirect:/video/remove";
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.GET)
-    void remove(){
+    String remove(){
 
         if(chukasaModelManagementComponent.get().size() > 0){
             log.warn("cannot remove files bacause streaming is not finished.");
@@ -157,5 +158,6 @@ public class IOSPlayerController {
                 log.warn("cannot remove files bacause streamRootPath: {} does not exist.", streamRootPath);
             }
         }
+        return "redirect:/";
     }
 }
