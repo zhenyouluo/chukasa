@@ -97,14 +97,14 @@ Support cross-platform (OS X, iOS, tvOS, Linux and Windows)
 
 Safari 以外は EXPERIMENTAL です．基本的に OS X, iOS 向けです．
 
-Native HLS
+#### Native HLS
 
 * Safari (OX 11.10, iOS 9)
 * iOS App (chukasa-ios) [https://github.com/hirooka/chukasa-ios](https://github.com/hirooka/chukasa-ios)
 * tvOS (play video via AirPlay)
 * Microsoft Edge (Windows 10)
 
-via hls.js
+#### via hls.js
 
 * Google Chrome 50 (OS X 11.10, Ubuntu 15.10, Windows 10)
 * Internet Explorer 11 (Windows 10)
