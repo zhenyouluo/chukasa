@@ -19,17 +19,23 @@ import pro.hirooka.chukasa.domain.type.PlaylistType;
 import pro.hirooka.chukasa.domain.type.StreamingType;
 import pro.hirooka.chukasa.domain.type.VideoResolutionType;
 import pro.hirooka.chukasa.handler.ChukasaRemover;
+import pro.hirooka.chukasa.handler.ChukasaRemoverRunner;
 import pro.hirooka.chukasa.handler.ChukasaStopper;
 import pro.hirooka.chukasa.handler.ChukasaThreadHandler;
 import pro.hirooka.chukasa.operator.IDirectoryCreator;
 import pro.hirooka.chukasa.operator.ITimerTaskParameterCalculator;
+import pro.hirooka.chukasa.playlister.PlaylisterRunner;
+import pro.hirooka.chukasa.segmenter.SegmenterRunner;
 import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.transcoder.FFmpegInitializer;
+import pro.hirooka.chukasa.transcoder.FFmpegRunner;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.util.Map;
+import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
@@ -73,6 +79,19 @@ public class HTML5PlayerController {
         if(bindingResult.hasErrors()){
             return null;
         }
+
+        // 再生前に FFmpeg, タイマー，ストリームをまっさらに．
+        for(ChukasaModel chukasaModel : chukasaModelManagementComponent.get()){
+            chukasaModel.getSegmenterRunner().stop();
+            chukasaModel.getPlaylisterRunner().stop();
+            FFmpegInitializer ffmpegInitializer = new FFmpegInitializer((long)chukasaModel.getFfmpegPID());
+            Thread ffmpegInitializerThread = new Thread(ffmpegInitializer);
+            ffmpegInitializerThread.start();
+            ChukasaRemoverRunner chukasaRemoverRunner = new ChukasaRemoverRunner(chukasaModel.getStreamRootPath(), systemConfiguration, chukasaModel.getUuid());
+            Thread thread = new Thread(chukasaRemoverRunner);
+            thread.start();
+        }
+        chukasaModelManagementComponent.deleteAll();
 
         if(chukasaModelManagementComponent.get().size() > 0){
             log.warn("cannot start streaming bacause previous one is not finished.");
@@ -125,6 +144,7 @@ public class HTML5PlayerController {
             chukasaModel.getChukasaSettings().setAudioBitrate(audioBitrate);
 
             String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + chukasaConfiguration.getStreamRootPathName();
+            streamRootPath = streamRootPath + FILE_SEPARATOR + chukasaModel.getUuid().toString();
             chukasaModel.setStreamRootPath(streamRootPath);
 
             chukasaModel = chukasaModelManagementComponent.create(0, chukasaModel);
@@ -145,6 +165,8 @@ public class HTML5PlayerController {
                 playlistURI = "/"
                         + chukasaModel.getChukasaConfiguration().getStreamRootPathName()
                         + FILE_SEPARATOR
+                        + chukasaModel.getUuid().toString()
+                        + FILE_SEPARATOR
                         + chukasaModel.getChukasaConfiguration().getLivePathName()
                         + FILE_SEPARATOR
                         + chukasaModel.getChukasaSettings().getVideoBitrate()
@@ -154,6 +176,8 @@ public class HTML5PlayerController {
                     || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
                 playlistURI = "/"
                         + chukasaModel.getChukasaConfiguration().getStreamRootPathName()
+                        + FILE_SEPARATOR
+                        + chukasaModel.getUuid().toString()
                         + FILE_SEPARATOR
                         + chukasaModel.getChukasaSettings().getFileName()
                         + FILE_SEPARATOR

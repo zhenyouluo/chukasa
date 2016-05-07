@@ -41,7 +41,8 @@ public class DirectoryCreator implements IDirectoryCreator{
 
         // create temporary direcotory
         String temporaryPath = chukasaModel.getSystemConfiguration().getTempPath();
-        if (new File(temporaryPath).mkdir()) {
+        temporaryPath = temporaryPath + FILE_SEPARATOR + chukasaModel.getUuid().toString();
+        if (new File(temporaryPath).mkdirs()) {
             log.info("temporaryPath is created : {}", temporaryPath);
         } else {
             log.error("temporaryPath cannot be created {}", temporaryPath);
@@ -52,7 +53,7 @@ public class DirectoryCreator implements IDirectoryCreator{
         log.info("streamRootPath: {}", streamRootPath);
         chukasaModel.setStreamRootPath(streamRootPath);
 
-        if (new File(streamRootPath).mkdir()) {
+        if (new File(streamRootPath).mkdirs()) {
             log.info("streamRootPath is created : {}", streamRootPath);
         } else {
             log.error("streamRootPath cannot be created {}", streamRootPath);
@@ -74,12 +75,12 @@ public class DirectoryCreator implements IDirectoryCreator{
             chukasaModel.setTempEncPath(tempEncPath);
         }
 
-        if (new File(streamPath).mkdir()) {
+        if (new File(streamPath).mkdirs()) {
             log.info("streamPath is created {}", streamPath);
         } else {
             log.error("streamPath cannot be created {}", streamPath);
         }
-        if (new File(tempEncPath).mkdir()) {
+        if (new File(tempEncPath).mkdirs()) {
             log.info("tempEncPath is created {}", tempEncPath);
         } else {
             log.error("tempEncPath cannot be created {}", tempEncPath);
@@ -96,7 +97,7 @@ public class DirectoryCreator implements IDirectoryCreator{
                 log.error("cannot clean {} as streamPath", streamPath);
             }
         }else{
-            if(new File(streamPath).mkdir()){
+            if(new File(streamPath).mkdirs()){
                 chukasaModel.setStreamPath(streamPath);
                 log.info("create {} as streamPath", streamPath);
             }else{
@@ -114,7 +115,7 @@ public class DirectoryCreator implements IDirectoryCreator{
                 log.error("cannot clean {} as tempEncPath", tempEncPath);
             }
         }else{
-            if(new File(tempEncPath).mkdir()){
+            if(new File(tempEncPath).mkdirs()){
                 chukasaModel.setTempEncPath(tempEncPath);
                 log.info("create {} as tempEncPath", tempEncPath);
             }else{

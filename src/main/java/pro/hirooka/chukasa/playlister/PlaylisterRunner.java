@@ -16,6 +16,8 @@ public class PlaylisterRunner implements Runnable {
 
     private final IChukasaModelManagementComponent chukasaModelManagementComponent;
 
+    private boolean isRunning = true;
+
     @Autowired
     public PlaylisterRunner(int adaptiveBitrateStreaming, IChukasaModelManagementComponent chukasaModelManagementComponent) {
         this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;
@@ -30,17 +32,26 @@ public class PlaylisterRunner implements Runnable {
         Timer playlisterTimer = new Timer();
         playlisterTimer.scheduleAtFixedRate(new Playlister(adaptiveBitrateStreaming, chukasaModelManagementComponent), chukasaModel.getTimerPlaylisterDelay(), chukasaModel.getTimerPlaylisterPeriod());
 
-        while(true){
+        while(isRunning){
             chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
-            if(chukasaModel.isFlagTimerPlaylister()){
+            if(chukasaModel == null || chukasaModel.isFlagTimerPlaylister()){
                 playlisterTimer.cancel();
                 playlisterTimer = null;
                 log.info("{} is completed.", this.getClass().getName());
                 break;
             }
         }
+        if(!isRunning){
+            playlisterTimer.cancel();
+        }
 
-        chukasaModelManagementComponent.deleteAll();
-        log.info("all ChukasaModels have been deleted because streming was finished.");
+        if(isRunning) {
+            chukasaModelManagementComponent.deleteAll();
+            log.info("all ChukasaModels have been deleted because streming was finished.");
+        }
+    }
+
+    public void stop(){
+        isRunning = false;
     }
 }

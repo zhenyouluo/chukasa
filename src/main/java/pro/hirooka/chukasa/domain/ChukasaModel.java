@@ -5,10 +5,13 @@ import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.HLSConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.type.PlaylistType;
+import pro.hirooka.chukasa.playlister.PlaylisterRunner;
+import pro.hirooka.chukasa.segmenter.SegmenterRunner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 public class ChukasaModel {
@@ -67,7 +70,11 @@ public class ChukasaModel {
     private boolean flagRemoveFile;
 
     private boolean isTrascoding;
-    private int ffmpegPID;
+    private long ffmpegPID;
+
+    private SegmenterRunner segmenterRunner;
+    private PlaylisterRunner playlisterRunner;
+    private UUID uuid;
 
     public ChukasaModel(){
 
@@ -126,6 +133,10 @@ public class ChukasaModel {
 
         this.isTrascoding = false;
         this.ffmpegPID = -1;
+
+        this.segmenterRunner = null;
+        this.playlisterRunner = null;
+        this.uuid = UUID.randomUUID();
     }
 
 }

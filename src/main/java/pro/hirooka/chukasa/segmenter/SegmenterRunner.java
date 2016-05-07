@@ -16,6 +16,8 @@ public class SegmenterRunner implements Runnable {
 
     private final IChukasaModelManagementComponent chukasaModelManagementComponent;
 
+    private boolean isRunning = true;
+
     @Autowired
     public SegmenterRunner(int adaptiveBitrateStreaming, IChukasaModelManagementComponent chukasaModelManagementComponent){
         this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;
@@ -30,15 +32,21 @@ public class SegmenterRunner implements Runnable {
         Timer segmenterTimer = new Timer();
         segmenterTimer.scheduleAtFixedRate(new Segmenter(adaptiveBitrateStreaming, chukasaModelManagementComponent), chukasaModel.getTimerSegmenterDelay(), chukasaModel.getTimerSegmenterPeriod());
 
-        while(true){
+        while(isRunning){
             chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
-            if(chukasaModel.isFlagTimerSegmenter()){
+            if(chukasaModel == null || chukasaModel.isFlagTimerSegmenter()){
                 segmenterTimer.cancel();
                 segmenterTimer = null;
                 log.info("{} is completed.", this.getClass().getName());
                 break;
             }
         }
+        if(!isRunning){
+            segmenterTimer.cancel();
+        }
+    }
 
+    public void stop(){
+        isRunning = false;
     }
 }

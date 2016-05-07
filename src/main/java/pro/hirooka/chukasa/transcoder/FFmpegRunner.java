@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 
 import static java.util.Objects.requireNonNull;
 
@@ -211,6 +212,20 @@ public class FFmpegRunner implements Runnable {
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
 
+            long pid = -1;
+            try {
+                if (pr.getClass().getName().equals("java.lang.UNIXProcess")) {
+                    Field field = pr.getClass().getDeclaredField("pid");
+                    field.setAccessible(true);
+                    pid = field.getLong(pr);
+                    chukasaModel.setFfmpegPID(pid);
+                    chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+                    field.setAccessible(false);
+                }
+            } catch (Exception e) {
+                pid = -1;
+            }
+
             String str = "";
             boolean isTranscoding = false;
             boolean isSegmenterStarted = false;
@@ -228,15 +243,17 @@ public class FFmpegRunner implements Runnable {
                                 SegmenterRunner segmenterRunner = new SegmenterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
                                 Thread sThread = new Thread(segmenterRunner, "__SegmenterRunner__");
                                 sThread.start();
+                                chukasaModel.setSegmenterRunner(segmenterRunner);
+                                chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
                             }
                         }
                     }
-                    if(str.startsWith("pid = ")){
-                        String pidString = str.split("pid = ")[1].trim();
-                        int pid = Integer.parseInt(pidString);
-                        chukasaModel.setFfmpegPID(pid);
-                        chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-                    }
+//                    if(str.startsWith("pid = ")){
+//                        String pidString = str.split("pid = ")[1].trim();
+//                        int pid = Integer.parseInt(pidString);
+//                        chukasaModel.setFfmpegPID(pid);
+//                        chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+//                    }
                 }
             }
             isTranscoding = false;
