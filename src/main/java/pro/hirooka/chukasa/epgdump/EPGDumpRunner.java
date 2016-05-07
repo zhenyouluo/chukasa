@@ -1,7 +1,6 @@
 package pro.hirooka.chukasa.epgdump;
 
 import lombok.extern.slf4j.Slf4j;
-import pro.hirooka.chukasa.parser.IEPGDumpParser;
 
 import java.io.*;
 import java.util.Arrays;
