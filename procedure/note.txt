@@ -154,3 +154,10 @@ FFmpeg の出力を - として，ファイルを介さず Java の InputSream �
 
 2016-04-29
 mediaelement-2.20.1/build
+
+recpt1 --b25 --strip XX 128 /tmp/chukasa/epgdump.ts
+epgdump json /tmp/chukasa/epgdump.ts /tmp/chukasa/epgdump.json
+
+ffmpeg -i chukasa_ios.mov -vf fps=10,scale=320:-1:flags=lanczos,palettegen palette_chukasa_ios.png
+ffmpeg -i chukasa_ios.mov -i palette_chukasa_ios.png -filter_complex "fps=10,scale=320:-1:flags=lanczos[x];[x][1:v]paletteuse" chukasa_ios.gif
+ffmpeg -ss 30 -t 3 -i ...
