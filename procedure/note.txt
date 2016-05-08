@@ -161,3 +161,25 @@ epgdump json /tmp/chukasa/epgdump.ts /tmp/chukasa/epgdump.json
 ffmpeg -i chukasa_ios.mov -vf fps=10,scale=320:-1:flags=lanczos,palettegen palette_chukasa_ios.png
 ffmpeg -i chukasa_ios.mov -i palette_chukasa_ios.png -filter_complex "fps=10,scale=320:-1:flags=lanczos[x];[x][1:v]paletteuse" chukasa_ios.gif
 ffmpeg -ss 30 -t 3 -i ...
+
+
+show dbs
+use chukasa
+show collections
+db.lastEPGDumpExecuted.find()
+{ "_id" : 1, "_class" : "pro.hirooka.chukasa.domain.LastEPGDumpExecuted", "date" : NumberLong("1462685404373") }
+db.ePGDumpProgramInformation.findOne()
+{
+	"_id" : ObjectId("572eced9f14c35b811c8fed8"),
+	"_class" : "pro.hirooka.chukasa.domain.EPGDumpProgramInformation",
+	"channel" : "GR3_24632",
+	"title" : "たいとる",
+	"detail" : "詳細",
+	"start" : NumberLong("14626764000000"),
+	"end" : NumberLong("14626797000000"),
+	"duration" : NumberLong(3300),
+	"freeCA" : false,
+	"eventID" : 0
+}
+0000
+db.dropDatabase()

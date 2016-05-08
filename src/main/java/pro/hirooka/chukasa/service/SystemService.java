@@ -41,4 +41,13 @@ public class SystemService implements ISystemService {
         }
         return false;
     }
+
+    @Override
+    public boolean isEPGDump() {
+        File epgdump = new File(systemConfiguration.getEpgdumpPath());
+        if(epgdump.exists()){
+            return true;
+        }
+        return false;
+    }
 }

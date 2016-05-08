@@ -37,4 +37,10 @@ public class SystemServiceTest {
         assertThat(bool, is(true));
     }
 
+    @Ignore
+    @Test
+    public void isFPGDump(){
+        boolean bool = systemService.isEPGDump();
+        assertThat(bool, is(true));
+    }
 }

@@ -4,4 +4,5 @@ public interface ISystemService {
     boolean isWebCamera();
     String getWebCameraDeviceName();
     boolean isPTx();
+    boolean isEPGDump();
 }
