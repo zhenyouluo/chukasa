@@ -10,7 +10,7 @@ public interface IEPGDumpProgramTableService {
     List<EPGDumpProgramInformation> read(int ch);
     List<EPGDumpProgramInformation> read(String beginDate);
     List<EPGDumpProgramInformation> read(int ch, String beginDate);
-    List<EPGDumpProgramInformation> readNow(long now);
+    List<EPGDumpProgramInformation> readByNow(long now);
     EPGDumpProgramInformation read(long id);
     EPGDumpProgramInformation readNow(int ch, long now);
     EPGDumpProgramInformation update(EPGDumpProgramInformation epgDumpProgramInformation);

@@ -7,19 +7,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.EPGDumpProgramInformation;
 import pro.hirooka.chukasa.domain.PhysicalChannelModel;
 import pro.hirooka.chukasa.domain.ProgramInformation;
 import pro.hirooka.chukasa.domain.VideoFileModel;
+import pro.hirooka.chukasa.service.IEPGDumpProgramTableService;
 import pro.hirooka.chukasa.service.IProgramTableService;
 import pro.hirooka.chukasa.service.ISystemService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -31,16 +30,23 @@ public class IndexController {
     private final ChukasaConfiguration chukasaConfiguration;
     private final ISystemService systemService;
     private final IProgramTableService programTableService;
+    private final IEPGDumpProgramTableService epgDumpProgramTableService;
 
     @Autowired
     private HttpServletRequest httpServletRequest;
 
     @Autowired
-    public IndexController(SystemConfiguration systemConfiguration, ChukasaConfiguration chukasaConfiguration, ISystemService systemService, IProgramTableService programTableService){
+    public IndexController(
+            SystemConfiguration systemConfiguration,
+            ChukasaConfiguration chukasaConfiguration,
+            ISystemService systemService,
+            IProgramTableService programTableService,
+            IEPGDumpProgramTableService epgDumpProgramTableService){
         this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
         this.chukasaConfiguration = requireNonNull(chukasaConfiguration, "chukasaConfiguration");
         this.systemService = requireNonNull(systemService, "systemService");
         this.programTableService = requireNonNull(programTableService, ".programTableService");
+        this.epgDumpProgramTableService = requireNonNull(epgDumpProgramTableService, "epgDumpProgramTableService");
     }
 
     @RequestMapping("/")
@@ -112,6 +118,11 @@ public class IndexController {
             programInformationList = programTableService.readNow(Long.parseLong(nowString));
         }
 
+        List<EPGDumpProgramInformation> epgDumpProgramInformationList = new ArrayList<>();
+        if(systemService.isEPGDump()){
+            epgDumpProgramInformationList = epgDumpProgramTableService.readByNow(new Date().getTime() * 10);
+        }
+
         model.addAttribute("isSupported", true);
         //model.addAttribute("isSupported", isSupported);
         model.addAttribute("isPTx", isPTx);
@@ -120,6 +131,7 @@ public class IndexController {
         model.addAttribute("videoFileModelList", videoFileModelList);
         model.addAttribute("isRecorder", isRecorder);
         model.addAttribute("programInformationList", programInformationList);
+        model.addAttribute("epgDumpProgramInformationList", epgDumpProgramInformationList);
 
         return "index";
     }

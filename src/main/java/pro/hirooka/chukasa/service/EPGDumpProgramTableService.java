@@ -41,8 +41,8 @@ public class EPGDumpProgramTableService implements IEPGDumpProgramTableService {
     }
 
     @Override
-    public List<EPGDumpProgramInformation> readNow(long now) {
-        return null;
+    public List<EPGDumpProgramInformation> readByNow(long now) {
+        return epgDumpProgramInformationRepository.findAllByNowLike(now);
     }
 
     @Override

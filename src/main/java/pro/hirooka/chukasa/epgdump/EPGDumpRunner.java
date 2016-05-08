@@ -110,7 +110,7 @@ public class EPGDumpRunner implements Runnable {
 
         for(int physicalChannel : physicalChannelList){
             String jsonStringPath = systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".json";
-            epgDumpParser.parse(jsonStringPath);
+            epgDumpParser.parse(jsonStringPath, epgDumpChannelMap);
         }
 
         long end = System.currentTimeMillis();

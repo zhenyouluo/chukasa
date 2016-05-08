@@ -38,7 +38,7 @@
                 <div class="form-group">
                     <label for="chCapture">Program</label>
                     <select class="form-control" id="chNow" name="ch">
-                        <option th:value="${programInformation.ch}" th:text="${programInformation.ch + ' (' + programInformation.station + '): ' + programInformation.title}" th:each="programInformation : ${programInformationList}">...</option>
+                        <option th:value="${programInformation.ch}" th:text="${programInformation.channelName + ' (' + programInformation.ch + '): ' + programInformation.title}" th:each="programInformation : ${epgDumpProgramInformationList}">...</option>
                     </select>
                 </div>
 

@@ -10,6 +10,7 @@ import pro.hirooka.chukasa.service.IEPGDumpProgramTableService;
 
 import java.io.*;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -25,7 +26,7 @@ public class EPGDumpParser implements IEPGDumpParser {
     }
 
     @Override
-    public void parse(String path) {
+    public void parse(String path, Map<String, Integer> epgDumpChannelMap) {
 
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(path)));
@@ -47,6 +48,14 @@ public class EPGDumpParser implements IEPGDumpParser {
             epgDumpChannelInformationList.forEach(epgDumpChannelInformation -> {
                 epgDumpChannelInformation.getPrograms().forEach(epgDumpProgramInformation -> {
                     log.debug("{}", epgDumpProgramInformation.toString());
+                    if(epgDumpChannelMap.keySet().contains(epgDumpProgramInformation.getChannel())){
+                        for(Map.Entry<String, Integer> entry : epgDumpChannelMap.entrySet()) {
+                            if(epgDumpProgramInformation.getChannel().equals(entry.getKey())){
+                                epgDumpProgramInformation.setCh(entry.getValue());
+                            }
+                        }
+                    }
+                    epgDumpProgramInformation.setChannelName(epgDumpChannelInformation.getName());
                     epgDumpProgramTableService.create(epgDumpProgramInformation);
                 });
             });

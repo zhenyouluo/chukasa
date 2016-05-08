@@ -12,7 +12,7 @@ public interface IEPGDumpProgramInformationRepository extends MongoRepository<EP
     @Query("{$and:[{'channel':{$eq:?0}},{'start':{$lte:?1}},{'end':{$gte:?1}}]}")
     EPGDumpProgramInformation findOneByChannelAndNowLike(String channel, long now);
 
-    @Query("{$and:[{'start':{$lte:?0}},{'end':{$gte:?0}}]}")
+    @Query("{$and:[{'start':{$lte:?0}},{'end':{$gte:?0}},{'ch':{$ne:0}}]}")
     List<EPGDumpProgramInformation> findAllByNowLike(long now);
 
     @Query("{$and:[{'channel':{$eq:?0}},{'start':{$lte:?2}},{'start':{$gte:?1}}]}")

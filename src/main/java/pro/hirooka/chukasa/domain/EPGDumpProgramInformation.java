@@ -19,4 +19,6 @@ public class EPGDumpProgramInformation {
 //    private List<Audio> audio;
     private boolean freeCA;
     private int eventID;
+    private int ch;
+    private String channelName;
 }
