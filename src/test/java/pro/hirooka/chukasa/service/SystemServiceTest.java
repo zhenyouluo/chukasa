@@ -43,4 +43,11 @@ public class SystemServiceTest {
         boolean bool = systemService.isEPGDump();
         assertThat(bool, is(true));
     }
+
+    @Ignore
+    @Test
+    public void isMongoDB(){
+        boolean bool = systemService.isMongoDB();
+        assertThat(bool, is(true));
+    }
 }

@@ -5,4 +5,5 @@ public interface ISystemService {
     String getWebCameraDeviceName();
     boolean isPTx();
     boolean isEPGDump();
+    boolean isMongoDB();
 }
