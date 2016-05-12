@@ -51,9 +51,9 @@ public class RecorderRunner implements Runnable {
                     BufferedWriter bw = new BufferedWriter(new FileWriter(doRecordFile));
                     bw.write("#!/bin/bash");
                     bw.newLine();
-                    bw.write(systemConfiguration.getCaptureProgramPath() + " --b25 --strip " + ch + " " + duration + " \"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + beginDate + "_" + endDate + "_" + duration  + "_" + title + "_"  + ch + "ch"  + ".ts\"" + " >/dev/null");
+                    bw.write(systemConfiguration.getRecpt1Path() + " --b25 --strip " + ch + " " + duration + " \"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + beginDate + "_" + endDate + "_" + duration  + "_" + title + "_"  + ch + "ch"  + ".ts\"" + " >/dev/null");
                     bw.close();
-                    log.info(systemConfiguration.getCaptureProgramPath() + " --b25 --strip " + ch + " " + duration + " \"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + beginDate + "_" + endDate + "_" + duration  + "_" + title + "_"  + ch + "ch"  + ".ts\"" + " >/dev/null");
+                    log.info(systemConfiguration.getRecpt1Path() + " --b25 --strip " + ch + " " + duration + " \"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + beginDate + "_" + endDate + "_" + duration  + "_" + title + "_"  + ch + "ch"  + ".ts\"" + " >/dev/null");
                 }
 
                 String[] chmod = {"chmod", "755", systemConfiguration.getFilePath() + FILE_SEPARATOR + doRecordFileName};

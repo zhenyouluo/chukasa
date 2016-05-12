@@ -60,10 +60,8 @@ public class EPGDumpParser implements IEPGDumpParser {
                 });
             });
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("{} {}", e.getMessage(), e);
         }
     }
 }

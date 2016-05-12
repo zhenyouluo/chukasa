@@ -62,6 +62,6 @@ public class TimerTaskParameterCalculator implements ITimerTaskParameterCalculat
         chukasaModel.setTimerPlaylisterDelay(timerPlaylisterDelay);
         chukasaModel.setTimerPlaylisterPeriod(timerPlaylisterPeriod);
 
-        chukasaModel = chukasaModelManagementComponent.update(0, chukasaModel);
+        chukasaModelManagementComponent.update(0, chukasaModel);
     }
 }

@@ -17,25 +17,20 @@ import pro.hirooka.chukasa.domain.ChukasaSettings;
 import pro.hirooka.chukasa.domain.HTML5PlayerModel;
 import pro.hirooka.chukasa.domain.type.PlaylistType;
 import pro.hirooka.chukasa.domain.type.StreamingType;
-import pro.hirooka.chukasa.domain.type.VideoResolutionType;
 import pro.hirooka.chukasa.handler.ChukasaRemover;
 import pro.hirooka.chukasa.handler.ChukasaRemoverRunner;
 import pro.hirooka.chukasa.handler.ChukasaStopper;
 import pro.hirooka.chukasa.handler.ChukasaThreadHandler;
 import pro.hirooka.chukasa.operator.IDirectoryCreator;
 import pro.hirooka.chukasa.operator.ITimerTaskParameterCalculator;
-import pro.hirooka.chukasa.playlister.PlaylisterRunner;
-import pro.hirooka.chukasa.segmenter.SegmenterRunner;
 import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
 import pro.hirooka.chukasa.transcoder.FFmpegInitializer;
-import pro.hirooka.chukasa.transcoder.FFmpegRunner;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.util.Map;
-import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
@@ -77,7 +72,7 @@ public class HTML5PlayerController {
     String play(Model model, @Validated ChukasaSettings chukasaSettings, BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
-            return null;
+            return "index";
         }
 
         // 再生前に FFmpeg, タイマー，ストリームをまっさらに．
@@ -94,19 +89,10 @@ public class HTML5PlayerController {
         chukasaModelManagementComponent.deleteAll();
 
         if(chukasaModelManagementComponent.get().size() > 0){
-            log.warn("cannot start streaming bacause previous one is not finished.");
+            log.error("chukasaModelManagementComponent.get.size() > 0");
         }else {
 
             log.info("ChukasaSettings -> {}", chukasaSettings.toString());
-
-//            Map<String, String> env = System.getenv();
-//            for(String name : env.keySet()){
-//                log.info("{} {}", name, env.get(name));
-//                if(name.equals("HOME")){
-//                    String filePath = systemConfiguration.getFilePath().replace("$HOME", env.get(name));
-//                    systemConfiguration.setFilePath(filePath);
-//                }
-//            }
 
             // TODO: 正確に判断する
             boolean isSupported = false;
@@ -199,9 +185,10 @@ public class HTML5PlayerController {
 
         }
 
-        return null;
+        return "index";
     }
 
+    // TODO: GET 修正
     @RequestMapping(method = RequestMethod.GET)
     String play(Model model,
                 @RequestParam StreamingType streamingtype,
@@ -307,5 +294,4 @@ public class HTML5PlayerController {
 
         return "redirect:/";
     }
-
 }

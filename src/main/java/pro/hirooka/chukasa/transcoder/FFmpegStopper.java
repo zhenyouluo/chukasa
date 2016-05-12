@@ -67,11 +67,9 @@ public class FFmpegStopper implements Runnable {
             isr.close();
             is.close();
             pr.destroy();
-            pr = null;
-            pb = null;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("{} {}", e.getMessage(), e);
         }
 
         chukasaModelManagementComponent.deleteAll();
@@ -93,7 +91,7 @@ public class FFmpegStopper implements Runnable {
             Process prPID = pbPID.start();
             log.info("{} stopped ffmpeg (PID: {}).", this.getClass().getName(), pid);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("{} {}", e.getMessage(), e);
         }
     }
 }

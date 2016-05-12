@@ -21,7 +21,7 @@ public class FFmpegInitializer implements Runnable {
             Process prPID = pbPID.start();
             log.info("{} stopped ffmpeg (PID: {}).", this.getClass().getName(), pid);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("{} {}", e.getMessage(), e);
         }
     }
 }

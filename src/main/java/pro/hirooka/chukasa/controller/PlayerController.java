@@ -9,7 +9,6 @@ import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.ChukasaModel;
 import pro.hirooka.chukasa.domain.ChukasaSettings;
 import pro.hirooka.chukasa.domain.type.StreamingType;
-import pro.hirooka.chukasa.domain.type.VideoResolutionType;
 import pro.hirooka.chukasa.handler.ChukasaRemover;
 import pro.hirooka.chukasa.handler.ChukasaStopper;
 import pro.hirooka.chukasa.handler.ChukasaThreadHandler;
@@ -28,6 +27,8 @@ import static java.util.Objects.requireNonNull;
 @RestController
 @RequestMapping("player")
 public class PlayerController {
+
+    // TODO: remove
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
 

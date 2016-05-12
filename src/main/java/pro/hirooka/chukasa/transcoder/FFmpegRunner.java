@@ -223,7 +223,7 @@ public class FFmpegRunner implements Runnable {
                     field.setAccessible(false);
                 }
             } catch (Exception e) {
-                pid = -1;
+                log.error("{} {}", e.getMessage(), e);
             }
 
             String str = "";
@@ -248,12 +248,6 @@ public class FFmpegRunner implements Runnable {
                             }
                         }
                     }
-//                    if(str.startsWith("pid = ")){
-//                        String pidString = str.split("pid = ")[1].trim();
-//                        int pid = Integer.parseInt(pidString);
-//                        chukasaModel.setFfmpegPID(pid);
-//                        chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-//                    }
                 }
             }
             isTranscoding = false;
@@ -264,8 +258,6 @@ public class FFmpegRunner implements Runnable {
             isr.close();
             is.close();
             pr.destroy();
-            //pr = null;
-            //pb = null;
             log.info("End FFmpeg");
             log.info("{} is completed.", this.getClass().getName());
 
@@ -281,10 +273,8 @@ public class FFmpegRunner implements Runnable {
                 }
             }
 
+        } catch (IOException e) {
+            log.error("{} {}", e.getMessage(), e);
         }
-        catch (IOException e) {
-            log.error(e.getMessage());
-        }
-
     }
 }

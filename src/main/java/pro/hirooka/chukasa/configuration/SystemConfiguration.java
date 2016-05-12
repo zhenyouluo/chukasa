@@ -11,7 +11,6 @@ public class SystemConfiguration {
     String ffmpegPath;
     String recpt1Path;
     String epgdumpPath;
-    String captureProgramPath;
     String webCameraDeviceName;
     int webCameraAudioChannel;
     String tempPath;

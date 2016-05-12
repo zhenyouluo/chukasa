@@ -13,6 +13,10 @@ import static java.util.Objects.requireNonNull;
 @Component
 public class SystemService implements ISystemService {
 
+    private final String PT2_DEVICE = "/dev/pt1video0";
+    private final String PT3_DEVICE = "/dev/pt3video0";
+    private final String MONGOD = "mongod";
+
     private final SystemConfiguration systemConfiguration;
 
     @Autowired
@@ -34,8 +38,8 @@ public class SystemService implements ISystemService {
 
     @Override
     public boolean isPTx() {
-        File pt2 = new File("/dev/pt1video0");
-        File pt3 = new File("/dev/pt3video0");
+        File pt2 = new File(PT2_DEVICE);
+        File pt3 = new File(PT3_DEVICE);
         if(pt2.exists() || pt3.exists()){
             return true;
         }
@@ -53,7 +57,7 @@ public class SystemService implements ISystemService {
 
     @Override
     public boolean isMongoDB() {
-        String[] command = {"/bin/sh", "-c", "ps aux | grep mongod"};
+        String[] command = {"/bin/sh", "-c", "ps aux | grep " + MONGOD}; // TODO: which mongod も？
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         try {
             Process process = processBuilder.start();
@@ -61,13 +65,16 @@ public class SystemService implements ISystemService {
             String str = "";
             while((str = bufferedReader.readLine()) != null){
                 log.info(str);
-                if(str.startsWith("mongod")){
+                if(str.startsWith(MONGOD)){
+                    bufferedReader.close();
+                    process.destroy();
                     return true;
                 }
             }
             bufferedReader.close();
+            process.destroy();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("{} {}", e.getMessage(), e);
         }
         return false;
     }

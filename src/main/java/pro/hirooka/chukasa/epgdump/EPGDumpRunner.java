@@ -48,18 +48,18 @@ public class EPGDumpRunner implements Runnable {
 
     void execute(){
 
-        Integer[] physicalChannelArray = chukasaConfiguration.getPhysicalChannel();
-        List<Integer> physicalChannelList = Arrays.asList(physicalChannelArray);
+//        Integer[] physicalChannelArray = chukasaConfiguration.getPhysicalChannel();
+//        List<Integer> physicalChannelList = Arrays.asList(physicalChannelArray);
 
         String epgdumpShell = systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump.sh";
 
         File file = new File(epgdumpShell);
-        BufferedWriter bufferedWriter;
         try {
-            bufferedWriter = new BufferedWriter(new FileWriter(file));
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
             bufferedWriter.write("#!/bin/bash");
             bufferedWriter.newLine();
-            for(int physicalChannel : physicalChannelList){
+            for(Map.Entry<String, Integer> entry : epgDumpChannelMap.entrySet()) {
+                int physicalChannel = entry.getValue();
                 String recpt1Command = systemConfiguration.getRecpt1Path() + " --b25 --strip " + physicalChannel + " 128 " + systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
                 String epgdumpCommand = systemConfiguration.getEpgdumpPath() + " json " + systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts " + systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".json";
                 bufferedWriter.write(recpt1Command);
@@ -67,25 +67,33 @@ public class EPGDumpRunner implements Runnable {
                 bufferedWriter.write(epgdumpCommand);
                 bufferedWriter.newLine();
             }
+//            for(int physicalChannel : physicalChannelList){
+//                String recpt1Command = systemConfiguration.getRecpt1Path() + " --b25 --strip " + physicalChannel + " 128 " + systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
+//                String epgdumpCommand = systemConfiguration.getEpgdumpPath() + " json " + systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts " + systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".json";
+//                bufferedWriter.write(recpt1Command);
+//                bufferedWriter.newLine();
+//                bufferedWriter.write(epgdumpCommand);
+//                bufferedWriter.newLine();
+//            }
             bufferedWriter.close();
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } catch (IOException e) {
+            log.error("{} {}", e.getMessage(), e);
         }
 
         if(true){
             String[] chmodCommandArray = {"chmod", "755", epgdumpShell};
             ProcessBuilder processBuilder = new ProcessBuilder(chmodCommandArray);
-            Process process;
             try {
-                process = processBuilder.start();
+                Process process = processBuilder.start();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
                 String s = "";
                 while((s = bufferedReader.readLine()) != null){
                     log.debug("{}", s);
                 }
                 bufferedReader.close();
+                process.destroy();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("{} {}", e.getMessage(), e);
             }
         }
 
@@ -94,24 +102,28 @@ public class EPGDumpRunner implements Runnable {
         if(true){
             String[] epgdumpCommandArray = {epgdumpShell};
             ProcessBuilder processBuilder = new ProcessBuilder(epgdumpCommandArray);
-            Process process;
             try {
-                process = processBuilder.start();
+                Process process = processBuilder.start();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
                 String s = "";
                 while((s = bufferedReader.readLine()) != null){
                     log.debug("{}", s);
                 }
                 bufferedReader.close();
+                process.destroy();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("{} {}", e.getMessage(), e);
             }
         }
 
-        for(int physicalChannel : physicalChannelList){
-            String jsonStringPath = systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".json";
+        for(Map.Entry<String, Integer> entry : epgDumpChannelMap.entrySet()) {
+            String jsonStringPath = systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump" + entry.getValue() + ".json";
             epgDumpParser.parse(jsonStringPath, epgDumpChannelMap);
         }
+//        for(int physicalChannel : physicalChannelList){
+//            String jsonStringPath = systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".json";
+//            epgDumpParser.parse(jsonStringPath, epgDumpChannelMap);
+//        }
 
         long end = System.currentTimeMillis();
         log.info((end - begin) / 1000 + "s");

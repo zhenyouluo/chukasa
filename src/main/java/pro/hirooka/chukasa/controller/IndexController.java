@@ -8,16 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.EPGDumpProgramInformation;
-import pro.hirooka.chukasa.domain.PhysicalChannelModel;
-import pro.hirooka.chukasa.domain.ProgramInformation;
 import pro.hirooka.chukasa.domain.VideoFileModel;
 import pro.hirooka.chukasa.service.IEPGDumpProgramTableService;
-import pro.hirooka.chukasa.service.IProgramTableService;
 import pro.hirooka.chukasa.service.ISystemService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
@@ -29,7 +25,6 @@ public class IndexController {
     private final SystemConfiguration systemConfiguration;
     private final ChukasaConfiguration chukasaConfiguration;
     private final ISystemService systemService;
-    private final IProgramTableService programTableService;
     private final IEPGDumpProgramTableService epgDumpProgramTableService;
 
     @Autowired
@@ -40,12 +35,10 @@ public class IndexController {
             SystemConfiguration systemConfiguration,
             ChukasaConfiguration chukasaConfiguration,
             ISystemService systemService,
-            IProgramTableService programTableService,
             IEPGDumpProgramTableService epgDumpProgramTableService){
         this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
         this.chukasaConfiguration = requireNonNull(chukasaConfiguration, "chukasaConfiguration");
         this.systemService = requireNonNull(systemService, "systemService");
-        this.programTableService = requireNonNull(programTableService, ".programTableService");
         this.epgDumpProgramTableService = requireNonNull(epgDumpProgramTableService, "epgDumpProgramTableService");
     }
 
@@ -70,25 +63,9 @@ public class IndexController {
         }
 
         boolean isPTx = systemService.isPTx();
-
+        boolean isEPGDump = systemService.isEPGDump();
+        boolean isMongoDB = systemService.isMongoDB();
         boolean isWebCamera = systemService.isWebCamera();
-
-        Integer[] physicalChannelArray = chukasaConfiguration.getPhysicalChannel();
-        List<Integer> physicalChannelList = Arrays.asList(physicalChannelArray);
-        List<PhysicalChannelModel> physicalChannelModelList = new ArrayList<>();
-        for(int physicalChannel : physicalChannelList){
-            PhysicalChannelModel physicalChannelModel = new PhysicalChannelModel();
-            physicalChannelModel.setNumber(physicalChannel);
-            physicalChannelModel.setName(Integer.toString(physicalChannel));
-            physicalChannelModelList.add(physicalChannelModel);
-        }
-        String[] physicalChannelNameArray = chukasaConfiguration.getPhysicalChannelName();
-        List<String> physicalChannelNameList = Arrays.asList(physicalChannelNameArray);
-        if(physicalChannelList.size() == physicalChannelNameList.size()){
-            for(int i = 0; i < physicalChannelModelList.size(); i++){
-                physicalChannelModelList.get(i).setName(physicalChannelNameList.get(i));
-            }
-        }
 
         List<VideoFileModel> videoFileModelList = new ArrayList<>();
 
@@ -110,27 +87,17 @@ public class IndexController {
             log.warn("'{}' does not exist.", fileDirectory);
         }
 
-        boolean isRecorder = chukasaConfiguration.isRecorderEnabled();
-        List<ProgramInformation> programInformationList = new ArrayList<>();
-        if(isRecorder){
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddhhmm");
-            String nowString = simpleDateFormat.format(new Date());
-            programInformationList = programTableService.readNow(Long.parseLong(nowString));
-        }
-
         List<EPGDumpProgramInformation> epgDumpProgramInformationList = new ArrayList<>();
-        if(systemService.isEPGDump()){
+        if(systemService.isMongoDB() && systemService.isEPGDump()){
             epgDumpProgramInformationList = epgDumpProgramTableService.readByNow(new Date().getTime() * 10);
         }
 
-        model.addAttribute("isSupported", true);
-        //model.addAttribute("isSupported", isSupported);
+        model.addAttribute("isSupported", isSupported);
         model.addAttribute("isPTx", isPTx);
+        model.addAttribute("isEPGDump", isEPGDump);
+        model.addAttribute("isMongoDB", isMongoDB);
         model.addAttribute("isWebCamera", isWebCamera);
-        model.addAttribute("physicalChannelModelList", physicalChannelModelList);
         model.addAttribute("videoFileModelList", videoFileModelList);
-        model.addAttribute("isRecorder", isRecorder);
-        model.addAttribute("programInformationList", programInformationList);
         model.addAttribute("epgDumpProgramInformationList", epgDumpProgramInformationList);
 
         return "index";

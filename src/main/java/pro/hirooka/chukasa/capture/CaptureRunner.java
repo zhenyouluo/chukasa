@@ -33,12 +33,12 @@ public class CaptureRunner implements Runnable {
 
         boolean isQSV = chukasaModel.getSystemConfiguration().isQuickSyncVideoEnabled();
 
-        String[] cmdArray = null;
+        String[] commandArray = {""};
 
         // TODO: seiri
         if(isQSV){
-            String[] cmdArrayBase =  {
-                    chukasaModel.getSystemConfiguration().getCaptureProgramPath(),
+            String[] commandArrayTemporary =  {
+                    chukasaModel.getSystemConfiguration().getRecpt1Path(),
                     "--b25", "--strip",
                     Integer.toString(chukasaModel.getChukasaSettings().getCh()),
                     "-", "-",
@@ -58,10 +58,10 @@ public class CaptureRunner implements Runnable {
                     "-f", "mpegts",
                     "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension()
             };
-            cmdArray = cmdArrayBase;
+            commandArray = commandArrayTemporary;
         }else{
-            String[] cmdArrayBase = {
-                    chukasaModel.getSystemConfiguration().getCaptureProgramPath(),
+            String[] commandArrayTemporary = {
+                    chukasaModel.getSystemConfiguration().getRecpt1Path(),
                     "--b25", "--strip",
                     Integer.toString(chukasaModel.getChukasaSettings().getCh()),
                     "-", "-",
@@ -83,86 +83,71 @@ public class CaptureRunner implements Runnable {
                     "-x264opts", "keyint=10:min-keyint=10",
                     "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension()
             };
-            cmdArray = cmdArrayBase;
+            commandArray = commandArrayTemporary;
         }
 
-        String cmd = "";
-        for(int i = 0; i < cmdArray.length; i++){
-            cmd += cmdArray[i] + " ";
+        String command = "";
+        for(int i = 0; i < commandArray.length; i++){
+            command += commandArray[i] + " ";
         }
-        log.info("{}", cmd);
+        log.info("command = {}", command);
 
-        String capSh = chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + "cap.sh";
-        File f = new File(capSh);
-        BufferedWriter bw;
-        try {
-            bw = new BufferedWriter(new FileWriter(f));
-            bw.write("#!/bin/bash");
-            bw.newLine();
-            bw.write(cmd);
-            bw.close();
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        String captureShell = chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + "capture.sh";
+        File file = new File(captureShell);
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
+            bufferedWriter.write("#!/bin/bash");
+            bufferedWriter.newLine();
+            bufferedWriter.write(command);
+        } catch (IOException e) {
+            log.error("{} {}", e.getMessage(), e);
         }
 
-        // chmod 755 cap.sh
+        // chmod 755 capture.sh
         if(true){
-            String[] cmdArrayChmod = {"chmod", "755", capSh};
-            ProcessBuilder pb = new ProcessBuilder(cmdArrayChmod);
-            Process pr;
+            String[] chmodCommandArray = {"chmod", "755", captureShell};
+            ProcessBuilder processBuilder = new ProcessBuilder(chmodCommandArray);
             try {
-                pr = pb.start();
-                //InputStream is = pr.getInputStream();
-                InputStream is = pr.getErrorStream();
-                InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader br = new BufferedReader(isr);
-                String s = "";
-                while((s = br.readLine()) != null){
-                    log.debug("{}", s);
+                Process process = processBuilder.start();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                String str = "";
+                while((str = bufferedReader.readLine()) != null){
+                    log.debug("{}", str);
                 }
-                br.close();
-                isr.close();
-                is.close();
-                pr.destroy();
-                pr = null;
-                pb = null;
+                bufferedReader.close();
+                process.destroy();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("{} {}", e.getMessage(), e);
             }
-        } // cmdArrayChmod
+        }
 
-        // run cap.sh
+        // run capture.sh
         if(true){
-            String[] cmdArrayCapSh = {capSh};
-            ProcessBuilder pb = new ProcessBuilder(cmdArrayCapSh);
-            Process pr;
+            String[] capureCommandArray = {captureShell};
+            ProcessBuilder processBuilder = new ProcessBuilder(capureCommandArray);
             try {
-                pr = pb.start();
-                //InputStream is = pr.getInputStream();
-                InputStream is = pr.getErrorStream();
-                InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader br = new BufferedReader(isr);
+                Process process = processBuilder.start();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
                 long pid = -1;
                 try {
-                    if (pr.getClass().getName().equals("java.lang.UNIXProcess")) {
-                        Field field = pr.getClass().getDeclaredField("pid");
+                    if (process.getClass().getName().equals("java.lang.UNIXProcess")) {
+                        Field field = process.getClass().getDeclaredField("pid");
                         field.setAccessible(true);
-                        pid = field.getLong(pr);
+                        pid = field.getLong(process);
                         chukasaModel.setFfmpegPID(pid);
                         chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
                         field.setAccessible(false);
                     }
                 } catch (Exception e) {
-                    pid = -1;
+                    log.error("{} {}", e.getMessage(), e);
                 }
 
-                String s = "";
+                String str = "";
                 boolean isTranscoding = false;
                 boolean isSegmenterStarted = false;
-                while((s = br.readLine()) != null){
-                    log.info("{}", s);
-                    if(s.startsWith("frame=")){
+                while((str = bufferedReader.readLine()) != null){
+                    log.info("{}", str);
+                    if(str.startsWith("frame=")){
                         if(!isTranscoding){
                             isTranscoding = true;
                             chukasaModel.setTrascoding(isTranscoding);
@@ -177,27 +162,15 @@ public class CaptureRunner implements Runnable {
                             }
                         }
                     }
-//                    if(s.startsWith("pid = ")){
-//                        String pidString = s.split("pid = ")[1].trim();
-//                        int pid = Integer.parseInt(pidString);
-//                        chukasaModel.setFfmpegPID(pid);
-//                        chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-//                    }
                 }
                 isTranscoding = false;
                 chukasaModel.setTrascoding(isTranscoding);
-                chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-                isSegmenterStarted = false;
-                br.close();
-                isr.close();
-                is.close();
-                pr.destroy();
-                pr = null;
-                pb = null;
+                chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+                bufferedReader.close();
+                process.destroy();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("{} {}", e.getMessage(), e);
             }
-        } // cmdArrayCapSh
-
+        }
     }
 }

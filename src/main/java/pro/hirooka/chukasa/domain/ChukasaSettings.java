@@ -4,8 +4,6 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import pro.hirooka.chukasa.domain.type.EncodingSettingsType;
 import pro.hirooka.chukasa.domain.type.StreamingType;
-import pro.hirooka.chukasa.domain.type.VideoProfileType;
-import pro.hirooka.chukasa.domain.type.VideoResolutionType;
 
 @Data
 public class ChukasaSettings {

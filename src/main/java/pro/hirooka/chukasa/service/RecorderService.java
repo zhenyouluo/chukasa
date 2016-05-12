@@ -37,7 +37,7 @@ public class RecorderService implements IRecorderService {
     @PostConstruct
     public void init(){
 
-        if(chukasaConfiguration.isRecorderEnabled()) {
+//        if(chukasaConfiguration.isRecorderEnabled()) {
 
             List<ReservedProgram> reservedProgramList = read();
             for (ReservedProgram reservedProgram : reservedProgramList) {
@@ -82,7 +82,7 @@ public class RecorderService implements IRecorderService {
                     log.info("skip (in recording...) {}", reservedProgram.toString());
                 }
             }
-        }
+//        }
     }
 
     @Override

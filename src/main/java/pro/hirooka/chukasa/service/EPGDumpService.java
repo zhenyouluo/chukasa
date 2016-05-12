@@ -49,7 +49,10 @@ public class EPGDumpService implements IEPGDumpService {
     @PostConstruct
     public void init(){
 
-        if(systemService.isEPGDump()) {
+        // epgdump へのパスが存在していて，
+        // 一度も情報を取得していない，あるいは前回情報を取得してから一定期間経過している場合，
+        // アプリケーション起動時に別スレッドで情報を取得する．
+        if(systemService.isMongoDB() && systemService.isEPGDump()) {
             LastEPGDumpExecuted lastEPGDumpExecuted = lastEPGDumpExecutedService.read(1);
             if (lastEPGDumpExecuted == null) {
                 runEPGDump();
@@ -57,7 +60,8 @@ public class EPGDumpService implements IEPGDumpService {
                 Date date = new Date();
                 long now = date.getTime();
                 long last = lastEPGDumpExecuted.getDate();
-                log.info("{}, {}", now, last);
+                long diff = last - now;
+                log.info("now = {}, last epgdump executed = {}, diff = {}", now, last, diff);
                 if (now - last > chukasaConfiguration.getEpgdumpExecuteOnBootIgnoreInterval()) {
                     runEPGDump();
                 }
@@ -65,10 +69,11 @@ public class EPGDumpService implements IEPGDumpService {
         }
     }
 
-    @Scheduled(cron = "0 0 4 * * *")
+    @Scheduled(cron = "${chukasa.epgdump-execute-schedule-cron}")
     void execute(){
 
         if(systemService.isEPGDump()) {
+            log.info("runEPGDump is executed.");
             runEPGDump();
         }
     }
@@ -86,7 +91,7 @@ public class EPGDumpService implements IEPGDumpService {
             thread.start();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("invalid epgdump_channel_map.json: {} {}", e.getMessage(), e);
         }
     }
 }

@@ -44,7 +44,7 @@ public class ChukasaThreadHandler implements Runnable {
             Thread pThread = new Thread(playlisterRunner, "__PlaylisterRunner__");
             pThread.start();
             chukasaModel.setPlaylisterRunner(playlisterRunner);
-            chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+            chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
         }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.CAPTURE){
 
@@ -60,7 +60,7 @@ public class ChukasaThreadHandler implements Runnable {
             Thread pThread = new Thread(playlisterRunner, "__PlaylisterRunner__");
             pThread.start();
             chukasaModel.setPlaylisterRunner(playlisterRunner);
-            chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+            chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
         }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
 
@@ -74,7 +74,7 @@ public class ChukasaThreadHandler implements Runnable {
             Thread pThread = new Thread(playlisterRunner, "__PlaylisterRunner__");
             pThread.start();
             chukasaModel.setPlaylisterRunner(playlisterRunner);
-            chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+            chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
         }
     }

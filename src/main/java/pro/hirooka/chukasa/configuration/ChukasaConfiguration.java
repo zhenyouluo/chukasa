@@ -12,18 +12,19 @@ public class ChukasaConfiguration {
     String livePathName;
     String streamFileNamePrefix;
     String m3u8PlaylistName;
-    boolean recorderEnabled;
+//    boolean recorderEnabled;
     long recorderStartMargin;
     long recorderStopMargin;
-    int epgDays;
-    int epgSpan;
-    String epgBaseUrl;
-    boolean epgAccessOnBootEnabled;
-    long epgAccessOnBootIgnoreInterval;
-    boolean epgAccessEnabled;
-    Integer[] physicalChannel;
-    String[] physicalChannelName;
+//    int epgDays;
+//    int epgSpan;
+//    String epgBaseUrl;
+//    boolean epgAccessOnBootEnabled;
+//    long epgAccessOnBootIgnoreInterval;
+//    boolean epgAccessEnabled;
+//    Integer[] physicalChannel;
+//    String[] physicalChannelName;
     String[] videoFileExtension;
     String alternativeHlsPlayer;
+    String epgdumpExecuteScheduleCron;
     long epgdumpExecuteOnBootIgnoreInterval;
 }

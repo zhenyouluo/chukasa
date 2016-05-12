@@ -40,7 +40,7 @@ public class ChukasaRemover {
                 log.warn("all Chukasa files have not been removed completely.");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("{} {}", e.getMessage(), e);
         }
 
     }
