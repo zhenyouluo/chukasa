@@ -14,6 +14,7 @@ public class SystemConfiguration {
     String webCameraDeviceName;
     int webCameraAudioChannel;
     String tempPath;
+    String tempEpgdumpPath;
     String filePath;
     int ffmpegThreads;
     boolean quickSyncVideoEnabled;

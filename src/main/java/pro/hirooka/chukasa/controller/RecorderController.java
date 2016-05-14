@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import pro.hirooka.chukasa.domain.ReservedProgram;
-import pro.hirooka.chukasa.service.IRecorderService;
+import pro.hirooka.chukasa.domain.recorder.ReservedProgram;
+import pro.hirooka.chukasa.service.recorder.IRecorderService;
 
 import java.net.URI;
 import java.util.List;

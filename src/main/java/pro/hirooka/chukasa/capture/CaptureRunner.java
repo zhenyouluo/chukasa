@@ -2,9 +2,9 @@ package pro.hirooka.chukasa.capture;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import pro.hirooka.chukasa.domain.ChukasaModel;
+import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.segmenter.SegmenterRunner;
-import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -52,7 +52,7 @@ public class CaptureRunner implements Runnable {
                     "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
                     "-vcodec", "h264_qsv",
                     "-profile:v", "high",
-                    "-level", "4.2",
+                    "-level", "4.1",
                     "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate()+"k",
                     "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                     "-f", "mpegts",
@@ -75,7 +75,7 @@ public class CaptureRunner implements Runnable {
                     "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
                     "-vcodec", "libx264",
                     "-profile:v", "high",
-                    "-level", "4.2",
+                    "-level", "4.1",
                     "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate()+"k",
                     "-preset:v", "superfast",
                     "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),

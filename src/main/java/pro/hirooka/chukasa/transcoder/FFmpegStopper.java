@@ -2,8 +2,8 @@ package pro.hirooka.chukasa.transcoder;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import pro.hirooka.chukasa.domain.ChukasaModel;
-import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
+import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 
 import java.io.BufferedReader;
 import java.io.IOException;

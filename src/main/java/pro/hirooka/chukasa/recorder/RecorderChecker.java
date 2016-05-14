@@ -1,7 +1,7 @@
 package pro.hirooka.chukasa.recorder;
 
 import lombok.extern.slf4j.Slf4j;
-import pro.hirooka.chukasa.domain.ReservedProgram;
+import pro.hirooka.chukasa.domain.recorder.ReservedProgram;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,11 +26,15 @@ public class RecorderChecker {
             String str = "";
             while((str = bufferedReader.readLine()) != null){
                 if(str.contains(reservedProgram.getBeginDate()) && str.contains(reservedProgram.getEndDate()) && str.contains(reservedProgram.getCh() + "ch")){
+                    bufferedReader.close();
+                    process.destroy();
                     return true;
                 }
             }
+            bufferedReader.close();
+            process.destroy();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("{} {}", e.getMessage(), e);
         }
 
         return false;

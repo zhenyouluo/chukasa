@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.HLSConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
-import pro.hirooka.chukasa.domain.ChukasaModel;
-import pro.hirooka.chukasa.domain.ChukasaSettings;
-import pro.hirooka.chukasa.domain.HTML5PlayerModel;
-import pro.hirooka.chukasa.domain.type.PlaylistType;
-import pro.hirooka.chukasa.domain.type.StreamingType;
+import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
+import pro.hirooka.chukasa.domain.chukasa.ChukasaSettings;
+import pro.hirooka.chukasa.domain.chukasa.HTML5PlayerModel;
+import pro.hirooka.chukasa.domain.chukasa.type.PlaylistType;
+import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.handler.ChukasaRemover;
 import pro.hirooka.chukasa.handler.ChukasaRemoverRunner;
 import pro.hirooka.chukasa.handler.ChukasaStopper;
 import pro.hirooka.chukasa.handler.ChukasaThreadHandler;
 import pro.hirooka.chukasa.operator.IDirectoryCreator;
 import pro.hirooka.chukasa.operator.ITimerTaskParameterCalculator;
-import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 import pro.hirooka.chukasa.transcoder.FFmpegInitializer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -94,22 +94,15 @@ public class HTML5PlayerController {
 
             log.info("ChukasaSettings -> {}", chukasaSettings.toString());
 
-            // TODO: 正確に判断する
-            boolean isSupported = false;
+            boolean isNativeHlsSupported = false;
             String userAgent = httpServletRequest.getHeader("user-agent");
-            if(userAgent.contains("Mac OS X 10_11") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9"))){
-                isSupported = true;
-                log.info("{}", userAgent);
-            }else if(userAgent.contains("iPhone OS 9") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9"))){
-                isSupported = true;
-                log.info("{}", userAgent);
-            }else if(userAgent.contains("iPad; CPU OS 9") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9"))){
-                isSupported = true;
-                log.info("{}", userAgent);
-            }else if(userAgent.contains("Windows") && userAgent.contains("Edge/")){
-                isSupported = true;
-                log.info("{}", userAgent);
+            if((userAgent.contains("Mac OS X 10_11") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9")))
+                    || (userAgent.contains("iPhone OS 9") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9")))
+                    || (userAgent.contains("iPad; CPU OS 9") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9")))
+                    || (userAgent.contains("Windows") && userAgent.contains("Edge/"))){
+                isNativeHlsSupported = true;
             }
+            log.info("{} : {}", isNativeHlsSupported, userAgent);
 
             ChukasaModel chukasaModel = new ChukasaModel();
 
@@ -177,7 +170,7 @@ public class HTML5PlayerController {
             html5PlayerModel.setPlaylistURI(playlistURI);
             model.addAttribute("html5PlayerModel", html5PlayerModel);
 
-            if(isSupported){
+            if(isNativeHlsSupported){
                 return "player";
             }else{
                 return chukasaConfiguration.getAlternativeHlsPlayer() + "-player";

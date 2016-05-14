@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pro.hirooka.chukasa.domain.ChukasaModel;
-import pro.hirooka.chukasa.domain.type.StreamingType;
-import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
+import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
+import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 
 import java.io.File;
 import java.io.IOException;

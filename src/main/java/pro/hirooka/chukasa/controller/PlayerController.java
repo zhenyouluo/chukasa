@@ -6,20 +6,19 @@ import org.springframework.web.bind.annotation.*;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.HLSConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
-import pro.hirooka.chukasa.domain.ChukasaModel;
-import pro.hirooka.chukasa.domain.ChukasaSettings;
-import pro.hirooka.chukasa.domain.type.StreamingType;
+import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
+import pro.hirooka.chukasa.domain.chukasa.ChukasaSettings;
+import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.handler.ChukasaRemover;
 import pro.hirooka.chukasa.handler.ChukasaStopper;
 import pro.hirooka.chukasa.handler.ChukasaThreadHandler;
 import pro.hirooka.chukasa.operator.IDirectoryCreator;
 import pro.hirooka.chukasa.operator.ITimerTaskParameterCalculator;
-import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.nio.file.Files;
-import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 

@@ -3,11 +3,11 @@ package pro.hirooka.chukasa.handler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import pro.hirooka.chukasa.capture.CaptureRunner;
-import pro.hirooka.chukasa.domain.ChukasaModel;
-import pro.hirooka.chukasa.domain.type.StreamingType;
+import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
+import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.playlister.PlaylisterRunner;
 import pro.hirooka.chukasa.segmenter.SegmenterRunner;
-import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 import pro.hirooka.chukasa.transcoder.FFmpegRunner;
 
 import static java.util.Objects.requireNonNull;

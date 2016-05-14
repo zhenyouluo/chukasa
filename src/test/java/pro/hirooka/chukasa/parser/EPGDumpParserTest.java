@@ -8,7 +8,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pro.hirooka.chukasa.Application;
-import pro.hirooka.chukasa.epgdump.EPGDumpParser;
+import pro.hirooka.chukasa.epgdump.EpgdumpParser;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(Application.class)
@@ -16,7 +16,7 @@ import pro.hirooka.chukasa.epgdump.EPGDumpParser;
 public class EPGDumpParserTest {
 
     @Autowired
-    EPGDumpParser epgDumpParser;
+    EpgdumpParser epgDumpParser;
 
     @Ignore
     @Test

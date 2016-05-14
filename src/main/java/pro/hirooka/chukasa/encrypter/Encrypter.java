@@ -3,9 +3,9 @@ package pro.hirooka.chukasa.encrypter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import pro.hirooka.chukasa.domain.ChukasaModel;
-import pro.hirooka.chukasa.domain.type.StreamingType;
-import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
+import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
+import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;

@@ -6,7 +6,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
-import pro.hirooka.chukasa.domain.ReservedProgram;
+import pro.hirooka.chukasa.domain.recorder.ReservedProgram;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -16,13 +16,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
+import static java.util.Objects.requireNonNull;
+
 @Slf4j
 public class Recorder {
 
     private  SystemConfiguration systemConfiguration;
 
     public Recorder(SystemConfiguration systemConfiguration){
-        this.systemConfiguration = systemConfiguration;
+        this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
     }
 
     @Getter

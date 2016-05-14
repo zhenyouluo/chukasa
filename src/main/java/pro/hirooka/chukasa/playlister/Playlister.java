@@ -2,9 +2,9 @@ package pro.hirooka.chukasa.playlister;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import pro.hirooka.chukasa.domain.ChukasaModel;
-import pro.hirooka.chukasa.domain.type.PlaylistType;
-import pro.hirooka.chukasa.service.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
+import pro.hirooka.chukasa.domain.chukasa.type.PlaylistType;
+import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 
 import java.io.*;
 import java.util.TimerTask;
