@@ -37,6 +37,7 @@ public class FFmpegRunner implements Runnable {
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
 
         boolean isQSV = chukasaModel.getSystemConfiguration().isQuickSyncVideoEnabled();
+        boolean isOpenMAX = chukasaModel.getSystemConfiguration().isOpenmaxEnabled();
 
         int seqCapturedTimeShifted = chukasaModel.getSeqTsOkkake();
 
@@ -101,7 +102,7 @@ public class FFmpegRunner implements Runnable {
 
         }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE){
 
-            if(isQSV){
+            if(isQSV && !isOpenMAX || isQSV) {
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -112,6 +113,25 @@ public class FFmpegRunner implements Runnable {
                         "-ar", "44100",
                         "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
                         "-vcodec", "h264_qsv",
+                        "-profile:v", "high",
+                        "-level", "4.1",
+                        "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
+                        "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
+                        "-f", "mpegts",
+                        "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension()
+                };
+                cmdArray = cmdArrayTemporary;
+            }else if(!isQSV && isOpenMAX){
+                String[] cmdArrayTemporary = {
+
+                        chukasaModel.getSystemConfiguration().getFfmpegPath(),
+                        "-i", chukasaModel.getSystemConfiguration().getFilePath() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName(),
+                        "-acodec", "aac",
+                        "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
+                        "-ac", "2",
+                        "-ar", "44100",
+                        "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
+                        "-vcodec", "h264_omx",
                         "-profile:v", "high",
                         "-level", "4.1",
                         "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",

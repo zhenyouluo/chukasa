@@ -18,4 +18,5 @@ public class SystemConfiguration {
     String filePath;
     int ffmpegThreads;
     boolean quickSyncVideoEnabled;
+    boolean openmaxEnabled;
 }
