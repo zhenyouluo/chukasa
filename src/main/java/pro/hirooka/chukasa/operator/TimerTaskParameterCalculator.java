@@ -47,6 +47,9 @@ public class TimerTaskParameterCalculator implements ITimerTaskParameterCalculat
             // timerSegmenterDelay = 0;
         }
 
+        if(chukasaModel.getSystemConfiguration().isOpenmaxEnabled()){
+            timerSegmenterDelay = timerSegmenterDelay + 3000; // todo
+        }
         long timerSegmenterPeriod = (long) (duration * 1000);
 
         // playlister timer parameters [ms]

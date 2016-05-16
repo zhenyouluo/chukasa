@@ -48,7 +48,7 @@ public class FFmpegStopper implements Runnable {
                 String sTrim = s.trim();
                 ArrayList<String> arrayPID = null;
 
-                if ((sTrim.matches(".*libx264.*") && sTrim.matches(".*mpegts.*")) || (sTrim.matches(".*h264_qsv.*") && sTrim.matches(".*mpegts.*"))) { // TODO: more
+                if ((sTrim.matches(".*libx264.*") && sTrim.matches(".*mpegts.*")) || (sTrim.matches(".*h264_qsv.*") && sTrim.matches(".*mpegts.*")) || (sTrim.matches(".*h264_omx.*") && sTrim.matches(".*mpegts.*"))) { // TODO: more
                     String[] sTrimSplit = sTrim.split(" ");
                     arrayPID = new ArrayList<>();
                     for(int i = 0; i < sTrimSplit.length; i++ ) {
