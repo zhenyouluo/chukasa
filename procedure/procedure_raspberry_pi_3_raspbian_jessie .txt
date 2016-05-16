@@ -39,9 +39,9 @@ mkdir /opt/chukasa/video
 cd /tmp
 git clone https://github.com/hirooka/chukasa.git
 cd chukasa
-sed -i -e "s/system.ffmpeg-path=/usr/local/bin/ffmpeg/system.ffmpeg-path=/usr/local/bin/avconv/g" src/main/resources/application.properties
+sed -i -e "s/system.ffmpeg-path=\/usr\/local\/bin\/ffmpeg/system.ffmpeg-path=\/usr\/local\/bin\/avconv/g" src/main/resources/application.properties
 sed -i -e "s/system.quick-sync-video-enabled=true/system.quick-sync-video-enabled=false/g" src/main/resources/application.properties
-sed -i -e "s/system.openmax-enabled=true/system.openmax-enabled=true/g" src/main/resources/application.properties
+sed -i -e "s/system.openmax-enabled=false/system.openmax-enabled=true/g" src/main/resources/application.properties
 
 # build chukasa application
 ./gradlew build
