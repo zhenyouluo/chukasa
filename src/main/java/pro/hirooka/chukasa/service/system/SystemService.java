@@ -66,7 +66,7 @@ public class SystemService implements ISystemService {
     }
 
     @Override
-    public boolean isEPGDump() {
+    public boolean isEpgdump() {
         File epgdump = new File(systemConfiguration.getEpgdumpPath());
         if(epgdump.exists()){
             return true;
@@ -94,6 +94,38 @@ public class SystemService implements ISystemService {
             process.destroy();
         } catch (IOException e) {
             log.error("{} {}", e.getMessage(), e);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canWebCameraStreaming() {
+        if(isFFmpeg() && isWebCamera()){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canFileStreaming() {
+        if(isFFmpeg()){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canPTxStreaming() {
+        if(isFFmpeg() && isPTx() && isRecpt1()){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canRecording() {
+        if(isFFmpeg() && isPTx() && isRecpt1() && isEpgdump() && isMongoDB()){
+            return true;
         }
         return false;
     }

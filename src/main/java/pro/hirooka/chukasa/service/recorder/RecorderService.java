@@ -41,7 +41,7 @@ public class RecorderService implements IRecorderService {
     @PostConstruct
     public void init(){
 
-        if(systemService.isPTx() && systemService.isRecpt1()){
+        if(systemService.isPTx() && systemService.isRecpt1() && systemService.isFFmpeg() && systemService.isEpgdump() && systemService.isMongoDB()){
             List<ReservedProgram> reservedProgramList = read();
             for(ReservedProgram reservedProgram : reservedProgramList){
                 if(true){ // TODO: checker

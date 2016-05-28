@@ -55,7 +55,7 @@ public class EpgdumpService implements IEpgdumpService {
         // epgdump へのパスが存在していて，
         // 一度も情報を取得していない，あるいは前回情報を取得してから一定期間経過している場合，
         // アプリケーション起動時に別スレッドで情報を取得する．
-        if(systemService.isMongoDB() && systemService.isEPGDump() && !isEPGDumpExecuted()) {
+        if(systemService.isMongoDB() && systemService.isEpgdump() && !isEPGDumpExecuted()) {
             LastEpgdumpExecuted lastEpgdumpExecuted = lastEPGDumpExecutedService.read(1);
             if (lastEpgdumpExecuted == null) {
                 runEPGDump();
@@ -79,7 +79,7 @@ public class EpgdumpService implements IEpgdumpService {
     @Scheduled(cron = "${chukasa.epgdump-execute-schedule-cron}")
     void execute(){
 
-        if(systemService.isEPGDump()) {
+        if(systemService.isEpgdump() && systemService.isMongoDB() ) {
             log.info("runEPGDump is executed.");
             runEPGDump();
         }

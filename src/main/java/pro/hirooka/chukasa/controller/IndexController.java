@@ -67,7 +67,7 @@ public class IndexController {
         boolean isFFmpeg = systemService.isFFmpeg();
         boolean isPTx = systemService.isPTx();
         boolean isRecpt1 = systemService.isRecpt1();
-        boolean isEPGDump = systemService.isEPGDump();
+        boolean isEpgdump = systemService.isEpgdump();
         boolean isMongoDB = systemService.isMongoDB();
         boolean isWebCamera = systemService.isWebCamera();
 
@@ -83,7 +83,7 @@ public class IndexController {
         } catch (IOException e) {
             log.error("invalid epgdump_channel_map.json: {} {}", e.getMessage(), e);
         }
-        if(isMongoDB && isEPGDump){
+        if(isMongoDB && isEpgdump){
             programList = programTableService.readByNow(new Date().getTime());
             if(programList != null && lastEpgdumpExecutedService.read(1) != null && programList.size() >= epgdumpChannelMap.size()){
                 isLastEpgdumpExecuted = true;

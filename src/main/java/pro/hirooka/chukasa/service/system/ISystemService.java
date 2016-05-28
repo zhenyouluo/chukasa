@@ -6,6 +6,10 @@ public interface ISystemService {
     String getWebCameraDeviceName();
     boolean isPTx();
     boolean isRecpt1();
-    boolean isEPGDump();
+    boolean isEpgdump();
     boolean isMongoDB();
+    boolean canWebCameraStreaming();
+    boolean canFileStreaming();
+    boolean canPTxStreaming();
+    boolean canRecording();
 }
