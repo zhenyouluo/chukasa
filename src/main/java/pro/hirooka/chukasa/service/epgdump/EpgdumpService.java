@@ -58,6 +58,7 @@ public class EpgdumpService implements IEpgdumpService {
         if(systemService.isMongoDB() && systemService.isEpgdump() && !isEPGDumpExecuted()) {
             LastEpgdumpExecuted lastEpgdumpExecuted = lastEPGDumpExecutedService.read(1);
             if (lastEpgdumpExecuted == null) {
+                log.info("lastEpgdumpExecuted == null -> runEPGDump()");
                 runEPGDump();
             } else {
                 Date date = new Date();
@@ -80,7 +81,7 @@ public class EpgdumpService implements IEpgdumpService {
     void execute(){
 
         if(systemService.isEpgdump() && systemService.isMongoDB() ) {
-            log.info("runEPGDump is executed.");
+            log.info("cheduled cron -> runEPGDump()");
             runEPGDump();
         }
     }
