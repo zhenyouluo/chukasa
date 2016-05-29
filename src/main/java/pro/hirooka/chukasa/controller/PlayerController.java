@@ -20,8 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.nio.file.Files;
 
-import static java.util.Objects.requireNonNull;
-
 @Slf4j
 @RestController
 @RequestMapping("player")
@@ -31,33 +29,24 @@ public class PlayerController {
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-    private final ChukasaConfiguration chukasaConfiguration;
-    private final SystemConfiguration systemConfiguration;
-    private final HLSConfiguration hlsConfiguration;
-    private final IChukasaModelManagementComponent chukasaModelManagementComponent;
-    private final IDirectoryCreator directoryCreator;
-    private final ITimerTaskParameterCalculator timerTaskParameterCalculator;
-
+    @Autowired
+    ChukasaConfiguration chukasaConfiguration;
+    @Autowired
+    SystemConfiguration systemConfiguration;
+    @Autowired
+    HLSConfiguration hlsConfiguration;
+    @Autowired
+    IChukasaModelManagementComponent chukasaModelManagementComponent;
+    @Autowired
+    IDirectoryCreator directoryCreator;
+    @Autowired
+    ITimerTaskParameterCalculator timerTaskParameterCalculator;
+    @Autowired
+    ChukasaStopper chukasaStopper;
+    @Autowired
+    ChukasaRemover chukasaRemover;
     @Autowired
     private HttpServletRequest request;
-
-    @Autowired
-    public PlayerController(
-            ChukasaConfiguration chukasaConfiguration,
-            SystemConfiguration systemConfiguration,
-            HLSConfiguration hlsConfiguration,
-            IChukasaModelManagementComponent chukasaModelManagementComponent,
-            IDirectoryCreator directoryCreator,
-            ITimerTaskParameterCalculator timerTaskParameterCalculator
-    ) {
-        this.chukasaConfiguration = requireNonNull(chukasaConfiguration, "chukasaConfiguration");
-        this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
-        this.hlsConfiguration = requireNonNull(hlsConfiguration, "hlsConfiguration");
-        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
-        this.directoryCreator = requireNonNull(directoryCreator, "directoryCreator");
-        this.timerTaskParameterCalculator = requireNonNull(timerTaskParameterCalculator, "timerTaskParameterCalculator");
-    }
-
 
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     void play(@RequestBody ChukasaSettings chukasaSettings){
@@ -104,7 +93,6 @@ public class PlayerController {
 
     @RequestMapping(value = "/stop", method = RequestMethod.GET)
     void stop(){
-        ChukasaStopper chukasaStopper = new ChukasaStopper(chukasaModelManagementComponent);
         chukasaStopper.stop();
     }
 
@@ -116,7 +104,7 @@ public class PlayerController {
         }else {
             String streamRootPath = request.getSession().getServletContext().getRealPath("") + chukasaConfiguration.getStreamRootPathName();
             if(Files.exists(new File(streamRootPath).toPath())) {
-                ChukasaRemover chukasaRemover = new ChukasaRemover(streamRootPath, systemConfiguration);
+                chukasaRemover.setStreamRootPath(streamRootPath);
                 chukasaRemover.remove();
             }else {
                 log.warn("cannot remove files bacause streamRootPath: {} does not exist.", streamRootPath);

@@ -2,7 +2,6 @@ package pro.hirooka.chukasa.encrypter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
@@ -23,13 +22,11 @@ public class Encrypter implements Runnable {
 
     private int adaptiveBitrateStreaming;
 
-    @Autowired
-    private final IChukasaModelManagementComponent chukasaModelManagementComponent;
+    private IChukasaModelManagementComponent chukasaModelManagementComponent;
 
-    @Autowired
     public Encrypter(int adaptiveBitrateStreaming, IChukasaModelManagementComponent chukasaModelManagementComponent){
-        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
         this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;
+        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
     }
 
     @Override

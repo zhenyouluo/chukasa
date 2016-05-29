@@ -7,18 +7,12 @@ import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 
-import static java.util.Objects.requireNonNull;
-
 @Slf4j
 @Component
 public class TimerTaskParameterCalculator implements ITimerTaskParameterCalculator {
 
-    private final IChukasaModelManagementComponent chukasaModelManagementComponent;
-
     @Autowired
-    public TimerTaskParameterCalculator(IChukasaModelManagementComponent chukasaModelManagementComponent) {
-        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
-    }
+    IChukasaModelManagementComponent chukasaModelManagementComponent;
 
     @Override
     public void calculate(int adaptiveBitrateStreaming) {

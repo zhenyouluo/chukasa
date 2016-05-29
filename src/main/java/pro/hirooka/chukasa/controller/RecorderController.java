@@ -18,12 +18,8 @@ import java.util.List;
 @RequestMapping("recorder")
 public class RecorderController {
 
-    private final IRecorderService recorderService;
-
     @Autowired
-    public RecorderController(IRecorderService recorderService){
-        this.recorderService = recorderService;
-    }
+    IRecorderService recorderService;
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)

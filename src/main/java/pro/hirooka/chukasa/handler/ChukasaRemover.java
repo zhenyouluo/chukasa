@@ -1,8 +1,10 @@
 package pro.hirooka.chukasa.handler;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 
 import java.io.File;
@@ -11,17 +13,14 @@ import java.io.IOException;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
+@Component
 public class ChukasaRemover {
 
+    @Setter
     private String streamRootPath;
 
-    private final SystemConfiguration systemConfiguration;
-
     @Autowired
-    public ChukasaRemover(String streamRootPath, SystemConfiguration systemConfiguration) {
-        this.streamRootPath = streamRootPath;
-        this.systemConfiguration = systemConfiguration;
-    }
+    SystemConfiguration systemConfiguration;
 
     public void remove(){
 

@@ -21,34 +21,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static java.util.Objects.requireNonNull;
-
 @Slf4j
 @Controller
 public class IndexController {
 
-    private final SystemConfiguration systemConfiguration;
-    private final ChukasaConfiguration chukasaConfiguration;
-    private final ISystemService systemService;
-    private final IProgramTableService programTableService;
-    private final ILastEpgdumpExecutedService lastEpgdumpExecutedService;
-
+    @Autowired
+    SystemConfiguration systemConfiguration;
+    @Autowired
+    ChukasaConfiguration chukasaConfiguration;
+    @Autowired
+    ISystemService systemService;
+    @Autowired
+    IProgramTableService programTableService;
+    @Autowired
+    ILastEpgdumpExecutedService lastEpgdumpExecutedService;
     @Autowired
     private HttpServletRequest httpServletRequest;
-
-    @Autowired
-    public IndexController(
-            SystemConfiguration systemConfiguration,
-            ChukasaConfiguration chukasaConfiguration,
-            ISystemService systemService,
-            IProgramTableService programTableService,
-            ILastEpgdumpExecutedService lastEpgdumpExecutedService){
-        this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
-        this.chukasaConfiguration = requireNonNull(chukasaConfiguration, "chukasaConfiguration");
-        this.systemService = requireNonNull(systemService, "systemService");
-        this.programTableService = requireNonNull(programTableService, "epgDumpProgramTableService");
-        this.lastEpgdumpExecutedService = requireNonNull(lastEpgdumpExecutedService, "lastEPGDumpExecutedService");
-    }
 
     @RequestMapping("/")
     String index(Model model){

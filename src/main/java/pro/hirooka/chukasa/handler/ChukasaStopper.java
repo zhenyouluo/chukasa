@@ -2,6 +2,7 @@ package pro.hirooka.chukasa.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
@@ -9,17 +10,12 @@ import pro.hirooka.chukasa.transcoder.FFmpegStopper;
 
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
-
 @Slf4j
+@Component
 public class ChukasaStopper {
 
-    private final IChukasaModelManagementComponent chukasaModelManagementComponent;
-
     @Autowired
-    public ChukasaStopper(IChukasaModelManagementComponent chukasaModelManagementComponent) {
-        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
-    }
+    IChukasaModelManagementComponent chukasaModelManagementComponent;
 
     public void stop(){
 

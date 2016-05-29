@@ -1,7 +1,6 @@
 package pro.hirooka.chukasa.segmenter;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 
@@ -13,12 +12,10 @@ import static java.util.Objects.requireNonNull;
 public class SegmenterRunner implements Runnable {
 
     private int adaptiveBitrateStreaming;
-
-    private final IChukasaModelManagementComponent chukasaModelManagementComponent;
-
     private boolean isRunning = true;
 
-    @Autowired
+    private IChukasaModelManagementComponent chukasaModelManagementComponent;
+
     public SegmenterRunner(int adaptiveBitrateStreaming, IChukasaModelManagementComponent chukasaModelManagementComponent){
         this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;
         this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");

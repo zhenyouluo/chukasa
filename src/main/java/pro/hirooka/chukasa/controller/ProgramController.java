@@ -16,21 +16,15 @@ import pro.hirooka.chukasa.service.recorder.IRecorderService;
 
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
-
 @Slf4j
 @Controller
 @RequestMapping("programs")
 public class ProgramController {
 
-    private final IProgramTableService programTableService;
-    private final IRecorderService recorderService;
-
     @Autowired
-    public ProgramController(IProgramTableService programTableService, IRecorderService recorderService){
-        this.programTableService = requireNonNull(programTableService, "programTableService");
-        this.recorderService = requireNonNull(recorderService, "recorderService");
-    }
+    IProgramTableService programTableService;
+    @Autowired
+    IRecorderService recorderService;
 
     @RequestMapping(method = RequestMethod.GET)
     String read(Model model){

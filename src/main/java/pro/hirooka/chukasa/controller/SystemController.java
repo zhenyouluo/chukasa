@@ -5,31 +5,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 import pro.hirooka.chukasa.service.system.SystemService;
 
 import javax.servlet.http.HttpServletRequest;
-
-import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Controller
 @RequestMapping("system")
 public class SystemController {
 
-    private final IChukasaModelManagementComponent chukasaModelManagementComponent;
-
     @Autowired
-    private HttpServletRequest httpServletRequest;
-
+    IChukasaModelManagementComponent chukasaModelManagementComponent;
     @Autowired
-    private SystemService systemService;
-
+    HttpServletRequest httpServletRequest;
     @Autowired
-    public SystemController(IChukasaModelManagementComponent chukasaModelManagementComponent){
-        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
-    }
+    SystemService systemService;
 
     @RequestMapping("/")
     String index(Model model){

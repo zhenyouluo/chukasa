@@ -1,7 +1,6 @@
 package pro.hirooka.chukasa.capture;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.segmenter.SegmenterRunner;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
@@ -18,9 +17,8 @@ public class CaptureRunner implements Runnable {
 
     private int adaptiveBitrateStreaming;
 
-    private final IChukasaModelManagementComponent chukasaModelManagementComponent;
+    private IChukasaModelManagementComponent chukasaModelManagementComponent;
 
-    @Autowired
     public CaptureRunner(int adaptiveBitrateStreaming, IChukasaModelManagementComponent chukasaModelManagementComponent) {
         this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;
         this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");

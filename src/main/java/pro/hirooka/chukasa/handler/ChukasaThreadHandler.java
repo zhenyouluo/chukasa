@@ -1,7 +1,6 @@
 package pro.hirooka.chukasa.handler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import pro.hirooka.chukasa.capture.CaptureRunner;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
@@ -17,9 +16,8 @@ public class ChukasaThreadHandler implements Runnable {
 
     private int adaptiveBitrateStreaming;
 
-    private final IChukasaModelManagementComponent chukasaModelManagementComponent;
+    private IChukasaModelManagementComponent chukasaModelManagementComponent;
 
-    @Autowired
     public ChukasaThreadHandler(int adaptiveBitrateStreaming, IChukasaModelManagementComponent chukasaModelManagementComponent){
         this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;
         this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");

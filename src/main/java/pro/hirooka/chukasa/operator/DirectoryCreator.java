@@ -12,20 +12,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static java.util.Objects.requireNonNull;
-
 @Slf4j
 @Component
 public class DirectoryCreator implements IDirectoryCreator{
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-    private final IChukasaModelManagementComponent chukasaModelManagementComponent;
-
     @Autowired
-    public DirectoryCreator(IChukasaModelManagementComponent chukasaModelManagementComponent) {
-        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
-    }
+    IChukasaModelManagementComponent chukasaModelManagementComponent;
 
     @Override
     public void setup(int adaptiveBitrateStreaming) {

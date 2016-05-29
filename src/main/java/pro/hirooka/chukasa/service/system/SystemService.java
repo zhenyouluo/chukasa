@@ -4,11 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
-import pro.hirooka.chukasa.service.system.ISystemService;
 
 import java.io.*;
-
-import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Component
@@ -18,12 +15,8 @@ public class SystemService implements ISystemService {
     private final String PT3_DEVICE = "/dev/pt3video0";
     private final String MONGOD = "/bin/mongod";
 
-    private final SystemConfiguration systemConfiguration;
-
     @Autowired
-    public SystemService(SystemConfiguration systemConfiguration){
-        this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
-    }
+    SystemConfiguration systemConfiguration;
 
     @Override
     public boolean isFFmpeg() {

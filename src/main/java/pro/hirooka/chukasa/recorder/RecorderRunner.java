@@ -1,6 +1,7 @@
 package pro.hirooka.chukasa.recorder;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.recorder.ReservedProgram;
 
@@ -14,11 +15,12 @@ public class RecorderRunner implements Runnable {
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-    private SystemConfiguration systemConfiguration;
+    @Autowired
+    SystemConfiguration systemConfiguration;
+
     private ReservedProgram reservedProgram;
 
-    public RecorderRunner(SystemConfiguration systemConfiguration, ReservedProgram reservedProgram){
-        this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
+    public RecorderRunner(ReservedProgram reservedProgram){
         this.reservedProgram = requireNonNull(reservedProgram, "reservedProgram");
     }
 

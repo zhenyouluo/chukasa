@@ -2,7 +2,6 @@ package pro.hirooka.chukasa.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 
 import java.io.File;
@@ -18,14 +17,13 @@ public class ChukasaRemoverRunner implements Runnable {
 
     private String streamRootPath;
 
-    private final SystemConfiguration systemConfiguration;
+    private SystemConfiguration systemConfiguration;
 
     private UUID uuid;
 
-    @Autowired
-    public ChukasaRemoverRunner(String streamRootPath, SystemConfiguration systemConfiguration, UUID uuid) {
+    public ChukasaRemoverRunner(SystemConfiguration systemConfiguration, String streamRootPath, UUID uuid) {
+        this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
         this.streamRootPath = streamRootPath;
-        this.systemConfiguration = systemConfiguration;
         this.uuid = uuid;
     }
 

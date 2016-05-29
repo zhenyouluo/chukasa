@@ -5,14 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.domain.epgdump.LastEpgdumpExecuted;
 import pro.hirooka.chukasa.repository.ILastEpgdumpExecutedRepository;
-import pro.hirooka.chukasa.service.epgdump.ILastEpgdumpExecutedService;
 
 @Slf4j
 @Component
 public class LastEpgdumpExecutedService implements ILastEpgdumpExecutedService {
 
     @Autowired
-    private ILastEpgdumpExecutedRepository lastEpgdumpExecutedRepository;
+    ILastEpgdumpExecutedRepository lastEpgdumpExecutedRepository;
 
     @Override
     public LastEpgdumpExecuted create(LastEpgdumpExecuted lastEPGDumpExecuted) {

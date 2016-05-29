@@ -2,6 +2,7 @@ package pro.hirooka.chukasa.recorder;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
@@ -16,16 +17,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
-import static java.util.Objects.requireNonNull;
-
 @Slf4j
 public class Recorder {
 
-    private  SystemConfiguration systemConfiguration;
-
-    public Recorder(SystemConfiguration systemConfiguration){
-        this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
-    }
+    @Autowired
+    SystemConfiguration systemConfiguration;
 
     @Getter
     Map<Integer, ScheduledFuture> scheduledFutureMap = new HashMap<>();
@@ -35,7 +31,7 @@ public class Recorder {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         TaskScheduler taskScheduler = new ConcurrentTaskScheduler(scheduledExecutorService);
         Date date = new Date(reservedProgram.getStart());
-        Runnable runnable = new RecorderRunner(systemConfiguration, reservedProgram);
+        Runnable runnable = new RecorderRunner(reservedProgram);
         ScheduledFuture scheduledFuture = taskScheduler.schedule(runnable, date);
         scheduledFutureMap.put(reservedProgram.getId(), scheduledFuture);
         log.info("scheduler: {}", date.toString());
@@ -47,7 +43,7 @@ public class Recorder {
             ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
             TaskScheduler taskScheduler = new ConcurrentTaskScheduler(scheduledExecutorService);
             Date date = new Date(reservedProgram.getStart());
-            Runnable runnable = new RecorderRunner(systemConfiguration, reservedProgram);
+            Runnable runnable = new RecorderRunner(reservedProgram);
             ScheduledFuture scheduledFuture = taskScheduler.schedule(runnable, date);
             scheduledFutureMap.put(reservedProgram.getId(), scheduledFuture);
         });

@@ -1,7 +1,6 @@
 package pro.hirooka.chukasa.transcoder;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.encrypter.Encrypter;
@@ -23,12 +22,11 @@ public class FFmpegRunner implements Runnable {
 
     private int adaptiveBitrateStreaming;
 
-    private final IChukasaModelManagementComponent chukasaModelManagementComponent;
+    private IChukasaModelManagementComponent chukasaModelManagementComponent;
 
-    @Autowired
     public FFmpegRunner(int adaptiveBitrateStreaming, IChukasaModelManagementComponent chukasaModelManagementComponent){
-        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
         this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;
+        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
     }
 
     @Override

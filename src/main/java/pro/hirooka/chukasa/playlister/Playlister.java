@@ -1,7 +1,6 @@
 package pro.hirooka.chukasa.playlister;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.PlaylistType;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
@@ -18,10 +17,8 @@ public class Playlister extends TimerTask {
 
     private int adaptiveBitrateStreaming;
 
-    private final IChukasaModelManagementComponent chukasaModelManagementComponent;
+    private IChukasaModelManagementComponent chukasaModelManagementComponent;
 
-
-    @Autowired
     public Playlister(int adaptiveBitrateStreaming, IChukasaModelManagementComponent chukasaModelManagementComponent) {
         this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;
         this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");

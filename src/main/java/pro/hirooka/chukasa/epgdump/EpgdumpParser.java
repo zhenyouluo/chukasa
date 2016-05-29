@@ -16,18 +16,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Objects.requireNonNull;
-
 @Slf4j
 @Component
 public class EpgdumpParser implements IEpgdumpParser {
 
-    private final IProgramTableService epgDumpProgramTableService;
-
     @Autowired
-    public EpgdumpParser(IProgramTableService epgDumpProgramTableService){
-        this.epgDumpProgramTableService = requireNonNull(epgDumpProgramTableService, "epgDumpProgramTableService");
-    }
+    IProgramTableService epgDumpProgramTableService;
 
     @Override
     public void parse(String path, Map<String, Integer> epgdumpChannelMap) {

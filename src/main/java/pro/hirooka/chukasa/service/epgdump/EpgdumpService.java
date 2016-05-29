@@ -23,31 +23,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Objects.requireNonNull;
-
 @Slf4j
 @Component
 public class EpgdumpService implements IEpgdumpService {
 
-    private final SystemConfiguration systemConfiguration;
-    private final ChukasaConfiguration chukasaConfiguration;
-    private final IEpgdumpParser epgDumpParser;
-    private final ILastEpgdumpExecutedService lastEPGDumpExecutedService;
-    private final ISystemService systemService;
-
     @Autowired
-    public EpgdumpService(
-            SystemConfiguration systemConfiguration,
-            ChukasaConfiguration chukasaConfiguration,
-            IEpgdumpParser epgDumpParser,
-            ILastEpgdumpExecutedService lastEPGDumpExecutedService,
-            ISystemService systemService){
-        this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
-        this.chukasaConfiguration = requireNonNull(chukasaConfiguration, "chukasaConfiguration");
-        this.epgDumpParser = requireNonNull(epgDumpParser, "epgDumpParser");
-        this.lastEPGDumpExecutedService = requireNonNull(lastEPGDumpExecutedService, "lastEPGDumpExecutedService");
-        this.systemService = requireNonNull(systemService, "systemService");
-    }
+    SystemConfiguration systemConfiguration;
+    @Autowired
+    ChukasaConfiguration chukasaConfiguration;
+    @Autowired
+    IEpgdumpParser epgDumpParser;
+    @Autowired
+    ILastEpgdumpExecutedService lastEPGDumpExecutedService;
+    @Autowired
+    ISystemService systemService;
 
     @PostConstruct
     public void init(){
@@ -95,7 +84,7 @@ public class EpgdumpService implements IEpgdumpService {
             Map<String, Integer> epgdumpChannelMap = objectMapper.readValue(resource.getFile(), HashMap.class);
             log.info(epgdumpChannelMap.toString());
 
-            EPGDumpRunner epgDumpRunner = new EPGDumpRunner(systemConfiguration, chukasaConfiguration, epgDumpParser, lastEPGDumpExecutedService, epgdumpChannelMap);
+            EPGDumpRunner epgDumpRunner = new EPGDumpRunner(epgdumpChannelMap);
             Thread thread = new Thread(epgDumpRunner);
             thread.start();
 

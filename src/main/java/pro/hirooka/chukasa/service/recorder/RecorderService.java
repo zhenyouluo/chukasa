@@ -14,29 +14,18 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.requireNonNull;
-
 @Slf4j
 @Component
 public class RecorderService implements IRecorderService {
 
-    private final SystemConfiguration systemConfiguration;
-    private final ChukasaConfiguration chukasaConfiguration;
-    private final IReservedProgramRepository reservedProgramRepository;
-    private final ISystemService systemService;
-
     @Autowired
-    public RecorderService(
-            SystemConfiguration systemConfiguration,
-            ChukasaConfiguration chukasaConfiguration,
-            IReservedProgramRepository reservedProgramRepository,
-            ISystemService systemService
-    ){
-        this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
-        this.chukasaConfiguration = requireNonNull(chukasaConfiguration, "chukasaConfiguration");
-        this.reservedProgramRepository = requireNonNull(reservedProgramRepository, "reservedProgramRepository");
-        this.systemService = requireNonNull(systemService, "systemService");
-    }
+    SystemConfiguration systemConfiguration;
+    @Autowired
+    ChukasaConfiguration chukasaConfiguration;
+    @Autowired
+    IReservedProgramRepository reservedProgramRepository;
+    @Autowired
+    ISystemService systemService;
 
     @PostConstruct
     public void init(){
@@ -54,7 +43,7 @@ public class RecorderService implements IRecorderService {
                         // reserve
                         log.info("reservation: {}", reservedProgram.toString());
 
-                        Recorder recorder = new Recorder(systemConfiguration);
+                        Recorder recorder = new Recorder();
                         recorder.reserve(reservedProgram);
 
                     } else if (now > startRecording && stopRecording > now) {
@@ -64,7 +53,7 @@ public class RecorderService implements IRecorderService {
 
                         long duration = (stopRecording - now) / 1000;
                         reservedProgram.setDuration(duration);
-                        RecorderRunner recorderRunner = new RecorderRunner(systemConfiguration, reservedProgram);
+                        RecorderRunner recorderRunner = new RecorderRunner(reservedProgram);
                         Thread thread = new Thread(recorderRunner);
                         thread.start();
 
@@ -110,7 +99,7 @@ public class RecorderService implements IRecorderService {
             // reserve
             log.info("reservation");
 
-            Recorder recorder = new Recorder(systemConfiguration);
+            Recorder recorder = new Recorder();
             recorder.reserve(reservedProgram);
 
         }else if(now > startRecording && stopRecording > now){
@@ -120,7 +109,7 @@ public class RecorderService implements IRecorderService {
 
             durationRecording = (stopRecording - now) / 1000;
             reservedProgram.setDurationRecording(durationRecording);
-            RecorderRunner recorderRunner = new RecorderRunner(systemConfiguration, reservedProgram);
+            RecorderRunner recorderRunner = new RecorderRunner(reservedProgram);
             Thread thread = new Thread(recorderRunner);
             thread.start();
 

@@ -19,24 +19,18 @@ public class EPGDumpRunner implements Runnable {
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-    private final SystemConfiguration systemConfiguration;
-    private final ChukasaConfiguration chukasaConfiguration;
-    private final IEpgdumpParser epgDumpParser;
-    private final ILastEpgdumpExecutedService lastEpgdumpExecutedService;
+    @Autowired
+    SystemConfiguration systemConfiguration;
+    @Autowired
+    ChukasaConfiguration chukasaConfiguration;
+    @Autowired
+    IEpgdumpParser epgDumpParser;
+    @Autowired
+    ILastEpgdumpExecutedService lastEpgdumpExecutedService;
 
     private Map<String, Integer> epgDumpChannelMap;
 
-    @Autowired
-    public EPGDumpRunner(
-            SystemConfiguration systemConfiguration,
-            ChukasaConfiguration chukasaConfiguration,
-            IEpgdumpParser epgDumpParser,
-            ILastEpgdumpExecutedService lastEpgdumpExecutedService,
-            Map<String, Integer> epgDumpChannelMap){
-        this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
-        this.chukasaConfiguration = requireNonNull(chukasaConfiguration, "chukasaConfiguration");
-        this.epgDumpParser = requireNonNull(epgDumpParser, "epgDumpParser");
-        this.lastEpgdumpExecutedService = requireNonNull(lastEpgdumpExecutedService, "lastEpgdumpExecutedService");
+    public EPGDumpRunner(Map<String, Integer> epgDumpChannelMap){
         this.epgDumpChannelMap = requireNonNull(epgDumpChannelMap, "epgDumpChannelMap");
     }
 
