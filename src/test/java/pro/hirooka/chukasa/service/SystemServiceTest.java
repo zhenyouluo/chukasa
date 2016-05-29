@@ -41,7 +41,7 @@ public class SystemServiceTest {
     @Ignore
     @Test
     public void isFPGDump(){
-        boolean bool = systemService.isEPGDump();
+        boolean bool = systemService.isEpgdump();
         assertThat(bool, is(true));
     }
 
