@@ -190,3 +190,7 @@ db.dropDatabase()
 
 db.program.find({ch:27,start:{$lt:1464438613000},end:{$gt:1464438613000}}).count()
 db.program.distinct("channel")
+
+avconv -i sintel_trailer-1080p.mp4 -acodec aac -strict experimental -ab 128k -ac 2 -ar 44100 -vcodec h264_omx -b:v 1000k -threads 1 -f mpegts -y output.ts
+recdvb --b25 --strip XX - - | avconv -i - -acodec aac -strict experimental -ab 128k -ac 2 -ar 44100 -vcodec h264_omx -b:v 1000k -threads 1 -f mpegts -y 20.ts
+avconv -f video4linux2 -s 640x360 -i /dev/video0 -f alsa -ac 1 -i hw:0,0 -acodec aac -strict experimental -ab 128k -ar 44100 -vcodec h264_omx -b:v 1000k -threads 1 -t 30 -f mpegts -y 20.ts

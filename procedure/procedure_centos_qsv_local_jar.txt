@@ -64,12 +64,11 @@ sudo touch /usr/lib64/pkgconfig/libmfx.pc
 # use "centos/usr/lib64/pkgconfig/libmfx.pc"
 
 #*******************************************************************************************************************
-# FFmpeg 3.0.1
+# FFmpeg
 #*******************************************************************************************************************
 cd /tmp && \
-    wget https://www.ffmpeg.org/releases/ffmpeg-3.0.1.tar.bz2 && \
-    tar jxvf ffmpeg-3.0.1.tar.bz2 && \
-    cd ffmpeg-3.0.1 && \
+    git clone https://git.ffmpeg.org/ffmpeg.git && \
+    cd ffmpeg && \
     ./configure --enable-libmfx && \
     make -j8 && \
     sudo make install && \
@@ -135,10 +134,10 @@ cd /tmp && \
     sudo make install
 
 #*******************************************************************************************************************
-# Java 8 (1.8.0_x)
+# Java 8
 #*******************************************************************************************************************
-wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u77-b03/jdk-8u77-linux-x64.rpm"
-sudo yum -y install jdk-8u77-linux-x64.rpm
+wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u92-b14/jdk-8u92-linux-x64.rpm"
+sudo yum -y install jdk-8u92-linux-x64.rpm
 sudo sh -c "echo 'export JAVA_HOME=/usr/java/default' >> /etc/profile.d/jdk.sh"
 sudo sh -c "echo 'export PATH=\$JAVA_HOME/bin:\$PATH' >> /etc/profile.d/jdk.sh"
 source /etc/profile.d/jdk.sh
@@ -162,6 +161,7 @@ cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
 
 sudo touch /etc/sysconfig/chukasa
 # use "centos/etc/sysconfig/chukasa"
+# sudo cp centos/etc/sysconfig/chukasa /etc/sysconfig/
 # or
 sudo sh -c "echo 'JAVA_HOME=\"/usr/java/default\"' >> /etc/sysconfig/chukasa"
 sudo sh -c "echo 'LIBVA_DRIVER_NAME=\"iHD\"' >> /etc/sysconfig/chukasa"
@@ -170,26 +170,29 @@ sudo sh -c "echo 'LIBVA_DRIVERS_PATH=\"/opt/intel/mediasdk/lib64\"' >> /etc/sysc
 
 sudo touch /etc/systemd/system/chukasa.service
 # use "centos/systemd/chukasa.service"
+# sudo cp centos/systemd/chukasa.service /etc/systemd/system/
 # then
 sudo systemctl enable chukasa
 sudo systemctl start chukasa
 
 #*******************************************************************************************************************
-# nginx (1.9.14)
+# nginx
 #*******************************************************************************************************************
 cd /tmp && \
     sudo yum -y install pcre-devel openssl-devel && \
-    wget http://nginx.org/download/nginx-1.9.14.tar.gz && \
-    tar zxvf nginx-1.9.14.tar.gz && \
-    cd nginx-1.9.14 && \
+    wget http://nginx.org/download/nginx-1.11.1.tar.gz && \
+    tar zxvf nginx-1.11.1.tar.gz && \
+    cd nginx-1.11.1 && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
     make -j8 && \
     sudo make install
 
 # use "ubuntu/nginx/nginx.conf" instead of "/usr/local/nginx/conf/nginx.conf"
+sudo cp ubuntu/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
 
 sudo touch /etc/systemd/system/nginx.service
 # use "ubuntu/systemd/nginx.service"
+# sudo cp ubuntu/systemd/nginx.service /etc/systemd/system/
 # then
 sudo systemctl enable nginx
 sudo systemctl start nginx
