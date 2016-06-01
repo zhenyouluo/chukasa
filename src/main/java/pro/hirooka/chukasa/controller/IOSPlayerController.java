@@ -14,10 +14,10 @@ import pro.hirooka.chukasa.domain.chukasa.ChukasaSettings;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.handler.ChukasaRemover;
 import pro.hirooka.chukasa.handler.ChukasaStopper;
-import pro.hirooka.chukasa.handler.ChukasaThreadHandler;
 import pro.hirooka.chukasa.operator.IDirectoryCreator;
 import pro.hirooka.chukasa.operator.ITimerTaskParameterCalculator;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.service.chukasa.IChukasaTaskService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -49,6 +49,8 @@ public class IOSPlayerController {
     ChukasaRemover chukasaRemover;
     @Autowired
     HttpServletRequest httpServletRequest;
+    @Autowired
+    IChukasaTaskService chukasaTaskService;
 
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     String play(@RequestBody ChukasaSettings chukasaSettings){
@@ -92,9 +94,7 @@ public class IOSPlayerController {
 
             timerTaskParameterCalculator.calculate(0);
 
-            ChukasaThreadHandler chukasaThreadHandler = new ChukasaThreadHandler(chukasaModel.getAdaptiveBitrateStreaming(), chukasaModelManagementComponent);
-            Thread thread = new Thread(chukasaThreadHandler);
-            thread.start();
+            chukasaTaskService.execute(0);
 
             chukasaModel = chukasaModelManagementComponent.get(0);
 

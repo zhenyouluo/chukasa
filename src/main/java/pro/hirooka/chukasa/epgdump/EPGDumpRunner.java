@@ -2,8 +2,6 @@ package pro.hirooka.chukasa.epgdump;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.epgdump.LastEpgdumpExecuted;
 import pro.hirooka.chukasa.service.epgdump.ILastEpgdumpExecutedService;
@@ -19,18 +17,20 @@ public class EPGDumpRunner implements Runnable {
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-    @Autowired
-    SystemConfiguration systemConfiguration;
-    @Autowired
-    ChukasaConfiguration chukasaConfiguration;
-    @Autowired
-    IEpgdumpParser epgDumpParser;
-    @Autowired
-    ILastEpgdumpExecutedService lastEpgdumpExecutedService;
+    private final SystemConfiguration systemConfiguration;
+    private final IEpgdumpParser epgdumpParser;
+    private final ILastEpgdumpExecutedService lastEpgdumpExecutedService;
+    private final Map<String, Integer> epgDumpChannelMap;
 
-    private Map<String, Integer> epgDumpChannelMap;
-
-    public EPGDumpRunner(Map<String, Integer> epgDumpChannelMap){
+    public EPGDumpRunner(
+            SystemConfiguration systemConfiguration,
+            IEpgdumpParser epgdumpParser,
+            ILastEpgdumpExecutedService lastEpgdumpExecutedService,
+            Map<String, Integer> epgDumpChannelMap
+    ){
+        this.systemConfiguration = requireNonNull(systemConfiguration, "");
+        this.epgdumpParser = requireNonNull(epgdumpParser, "epgdumpParser");
+        this.lastEpgdumpExecutedService = requireNonNull(lastEpgdumpExecutedService, "lastEpgdumpExecutedService");
         this.epgDumpChannelMap = requireNonNull(epgDumpChannelMap, "epgDumpChannelMap");
     }
 
@@ -87,7 +87,7 @@ public class EPGDumpRunner implements Runnable {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
                 String s = "";
                 while((s = bufferedReader.readLine()) != null){
-                    log.debug("{}", s);
+                    log.info("{}", s);
                 }
                 bufferedReader.close();
                 process.destroy();
@@ -106,7 +106,7 @@ public class EPGDumpRunner implements Runnable {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
                 String s = "";
                 while((s = bufferedReader.readLine()) != null){
-                    log.debug("{}", s);
+                    log.info("{}", s);
                 }
                 bufferedReader.close();
                 process.destroy();
@@ -117,7 +117,12 @@ public class EPGDumpRunner implements Runnable {
 
         for(Map.Entry<String, Integer> entry : epgDumpChannelMap.entrySet()) {
             String jsonStringPath = systemConfiguration.getTempEpgdumpPath() + FILE_SEPARATOR + "epgdump" + entry.getValue() + ".json";
-            epgDumpParser.parse(jsonStringPath, epgDumpChannelMap);
+            try {
+                epgdumpParser.parse(jsonStringPath, epgDumpChannelMap);
+            } catch (IOException e) {
+                log.error("{} {}", e.getMessage(), e);
+                return;
+            }
         }
 //        for(int physicalChannel : physicalChannelList){
 //            String jsonStringPath = systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".json";

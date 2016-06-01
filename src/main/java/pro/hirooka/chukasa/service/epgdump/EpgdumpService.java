@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
@@ -84,9 +85,9 @@ public class EpgdumpService implements IEpgdumpService {
             Map<String, Integer> epgdumpChannelMap = objectMapper.readValue(resource.getFile(), HashMap.class);
             log.info(epgdumpChannelMap.toString());
 
-            EPGDumpRunner epgDumpRunner = new EPGDumpRunner(epgdumpChannelMap);
-            Thread thread = new Thread(epgDumpRunner);
-            thread.start();
+            SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
+            EPGDumpRunner epgDumpRunner = new EPGDumpRunner(systemConfiguration, epgDumpParser, lastEPGDumpExecutedService, epgdumpChannelMap);
+            simpleAsyncTaskExecutor.execute(epgDumpRunner);
 
         } catch (IOException e) {
             log.error("invalid epgdump_channel_map.json: {} {}", e.getMessage(), e);

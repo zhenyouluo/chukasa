@@ -20,10 +20,10 @@ import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.handler.ChukasaRemover;
 import pro.hirooka.chukasa.handler.ChukasaRemoverRunner;
 import pro.hirooka.chukasa.handler.ChukasaStopper;
-import pro.hirooka.chukasa.handler.ChukasaThreadHandler;
 import pro.hirooka.chukasa.operator.IDirectoryCreator;
 import pro.hirooka.chukasa.operator.ITimerTaskParameterCalculator;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.service.chukasa.IChukasaTaskService;
 import pro.hirooka.chukasa.transcoder.FFmpegInitializer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,6 +57,8 @@ public class HTML5PlayerController {
     ChukasaRemover chukasaRemover;
     @Autowired
     HttpServletRequest httpServletRequest;
+    @Autowired
+    IChukasaTaskService chukasaTaskService;
 
     @RequestMapping(method = RequestMethod.POST)
     String play(Model model, @Validated ChukasaSettings chukasaSettings, BindingResult bindingResult){
@@ -122,9 +124,7 @@ public class HTML5PlayerController {
 
             timerTaskParameterCalculator.calculate(0);
 
-            ChukasaThreadHandler chukasaThreadHandler = new ChukasaThreadHandler(chukasaModel.getAdaptiveBitrateStreaming(), chukasaModelManagementComponent);
-            Thread thread = new Thread(chukasaThreadHandler);
-            thread.start();
+            chukasaTaskService.execute(0);
 
             chukasaModel = chukasaModelManagementComponent.get(0);
 
@@ -226,9 +226,7 @@ public class HTML5PlayerController {
 
             timerTaskParameterCalculator.calculate(0);
 
-            ChukasaThreadHandler chukasaThreadHandler = new ChukasaThreadHandler(chukasaModel.getAdaptiveBitrateStreaming(), chukasaModelManagementComponent);
-            Thread thread = new Thread(chukasaThreadHandler);
-            thread.start();
+            chukasaTaskService.execute(0);
 
             chukasaModel = chukasaModelManagementComponent.get(0);
 
