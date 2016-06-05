@@ -7,6 +7,7 @@ import pro.hirooka.chukasa.domain.recorder.Program;
 import pro.hirooka.chukasa.repository.IProgramRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -68,5 +69,10 @@ public class ProgramTableService implements IProgramTableService {
     @Override
     public void deleteAll() {
         programRepository.deleteAll();
+    }
+
+    @Override
+    public int getNumberOfPhysicalChannels() {
+        return programRepository.findAll().stream().map(Program::getChannel).collect(Collectors.toSet()).size();
     }
 }

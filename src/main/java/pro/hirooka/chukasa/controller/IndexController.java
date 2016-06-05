@@ -47,7 +47,7 @@ public class IndexController {
                 || (userAgent.contains("iPhone OS 9") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9")))
                 || (userAgent.contains("iPad; CPU OS 9") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9")))
                 || (userAgent.contains("Windows") && userAgent.contains("Edge/"))
-                || (userAgent.contains("Chrome") && userAgent.split("Chrome/")[1].startsWith("50."))){
+                || (userAgent.contains("Chrome"))){
             isSupported = true;
         }
         log.info("{} : {}", isSupported, userAgent);
@@ -66,14 +66,14 @@ public class IndexController {
         Resource resource = new ClassPathResource("epgdump_channel_map.json");
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            epgdumpChannelMap = objectMapper.readValue(resource.getFile(), HashMap.class);
+            epgdumpChannelMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
             log.info(epgdumpChannelMap.toString());
         } catch (IOException e) {
             log.error("invalid epgdump_channel_map.json: {} {}", e.getMessage(), e);
         }
         if(isMongoDB && isEpgdump){
             programList = programTableService.readByNow(new Date().getTime());
-            if(programList != null && lastEpgdumpExecutedService.read(1) != null && programList.size() >= epgdumpChannelMap.size()){
+            if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalChannels() >= epgdumpChannelMap.size()){
                 isLastEpgdumpExecuted = true;
             }
         }
@@ -85,6 +85,7 @@ public class IndexController {
         }
         boolean isPTxByChannel = false;
         if(isFFmpeg && isPTx && isRecpt1 && !isLastEpgdumpExecuted){
+            programList = new ArrayList<>();
             isPTxByChannel = true;
             //if(epgDumpProgramInformationList.size() == 0) {
                 for (Map.Entry<String, Integer> entry : epgdumpChannelMap.entrySet()) {

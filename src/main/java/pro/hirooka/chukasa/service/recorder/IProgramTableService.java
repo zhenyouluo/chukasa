@@ -16,4 +16,5 @@ public interface IProgramTableService {
     Program update(Program Program);
     void delete(long id);
     void deleteAll();
+    int getNumberOfPhysicalChannels();
 }
