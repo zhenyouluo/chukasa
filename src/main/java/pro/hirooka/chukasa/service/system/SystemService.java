@@ -46,6 +46,10 @@ public class SystemService implements ISystemService {
         if(pt2.exists() || pt3.exists()){
             return true;
         }
+        // for PX-S1UD V2.0 (temporary)
+        if(new File("/dev/dvb/adapter0/frontend0").exists()){
+            return true;
+        }
         return false;
     }
 
