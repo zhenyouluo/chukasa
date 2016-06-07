@@ -1,20 +1,19 @@
-# procedure_ubuntu_16_04_local_jar.txt
-
 # Ubuntu 16.04
 
 #*******************************************************************************************************************
 # Web Camera (Audio)
 #*******************************************************************************************************************
-sudo touch /etc/modprobe.d/sound.conf
-sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/sound.conf"
-sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/sound.conf"
+# 環境により異なる．
+# cat /proc/asound/modules にて事前に確認する．
+sudo touch /etc/modprobe.d/alsa-base.conf
+sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
 sudo gpasswd -a $USER audio
 
 #*******************************************************************************************************************
-# PT2, PT3
+# PT3
 #*******************************************************************************************************************
-sudo sh -c "echo '' >> /etc/modprobe.d/blacklist.conf"
-sudo sh -c "echo 'blacklist earth-pt1' >> /etc/modprobe.d/blacklist.conf"
 sudo sh -c "echo '' >> /etc/modprobe.d/blacklist.conf"
 sudo sh -c "echo 'blacklist earth-pt3' >> /etc/modprobe.d/blacklist.conf"
 sudo gpasswd -a $USER video
@@ -33,7 +32,7 @@ sudo reboot
 #*******************************************************************************************************************
 # Package
 #*******************************************************************************************************************
-sudo apt-get -y install build-essential git wget libasound2-dev autoconf libtool pcsc-tools pkg-config libpcsclite-dev pcscd
+sudo apt-get -y install build-essential git wget libasound2-dev autoconf libtool pcsc-tools pkg-config libpcsclite-dev pcscd cmake
 
 #*******************************************************************************************************************
 # Lib
@@ -42,7 +41,7 @@ sudo touch /etc/ld.so.conf.d/local.conf
 sudo sh -c "echo '/usr/local/lib' >> /etc/ld.so.conf.d/local.conf"
 
 #*******************************************************************************************************************
-# Yasm (1.3.0)
+# Yasm
 #*******************************************************************************************************************
 cd /tmp && \
     wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz && \
@@ -54,41 +53,28 @@ cd /tmp && \
     sudo ldconfig
 
 #*******************************************************************************************************************
-# x264 (0.148.x (x264-snapshot-20160426-2245-stable))
+# x264
 #*******************************************************************************************************************
 cd /tmp && \
-    wget http://download.videolan.org/pub/x264/snapshots/x264-snapshot-20160426-2245-stable.tar.bz2 && \
-    tar xjvf x264-snapshot-20160426-2245-stable.tar.bz2 && \
-    cd x264-snapshot-20160426-2245-stable && \
+    wget http://download.videolan.org/pub/x264/snapshots/last_x264.tar.bz2 && \
+    tar xjvf last_x264.tar.bz2 && \
+    cd x264-snapshot-* && \
     ./configure --enable-shared && \
     make -j8 && \
     sudo make install && \
     sudo ldconfig
 
 #*******************************************************************************************************************
-# FFmpeg 3.0.1
+# FFmpeg
 #*******************************************************************************************************************
 cd /tmp && \
-    wget https://www.ffmpeg.org/releases/ffmpeg-3.0.1.tar.bz2 && \
-    tar jxvf ffmpeg-3.0.1.tar.bz2 && \
-    cd ffmpeg-3.0.1 && \
+    wget https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
+    tar jxvf ffmpeg-snapshot.tar.bz2 && \
+    cd ffmpeg && \
     ./configure --enable-gpl --enable-libx264 && \
     make -j8 && \
     sudo make install && \
     sudo ldconfig
-
-#*******************************************************************************************************************
-# PT2 driver w/Linux 4.2 patch
-#*******************************************************************************************************************
-cd /tmp && \
-    wget http://hg.honeyplanet.jp/pt1/archive/c8688d7d6382.tar.bz2 && \
-    tar xvlf c8688d7d6382.tar.bz2 && \
-    cd pt1-c8688d7d6382/driver && \
-    git clone https://github.com/hirooka/pt1_for_linux4.2.patch.git && \
-    patch pt1_pci.c < pt1_for_linux4.2.patch/pt1_for_linux4.2.patch && \
-    make && \
-    sudo make install && \
-    sudo modprobe pt1_drv
 
 #*******************************************************************************************************************
 # PT3 driver
@@ -117,10 +103,42 @@ cd /tmp && \
     ./autogen.sh && \
     ./configure --enable-b25 && \
     make && \
+    sudo make install && \
+    sudo ldconfig
+
+#*******************************************************************************************************************
+# epgdump
+#*******************************************************************************************************************
+cd /tmp && \
+    git clone https://github.com/Piro77/epgdump.git && \
+    cd epgdump && \
+    ./autogen.sh && \
+    make && \
+    sudo make install && \
+    sudo ldconfig
+
+#*******************************************************************************************************************
+# MongoDB 3.2
+#*******************************************************************************************************************
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
+sudo sh -c "echo 'deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.2 main' | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list"
+sudo apt-get update
+sudo apt-get install mongodb-org
+
+#*******************************************************************************************************************
+# nginx
+#*******************************************************************************************************************
+cd /tmp && \
+    sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
+    wget http://nginx.org/download/nginx-1.11.1.tar.gz && \
+    tar zxvf nginx-*.tar.gz && \
+    cd nginx-* && \
+    ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
+    make -j8 && \
     sudo make install
 
 #*******************************************************************************************************************
-# Java 8 (1.8.0_x)
+# Java 8
 #*******************************************************************************************************************
 sudo apt-get -y install python-software-properties software-properties-common
 sudo sh -c "echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | debconf-set-selections"
@@ -129,6 +147,9 @@ sudo apt-get update
 sudo apt-get -y install oracle-java8-installer
 sudo apt-get -y install oracle-java8-set-default
 
+#*******************************************************************************************************************
+# 環境が整ったところでいったん reboot
+#*******************************************************************************************************************
 sudo reboot
 
 #*******************************************************************************************************************
@@ -138,40 +159,25 @@ sudo mkdir /opt/chukasa
 sudo chown $USER:$USER /opt/chukasa
 mkdir /opt/chukasa/video
 
-# clone project
+# clone project and edit configuration file
 cd /tmp
 git clone https://github.com/hirooka/chukasa.git
+cd chukasa
+sed -i -e "s/system.quick-sync-video-enabled=true/system.quick-sync-video-enabled=false/g" src/main/resources/application.properties
 
 # build chukasa application and deploy it
-cd chukasa
 ./gradlew build
 cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
 
-sudo touch /etc/systemd/system/chukasa.service
-# use "ubuntu/systemd/chukasa.service"
-# then
+#　chukasa
+sed -i -e "s/User=hirooka/User=$USER/g" ubuntu/systemd/chukasa.service
+sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/
 sudo systemctl enable chukasa
-sudo systemctl start chukasa
 
-#*******************************************************************************************************************
-# nginx (1.9.15)
-#*******************************************************************************************************************
-cd /tmp && \
-    sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.9.15.tar.gz && \
-    tar zxvf nginx-1.9.15.tar.gz && \
-    cd nginx-1.9.15 && \
-    ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
-    make -j8 && \
-    sudo make install
-
-# use "ubuntu/nginx/nginx.conf" instead of "/usr/local/nginx/conf/nginx.conf"
-
-sudo touch /etc/systemd/system/nginx.service
-# use "ubuntu/systemd/nginx.service"
-# then
+#　nginx
+sudo cp ubuntu/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
+sudo cp ubuntu/systemd/nginx.service /etc/systemd/system/
 sudo systemctl enable nginx
-sudo systemctl start nginx
 
 sudo reboot
 

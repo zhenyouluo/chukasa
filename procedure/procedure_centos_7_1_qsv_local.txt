@@ -74,8 +74,8 @@ sudo sh -c "echo 'Cflags: -I\${includedir} -I/usr/include/libdrm' >> /usr/lib64/
 # FFmpeg
 #*******************************************************************************************************************
 cd /tmp && \
-    wget https://ffmpeg.org/releases/ffmpeg-snapshot-git.tar.bz2 && \
-    tar jxvf ffmpeg-snapshot-git.tar.bz2 && \
+    wget https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
+    tar jxvf ffmpeg-snapshot.tar.bz2 && \
     cd ffmpeg && \
     ./configure --enable-libmfx && \
     make -j8 && \
