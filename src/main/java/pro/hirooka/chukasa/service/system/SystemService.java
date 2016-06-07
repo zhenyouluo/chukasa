@@ -3,6 +3,7 @@ package pro.hirooka.chukasa.service.system;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pro.hirooka.chukasa.configuration.MongoDBConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 
 import java.io.*;
@@ -17,6 +18,8 @@ public class SystemService implements ISystemService {
 
     @Autowired
     SystemConfiguration systemConfiguration;
+    @Autowired
+    MongoDBConfiguration mongoDBConfiguration;
 
     @Override
     public boolean isFFmpeg() {
@@ -73,6 +76,9 @@ public class SystemService implements ISystemService {
 
     @Override
     public boolean isMongoDB() {
+        if(mongoDBConfiguration.getHost().equals("mongo")){
+            return true;
+        }
         String[] command = {"/bin/sh", "-c", "ps aux | grep " + MONGOD};
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         try {
