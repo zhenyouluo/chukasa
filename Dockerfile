@@ -21,21 +21,21 @@ RUN cd /tmp && \
     make install && \
     ldconfig
 
-# x264 (0.148.x (x264-snapshot-20160426-2245-stable))
+# x264
 RUN cd /tmp && \
-    wget http://download.videolan.org/pub/x264/snapshots/x264-snapshot-20160426-2245-stable.tar.bz2  && \
-    tar xjvf x264-snapshot-20160426-2245-stable.tar.bz2 && \
-    cd x264-snapshot-20160426-2245-stable && \
+    wget http://download.videolan.org/pub/x264/snapshots/last_x264.tar.bz2 && \
+    tar xjvf last_x264.tar.bz2 && \
+    cd x264-snapshot-* && \
     ./configure --enable-shared && \
     make && \
     make install && \
     ldconfig
 
-# FFmpeg 3.0.1
+# FFmpeg
 RUN cd /tmp && \
-    wget https://www.ffmpeg.org/releases/ffmpeg-3.0.1.tar.bz2 && \
-    tar jxvf ffmpeg-3.0.1.tar.bz2 && \
-    cd ffmpeg-3.0.1 && \
+    wget https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
+    tar jxvf ffmpeg-snapshot.tar.bz2 && \
+    cd ffmpeg && \
     ./configure --enable-gpl --enable-libx264 && \
     make -j8 && \
     make install && \
@@ -43,9 +43,10 @@ RUN cd /tmp && \
 
 # Web camera (audio)
 RUN mkdir /etc/modprobe.d
-RUN touch /etc/modprobe.d/sound.conf
-RUN echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/sound.conf
-RUN echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/sound.conf
+RUN touch /etc/modprobe.d/alsa-base.conf
+RUN echo 'options snd slots=snd_usb_audio,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf
+RUN echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf
+RUN echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf
 
 # recpt1
 RUN cd /tmp && \
@@ -64,6 +65,16 @@ RUN cd /tmp && \
     make && \
     make install
 
+# epgdump
+RUN apt-get -y install cmake
+RUN cd /tmp && \
+    git clone https://github.com/Piro77/epgdump.git && \
+    cd epgdump && \
+    ./autogen.sh && \
+    make && \
+    make install && \
+    ldconfig
+
 # Java
 RUN apt-get -y install python-software-properties software-properties-common
 RUN echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | debconf-set-selections
@@ -72,12 +83,12 @@ RUN apt-get -y update
 RUN apt-get -y install oracle-java8-installer
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
-# nginx 1.9.15
+# nginx 1.11.1
 RUN cd /tmp && \
     apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.9.15.tar.gz && \
-    tar zxvf nginx-1.9.15.tar.gz && \
-    cd nginx-1.9.15 && \
+    wget http://nginx.org/download/nginx-1.11.1.tar.gz && \
+    tar zxvf nginx-1.11.1.tar.gz && \
+    cd nginx-1.11.1 && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
     make && \
     make install
