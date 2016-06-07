@@ -82,7 +82,7 @@ public class EpgdumpService implements IEpgdumpService {
         Resource resource = new ClassPathResource("epgdump_channel_map.json");
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            Map<String, Integer> epgdumpChannelMap = objectMapper.readValue(resource.getFile(), HashMap.class);
+            Map<String, Integer> epgdumpChannelMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
             log.info(epgdumpChannelMap.toString());
 
             SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();

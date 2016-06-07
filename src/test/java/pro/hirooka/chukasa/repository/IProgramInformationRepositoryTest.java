@@ -59,7 +59,7 @@ public class IProgramInformationRepositoryTest {
     public void findAllByChannel() throws IOException {
         Resource resource = new ClassPathResource("epgdump_channel_map.json");
         ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Integer> epgdumpChannelMap = objectMapper.readValue(resource.getFile(), HashMap.class);
+        Map<String, Integer> epgdumpChannelMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
         log.info(epgdumpChannelMap.toString());
         for(Map.Entry<String, Integer> entry : epgdumpChannelMap.entrySet()) {
             log.info("key = {}, value = {}", entry.getKey(), entry.getValue());
@@ -75,7 +75,7 @@ public class IProgramInformationRepositoryTest {
     public void findOneByChannelAndNowLike() throws IOException {
         Resource resource = new ClassPathResource("epgdump_channel_map.json");
         ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Integer> epgdumpChannelMap = objectMapper.readValue(resource.getFile(), HashMap.class);
+        Map<String, Integer> epgdumpChannelMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
         log.info(epgdumpChannelMap.toString());
 
         long now = new Date().getTime();
