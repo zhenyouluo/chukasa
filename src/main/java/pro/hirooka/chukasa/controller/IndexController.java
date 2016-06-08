@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -76,6 +77,7 @@ public class IndexController {
         }
         if(isMongoDB && isEpgdump){
             programList = programTableService.readByNow(new Date().getTime());
+            programList = programList.stream().sorted(Comparator.comparing(Program::getCh)).collect(Collectors.toList());
             if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalChannels() >= epgdumpChannelMap.size()){
                 isLastEpgdumpExecuted = true;
             }
