@@ -49,6 +49,12 @@ public class RecorderRunner implements Runnable {
                 bw.write("#!/bin/bash");
                 bw.newLine();
                 bw.write(systemConfiguration.getRecpt1Path() + " --b25 --strip " + ch + " " + duration + " \"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + startRecording + "_" + stopRecording + "_" + duration  + "_" + title + "_"  + ch + "ch"  + ".ts\"" + " >/dev/null");
+                bw.newLine();
+                bw.write(systemConfiguration.getFfmpegPath() + " -ss 600 -vframes 1 -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + startRecording + "_" + stopRecording + "_" + duration  + "_" + title + "_"  + ch + "ch"  + ".ts\"" + "-f image2 " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + startRecording + "_" + stopRecording + "_" + duration  + "_" + title + "_"  + ch + "ch"  + ".ts.jpg\"" + " >/dev/null");
+                bw.newLine();
+                if(systemConfiguration.isQuickSyncVideoEnabled()) {
+                    bw.write(systemConfiguration.getFfmpegPath() + " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + startRecording + "_" + stopRecording + "_" + duration + "_" + title + "_" + ch + "ch" + ".ts\"" + " -acodec aac -ab 160k -ar 44100 -ac 2 -s 1280x720 -vcodec h264_qsv -profile:v high -level 4.2 -b:v 24000k -threads 1 -y " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + startRecording + "_" + stopRecording + "_" + duration + "_" + title + "_" + ch + "ch" + ".ts.mp4\"" + " >/dev/null");
+                }
                 bw.close();
             }
 
