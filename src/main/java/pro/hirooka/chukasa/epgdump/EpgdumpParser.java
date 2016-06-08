@@ -24,6 +24,53 @@ public class EpgdumpParser implements IEpgdumpParser {
     IProgramTableService epgDumpProgramTableService;
 
     @Override
+    public void parse(String path, int physicalChannel, Map<String, String> epgdumpChannelMap) throws IOException {
+
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(path)));
+        String jsonString = bufferedReader.readLine();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        List<Channel> channelList = objectMapper.readValue(jsonString, new TypeReference<List<Channel>>(){});
+        log.info("channel = {}", channelList.size());
+        channelList.forEach(channel -> {
+            channel.getPrograms().forEach(program -> {
+                log.debug("{}", program.toString());
+                if(program.getChannel().startsWith("GR")) {
+                    program.setId(physicalChannel + "_" + program.getStart());
+                    program.setCh(physicalChannel);
+                    program.setChannelName(channel.getName());
+                    long begin = program.getStart() / 10;
+                    long end = program.getEnd() / 10;
+                    program.setStart(begin);
+                    program.setEnd(end);
+                    program.setBeginDate(convertMilliToDate(begin));
+                    program.setEndDate(convertMilliToDate(end));
+                    epgDumpProgramTableService.create(program);
+                }else if(program.getChannel().startsWith("BS_")){
+                    try {
+                        int ch = Integer.parseInt(program.getChannel().split("BS_")[1]);
+                        program.setId(ch + "_" + program.getStart());
+                        program.setCh(ch);
+                        program.setChannelName(channel.getName());
+                        long begin = program.getStart() / 10;
+                        long end = program.getEnd() / 10;
+                        program.setStart(begin);
+                        program.setEnd(end);
+                        program.setBeginDate(convertMilliToDate(begin));
+                        program.setEndDate(convertMilliToDate(end));
+                        epgDumpProgramTableService.create(program);
+                    }catch(NumberFormatException e){
+                        log.error("invalid channel", e.getMessage(), e);
+                    }
+                }else{
+                    log.info("program.getChannel is not GR|BS.");
+                }
+            });
+        });
+    }
+
+    @Override
     public void parse(String path, Map<String, Integer> epgdumpChannelMap) throws IOException {
 
         BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(path)));

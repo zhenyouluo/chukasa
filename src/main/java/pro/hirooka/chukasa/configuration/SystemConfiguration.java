@@ -10,11 +10,9 @@ import org.springframework.context.annotation.Configuration;
 public class SystemConfiguration {
     String ffmpegPath;
     String recpt1Path;
-    String epgdumpPath;
     String webCameraDeviceName;
     int webCameraAudioChannel;
     String tempPath;
-    String tempEpgdumpPath;
     String filePath;
     int ffmpegThreads;
     boolean quickSyncVideoEnabled;

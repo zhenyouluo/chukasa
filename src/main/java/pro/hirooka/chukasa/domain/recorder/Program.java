@@ -2,10 +2,13 @@ package pro.hirooka.chukasa.domain.recorder;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class Program {
+    @Id
+    private String id;
     private String channel;
     private String title;
     private String detail;

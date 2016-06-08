@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
+import pro.hirooka.chukasa.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.chukasa.VideoFileModel;
 import pro.hirooka.chukasa.domain.recorder.Program;
@@ -29,6 +30,8 @@ public class IndexController {
     SystemConfiguration systemConfiguration;
     @Autowired
     ChukasaConfiguration chukasaConfiguration;
+    @Autowired
+    EpgdumpConfiguration epgdumpConfiguration;
     @Autowired
     ISystemService systemService;
     @Autowired
@@ -62,8 +65,8 @@ public class IndexController {
         // PTx
         List<Program> programList = new ArrayList<>();
         boolean isLastEpgdumpExecuted = false;
-        Map<String, Integer> epgdumpChannelMap = new HashMap<>();
-        Resource resource = new ClassPathResource("epgdump_channel_map.json");
+        Map<String, String> epgdumpChannelMap = new HashMap<>();
+        Resource resource = new ClassPathResource(epgdumpConfiguration.getPhysicalChannelMap());
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             epgdumpChannelMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
@@ -88,10 +91,14 @@ public class IndexController {
             programList = new ArrayList<>();
             isPTxByChannel = true;
             //if(epgDumpProgramInformationList.size() == 0) {
-                for (Map.Entry<String, Integer> entry : epgdumpChannelMap.entrySet()) {
-                    Program program = new Program();
-                    program.setCh(entry.getValue());
-                    programList.add(program);
+                for (Map.Entry<String, String> entry : epgdumpChannelMap.entrySet()) {
+                    try {
+                        Program program = new Program();
+                        program.setCh(Integer.parseInt(entry.getKey()));
+                        programList.add(program);
+                    }catch (NumberFormatException e){
+                        log.error("invalid value {} {}", e.getMessage(), e);
+                    }
                 }
             //}
         }

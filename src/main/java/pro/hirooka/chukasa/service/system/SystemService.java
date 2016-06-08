@@ -3,6 +3,7 @@ package pro.hirooka.chukasa.service.system;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pro.hirooka.chukasa.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.configuration.MongoDBConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 
@@ -18,6 +19,8 @@ public class SystemService implements ISystemService {
 
     @Autowired
     SystemConfiguration systemConfiguration;
+    @Autowired
+    EpgdumpConfiguration epgdumpConfiguration;
     @Autowired
     MongoDBConfiguration mongoDBConfiguration;
 
@@ -67,7 +70,7 @@ public class SystemService implements ISystemService {
 
     @Override
     public boolean isEpgdump() {
-        File epgdump = new File(systemConfiguration.getEpgdumpPath());
+        File epgdump = new File(epgdumpConfiguration.getPath());
         if(epgdump.exists()){
             return true;
         }
