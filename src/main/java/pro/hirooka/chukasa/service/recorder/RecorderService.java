@@ -2,6 +2,7 @@ package pro.hirooka.chukasa.service.recorder;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
@@ -53,9 +54,9 @@ public class RecorderService implements IRecorderService {
 
                         long duration = (stopRecording - now) / 1000;
                         reservedProgram.setDuration(duration);
-                        RecorderRunner recorderRunner = new RecorderRunner(reservedProgram);
-                        Thread thread = new Thread(recorderRunner);
-                        thread.start();
+                        SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
+                        RecorderRunner recorderRunner = new RecorderRunner(systemConfiguration, reservedProgram);
+                        simpleAsyncTaskExecutor.execute(recorderRunner);
 
                     } else if (now > startRecording && now > stopRecording) {
 
@@ -109,9 +110,9 @@ public class RecorderService implements IRecorderService {
 
             durationRecording = (stopRecording - now) / 1000;
             reservedProgram.setDurationRecording(durationRecording);
-            RecorderRunner recorderRunner = new RecorderRunner(reservedProgram);
-            Thread thread = new Thread(recorderRunner);
-            thread.start();
+            SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
+            RecorderRunner recorderRunner = new RecorderRunner(systemConfiguration, reservedProgram);
+            simpleAsyncTaskExecutor.execute(recorderRunner);
 
         }else if(now > startRecording && now > stopRecording){
 

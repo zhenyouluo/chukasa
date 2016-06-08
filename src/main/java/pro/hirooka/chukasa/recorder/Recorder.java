@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
+import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.recorder.ReservedProgram;
 
@@ -18,6 +19,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
 @Slf4j
+@Component
 public class Recorder {
 
     @Autowired
@@ -31,7 +33,7 @@ public class Recorder {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         TaskScheduler taskScheduler = new ConcurrentTaskScheduler(scheduledExecutorService);
         Date date = new Date(reservedProgram.getStart());
-        Runnable runnable = new RecorderRunner(reservedProgram);
+        Runnable runnable = new RecorderRunner(systemConfiguration, reservedProgram);
         ScheduledFuture scheduledFuture = taskScheduler.schedule(runnable, date);
         scheduledFutureMap.put(reservedProgram.getId(), scheduledFuture);
         log.info("scheduler: {}", date.toString());
@@ -43,7 +45,7 @@ public class Recorder {
             ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
             TaskScheduler taskScheduler = new ConcurrentTaskScheduler(scheduledExecutorService);
             Date date = new Date(reservedProgram.getStart());
-            Runnable runnable = new RecorderRunner(reservedProgram);
+            Runnable runnable = new RecorderRunner(systemConfiguration, reservedProgram);
             ScheduledFuture scheduledFuture = taskScheduler.schedule(runnable, date);
             scheduledFutureMap.put(reservedProgram.getId(), scheduledFuture);
         });

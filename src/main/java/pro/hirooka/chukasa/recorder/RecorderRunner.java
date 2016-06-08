@@ -15,12 +15,12 @@ public class RecorderRunner implements Runnable {
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-    @Autowired
-    SystemConfiguration systemConfiguration;
+    private final SystemConfiguration systemConfiguration;
 
     private ReservedProgram reservedProgram;
 
-    public RecorderRunner(ReservedProgram reservedProgram){
+    public RecorderRunner(SystemConfiguration systemConfiguration, ReservedProgram reservedProgram){
+        this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
         this.reservedProgram = requireNonNull(reservedProgram, "reservedProgram");
     }
 
@@ -82,6 +82,8 @@ public class RecorderRunner implements Runnable {
             runInputStream.close();
             runProcess.destroy();
             log.info("recording is done.");
+
+            doRecordFile.delete();
 
         }catch(IOException e){
             log.error("cannot run do-record.sh: {} {}", e.getMessage(), e);
