@@ -54,6 +54,8 @@ chukasa 用のディレクトリを作成します．video ディレクトリに
     cd /tmp
     git clone https://github.com/hirooka/chukasa.git
     cd chukasa
+    sed -i -e "s/system.quick-sync-video-enabled=true/system.quick-sync-video-enabled=false/g" src/main/resources/application.properties
+    sed -i -e "s/spring.data.mongodb.host=localhost/spring.data.mongodb.host=mongo/g" src/main/resources/application.properties
     ./gradlew build
 
 Docker イメージをビルドします．Core i3 6100 で 30 - 40 分程度かかります．
