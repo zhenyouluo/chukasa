@@ -131,11 +131,13 @@ public class EPGDumpRunner implements Runnable {
 
         for(Map.Entry<String, String> entry : epgDumpChannelMap.entrySet()) {
             String jsonStringPath = epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + entry.getKey() + ".json";
-            try {
-                epgdumpParser.parse(jsonStringPath, Integer.parseInt(entry.getKey()), epgDumpChannelMap);
-            } catch (IOException e) {
-                log.error("{} {}", e.getMessage(), e);
-                return;
+            if(new File(jsonStringPath).exists()) {
+                try {
+                    epgdumpParser.parse(jsonStringPath, Integer.parseInt(entry.getKey()), epgDumpChannelMap);
+                } catch (IOException e) {
+                    log.error("{} {}", e.getMessage(), e);
+                    return;
+                }
             }
         }
 //        for(int physicalChannel : physicalChannelList){
