@@ -12,7 +12,7 @@ public class Program {
     private String channel;
     private String title;
     private String detail;
-    //    private List<Item> extdetail;
+//    private List<Item> extdetail;
     private long start;
     private long end;
     private long duration;
@@ -20,10 +20,11 @@ public class Program {
 //    private List<?> attachinfo;
 //    private Video video;
 //    private List<Audio> audio;
-    private boolean freeCA;
-    private int eventID;
+//    private boolean freeCA;
+//    private int eventID;
 
-    private int ch;
+    private long begin;
+    private int physicalChannel;
     private String channelName;
     private String beginDate;
     private String endDate;

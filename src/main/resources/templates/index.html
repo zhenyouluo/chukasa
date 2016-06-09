@@ -37,7 +37,7 @@
                 <div class="form-group">
                     <label for="chCapture">Program</label>
                     <select class="form-control" id="chNow" name="ch">
-                        <option th:value="${program.ch}" th:text="${program.channelName + ' (' + program.ch + '): ' + program.title}" th:each="program : ${programList}">...</option>
+                        <option th:value="${program.physicalChannel}" th:text="${program.channelName + ' (' + program.physicalChannel + '): ' + program.title}" th:each="program : ${programList}">...</option>
                     </select>
                 </div>
 
@@ -95,7 +95,7 @@
                 <div class="form-group">
                     <label for="chCapture">Physical Channel</label>
                     <select class="form-control" id="chCapture" name="ch">
-                        <option th:value="${program.ch}" th:text="${program.ch}" th:each="program : ${programList}">...</option>
+                        <option th:value="${program.physicalChannel}" th:text="${program.physicalChannel}" th:each="program : ${programList}">...</option>
                     </select>
                 </div>
 

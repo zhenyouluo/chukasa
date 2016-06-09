@@ -1,4 +1,4 @@
-package pro.hirooka.chukasa.service;
+package pro.hirooka.chukasa.service.system;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -21,7 +21,7 @@ import static org.junit.Assert.assertThat;
 public class SystemServiceTest {
 
     @Autowired
-    SystemService systemService;
+    ISystemService systemService;
 
     @Ignore
     @Test

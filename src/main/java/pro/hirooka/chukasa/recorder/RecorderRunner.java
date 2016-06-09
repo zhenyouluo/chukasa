@@ -29,17 +29,18 @@ public class RecorderRunner implements Runnable {
 
         log.info("start recording... ");
 
-        int ch = reservedProgram.getCh();
+        int physicalCnannel = reservedProgram.getPhysicalChannel();
         long startRecording = reservedProgram.getStartRecording();
         long stopRecording = reservedProgram.getStopRecording();
         long duration = reservedProgram.getDurationRecording();
         String title = reservedProgram.getTitle();
+        String fileName = reservedProgram.getFileName();
 
         long now = new Date().getTime();
 
         // start recording immediately
         // Create do-record.sh (do-record_ch_yyyyMMdd_yyyyMMdd.sh)
-        String doRecordFileName = "do-record_" + ch + "_" + startRecording + "_" + stopRecording + ".sh";
+        String doRecordFileName = "do-record_" + physicalCnannel + "_" + startRecording + "_" + stopRecording + ".sh";
         try{
             File doRecordFile = new File(systemConfiguration.getFilePath() + FILE_SEPARATOR + doRecordFileName);
             log.info("doRecordFile: {}", doRecordFileName);
@@ -48,13 +49,19 @@ public class RecorderRunner implements Runnable {
                 BufferedWriter bw = new BufferedWriter(new FileWriter(doRecordFile));
                 bw.write("#!/bin/bash");
                 bw.newLine();
-                bw.write(systemConfiguration.getRecpt1Path() + " --b25 --strip " + ch + " " + duration + " \"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + startRecording + "_" + stopRecording + "_" + duration  + "_" + title + "_"  + ch + "ch"  + ".ts\"" + " >/dev/null");
+                bw.write(systemConfiguration.getRecpt1Path() + " --b25 --strip " + physicalCnannel + " " + duration + " \"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " >/dev/null");
                 bw.newLine();
-                bw.write(systemConfiguration.getFfmpegPath() + " -ss 600 -vframes 1 -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + startRecording + "_" + stopRecording + "_" + duration  + "_" + title + "_"  + ch + "ch"  + ".ts\"" + "-f image2 " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + startRecording + "_" + stopRecording + "_" + duration  + "_" + title + "_"  + ch + "ch"  + ".ts.jpg\"" + " >/dev/null");
+                bw.write(systemConfiguration.getFfmpegPath() +  " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -ss 600 -vframes 1 -f image2 " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".jpg\"" + " >/dev/null");
                 bw.newLine();
                 if(systemConfiguration.isQuickSyncVideoEnabled()) {
-                    bw.write(systemConfiguration.getFfmpegPath() + " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + startRecording + "_" + stopRecording + "_" + duration + "_" + title + "_" + ch + "ch" + ".ts\"" + " -acodec aac -ab 160k -ar 44100 -ac 2 -s 1280x720 -vcodec h264_qsv -profile:v high -level 4.2 -b:v 24000k -threads 1 -y " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + startRecording + "_" + stopRecording + "_" + duration + "_" + title + "_" + ch + "ch" + ".ts.mp4\"" + " >/dev/null");
-                }
+                    bw.write(systemConfiguration.getFfmpegPath() + " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -acodec aac -ab 160k -ar 44100 -ac 2 -s 1280x720 -vcodec h264_qsv -profile:v high -level 4.2 -b:v 2400k -threads 1 -y " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".mp4\"" + " >/dev/null");
+                    bw.newLine();
+                    bw.write(systemConfiguration.getFfmpegPath() + " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -acodec aac -ab 32k -ar 44100 -ac 2 -s 320x180 -vcodec h264_qsv -profile:v high -level 4.2 -b:v 160k -threads 1 -y " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".watch.mp4\"" + " >/dev/null");
+                }else{
+                    bw.write(systemConfiguration.getFfmpegPath() + " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -acodec aac -ab 160k -ar 44100 -ac 2 -s 1280x720 -vcodec libx264 -profile:v high -level 4.2 -b:v 2400k -threads 1 -y " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".mp4\"" + " >/dev/null");
+                    bw.newLine();
+                    bw.write(systemConfiguration.getFfmpegPath() + " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -acodec aac -ab 32k -ar 44100 -ac 2 -s 320x180 -vcodec libx264 -profile:v high -level 4.2 -b:v 160k -threads 1 -y " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".watch.mp4\"" + " >/dev/null");
+                } // TODO: OpenMAX
                 bw.close();
             }
 

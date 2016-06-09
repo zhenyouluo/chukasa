@@ -86,12 +86,17 @@ public class RecorderService implements IRecorderService {
             reservedProgram.setId(0);
         }
 
-        long startRecording = reservedProgram.getStart() - chukasaConfiguration.getRecorderStartMargin() * 1000;
+        long startRecording = reservedProgram.getBegin() - chukasaConfiguration.getRecorderStartMargin() * 1000;
         long stopRecording = reservedProgram.getEnd() + chukasaConfiguration.getRecorderStopMargin() * 1000;
         long durationRecording = (stopRecording - startRecording) / 1000;
+        long recordingDuration = (stopRecording - startRecording) / 1000;
         reservedProgram.setStartRecording(startRecording);
         reservedProgram.setStopRecording(stopRecording);
         reservedProgram.setDurationRecording(durationRecording);
+        reservedProgram.setRecordingDuration(recordingDuration);
+
+        String fileName = reservedProgram.getPhysicalChannel() + "_" + reservedProgram.getBegin() + "_" + reservedProgram.getTitle()  + ".ts";
+        reservedProgram.setFileName(fileName);
 
         long now = new Date().getTime();
 

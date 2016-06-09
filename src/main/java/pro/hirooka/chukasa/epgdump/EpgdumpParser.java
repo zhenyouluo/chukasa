@@ -38,10 +38,11 @@ public class EpgdumpParser implements IEpgdumpParser {
                 log.debug("{}", program.toString());
                 if(program.getChannel().startsWith("GR")) {
                     program.setId(physicalChannel + "_" + program.getStart());
-                    program.setCh(physicalChannel);
+                    program.setPhysicalChannel(physicalChannel);
                     program.setChannelName(channel.getName());
                     long begin = program.getStart() / 10;
                     long end = program.getEnd() / 10;
+                    program.setBegin(begin);
                     program.setStart(begin);
                     program.setEnd(end);
                     program.setBeginDate(convertMilliToDate(begin));
@@ -49,12 +50,13 @@ public class EpgdumpParser implements IEpgdumpParser {
                     epgDumpProgramTableService.create(program);
                 }else if(program.getChannel().startsWith("BS_")){
                     try {
-                        int ch = Integer.parseInt(program.getChannel().split("BS_")[1]);
-                        program.setId(ch + "_" + program.getStart());
-                        program.setCh(ch);
+                        int physicalChannelBS = Integer.parseInt(program.getChannel().split("BS_")[1]);
+                        program.setId(physicalChannelBS + "_" + program.getStart());
+                        program.setPhysicalChannel(physicalChannelBS);
                         program.setChannelName(channel.getName());
                         long begin = program.getStart() / 10;
                         long end = program.getEnd() / 10;
+                        program.setBegin(begin);
                         program.setStart(begin);
                         program.setEnd(end);
                         program.setBeginDate(convertMilliToDate(begin));
@@ -86,7 +88,7 @@ public class EpgdumpParser implements IEpgdumpParser {
                 if(epgdumpChannelMap.keySet().contains(program.getChannel())){
                     for(Map.Entry<String, Integer> entry : epgdumpChannelMap.entrySet()) {
                         if(program.getChannel().equals(entry.getKey())){
-                            program.setCh(entry.getValue());
+                            program.setPhysicalChannel(entry.getValue());
                         }
                     }
                 }

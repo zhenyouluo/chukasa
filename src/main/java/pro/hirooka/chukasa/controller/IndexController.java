@@ -77,7 +77,7 @@ public class IndexController {
         }
         if(isMongoDB && isEpgdump){
             programList = programTableService.readByNow(new Date().getTime());
-            programList = programList.stream().sorted(Comparator.comparing(Program::getCh)).collect(Collectors.toList());
+            programList = programList.stream().sorted(Comparator.comparing(Program::getPhysicalChannel)).collect(Collectors.toList());
             if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalChannels() >= epgdumpChannelMap.size()){
                 isLastEpgdumpExecuted = true;
             }
@@ -96,7 +96,7 @@ public class IndexController {
                 for (Map.Entry<String, String> entry : epgdumpChannelMap.entrySet()) {
                     try {
                         Program program = new Program();
-                        program.setCh(Integer.parseInt(entry.getKey()));
+                        program.setPhysicalChannel(Integer.parseInt(entry.getKey()));
                         programList.add(program);
                     }catch (NumberFormatException e){
                         log.error("invalid value {} {}", e.getMessage(), e);

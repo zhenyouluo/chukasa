@@ -9,7 +9,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import pro.hirooka.chukasa.domain.recorder.MP4TranscodingStatus;
 import pro.hirooka.chukasa.domain.recorder.Program;
+import pro.hirooka.chukasa.domain.recorder.RecordingStatus;
 import pro.hirooka.chukasa.domain.recorder.ReservedProgram;
 import pro.hirooka.chukasa.service.recorder.IProgramTableService;
 import pro.hirooka.chukasa.service.recorder.IRecorderService;
@@ -33,16 +35,16 @@ public class ProgramController {
         return "programs/list";
     }
 
-    @RequestMapping(value = "{ch}", method = RequestMethod.GET)
-    String read(@PathVariable int ch, Model model){
-        List<Program> programList = programTableService.read(ch);
+    @RequestMapping(value = "{physicalChannel}", method = RequestMethod.GET)
+    String read(@PathVariable int physicalChannel, Model model){
+        List<Program> programList = programTableService.read(physicalChannel);
         model.addAttribute("programList", programList);
         return "programs/list";
     }
 
-    @RequestMapping(value = "{channel}/{date}", method = RequestMethod.GET)
-    String read(@PathVariable int channel, @PathVariable String date, Model model){
-        List<Program> programList = programTableService.read(channel, date);
+    @RequestMapping(value = "{physicalChannel}/{date}", method = RequestMethod.GET)
+    String read(@PathVariable int physicalChannel, @PathVariable String date, Model model){
+        List<Program> programList = programTableService.read(physicalChannel, date);
         model.addAttribute("programList", programList);
         return "programs/list";
     }
@@ -58,12 +60,19 @@ public class ProgramController {
         createdReservedProgram.setTitle(reservedProgram.getTitle());
         createdReservedProgram.setDetail(reservedProgram.getDetail());
         createdReservedProgram.setStart(reservedProgram.getStart());
+        createdReservedProgram.setBegin(reservedProgram.getStart());
         createdReservedProgram.setEnd(reservedProgram.getEnd());
         createdReservedProgram.setDuration(reservedProgram.getDuration());
-        createdReservedProgram.setCh(reservedProgram.getCh());
+        createdReservedProgram.setPhysicalChannel(reservedProgram.getPhysicalChannel());
         createdReservedProgram.setChannelName(reservedProgram.getChannelName());
         createdReservedProgram.setBeginDate(reservedProgram.getBeginDate());
         createdReservedProgram.setEndDate(reservedProgram.getEndDate());
+        createdReservedProgram.setStartRecording(reservedProgram.getBegin());
+        createdReservedProgram.setStopRecording(reservedProgram.getEnd());
+        createdReservedProgram.setRecordingDuration(reservedProgram.getDuration());
+        createdReservedProgram.setFileName("");
+        createdReservedProgram.setRecordingStatus(RecordingStatus.Reserved);
+        createdReservedProgram.setMp4TranscodingStatus(MP4TranscodingStatus.None);
 
         log.info("createdReservedProgram -> {}", createdReservedProgram.toString());
         recorderService.create(createdReservedProgram);

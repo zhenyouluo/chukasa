@@ -17,7 +17,7 @@ public class ReservedProgram {
     private boolean freeCA;
     private int eventID;
 
-    private int ch;
+    private int physicalChannel;
     private String channelName;
     private String beginDate;
     private String endDate;
@@ -25,4 +25,10 @@ public class ReservedProgram {
     private long startRecording;
     private long stopRecording;
     private long durationRecording;
+    private long recordingDuration;
+
+    private long begin;
+    private String fileName;
+    RecordingStatus recordingStatus;
+    MP4TranscodingStatus mp4TranscodingStatus;
 }

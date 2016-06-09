@@ -90,7 +90,7 @@ public class IProgramInformationRepositoryTest {
         for(Map.Entry<String, String> entry : epgdumpChannelMap.entrySet()) {
             log.info("key = {}, value = {}", entry.getKey(), entry.getValue());
             Program program =
-                    programRepository.findOneByChannelAndNowLike(entry.getKey(), now);
+                    programRepository.findOneByPhysicalChannelAndNowLike(entry.getKey(), now);
             log.info("{}", program.toString());
         }
     }

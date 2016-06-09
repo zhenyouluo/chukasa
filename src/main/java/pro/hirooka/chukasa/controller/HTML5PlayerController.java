@@ -2,6 +2,7 @@ package pro.hirooka.chukasa.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -71,12 +72,18 @@ public class HTML5PlayerController {
         for(ChukasaModel chukasaModel : chukasaModelManagementComponent.get()){
             chukasaModel.getSegmenterRunner().stop();
             chukasaModel.getPlaylisterRunner().stop();
-            FFmpegInitializer ffmpegInitializer = new FFmpegInitializer((long)chukasaModel.getFfmpegPID());
-            Thread ffmpegInitializerThread = new Thread(ffmpegInitializer);
-            ffmpegInitializerThread.start();
+//            FFmpegInitializer ffmpegInitializer = new FFmpegInitializer((long)chukasaModel.getFfmpegPID());
+//            Thread ffmpegInitializerThread = new Thread(ffmpegInitializer);
+//            ffmpegInitializerThread.start();
+//            ChukasaRemoverRunner chukasaRemoverRunner = new ChukasaRemoverRunner(systemConfiguration, chukasaModel.getStreamRootPath(), chukasaModel.getUuid());
+//            Thread thread = new Thread(chukasaRemoverRunner);
+//            thread.start();
+            SimpleAsyncTaskExecutor ffmpegInitializerSimpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
+            FFmpegInitializer ffmpegInitializer = new FFmpegInitializer(chukasaModel.getFfmpegPID());
+            ffmpegInitializerSimpleAsyncTaskExecutor.execute(ffmpegInitializer);
+            SimpleAsyncTaskExecutor chukasaRemoverRunnerSimpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
             ChukasaRemoverRunner chukasaRemoverRunner = new ChukasaRemoverRunner(systemConfiguration, chukasaModel.getStreamRootPath(), chukasaModel.getUuid());
-            Thread thread = new Thread(chukasaRemoverRunner);
-            thread.start();
+            chukasaRemoverRunnerSimpleAsyncTaskExecutor.execute(chukasaRemoverRunner);
         }
         chukasaModelManagementComponent.deleteAll();
 

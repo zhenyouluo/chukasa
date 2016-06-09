@@ -27,8 +27,8 @@ public class ProgramTableService implements IProgramTableService {
     }
 
     @Override
-    public List<Program> read(int ch) {
-        return programRepository.findAllByCh(ch);
+    public List<Program> read(int physicalChannel) {
+        return programRepository.findAllByPhysicalChannel(physicalChannel);
     }
 
     @Override

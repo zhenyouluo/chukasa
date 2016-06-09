@@ -62,7 +62,7 @@ public class EpgdumpService implements IEpgdumpService {
                 long now = date.getTime();
                 long last = lastEpgdumpExecuted.getDate();
                 long diff = last - now;
-                log.info("now = {}, last epgdump executed = {}, diff = {}", convertMilliToDate(now), convertMilliToDate(last), convertMilliToDate(diff));
+                log.info("now = {}, last epgdump executed = {}, diff = {}", convertMilliToDate(now), convertMilliToDate(last), diff);
                 if (now - last > chukasaConfiguration.getEpgdumpExecuteOnBootIgnoreInterval()) {
                     runEPGDump();
                 }else{
