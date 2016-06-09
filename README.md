@@ -89,6 +89,7 @@ Ubuntu 16.04，Docker，CentOS with QSV，Raspberry Pi 3 Model B with Raspbian�
 
 |   | Streaming & Recording | Streaming only | Recording only |
 |:---:|:---:|:---:|:---:|
+| CentOS 7.1<br>with QSV | [構築手順](procedure/procedure_centos_7_1_qsv.txt) | N/A | N/A |
 | Ubuntu 16.04<br>(Local) | [構築手順](procedure/procedure_ubuntu_16_04_local.txt) | N/A | N/A |
 | Ubuntu 16.04<br>(Docker) | [構築手順](procedure/procedure_ubuntu_16_04_docker.txt) | N/A | N/A |
 | AWS Elastic Beanstalk<br>(Java) | N/A | [構築手順](procedure/procedure_aws_elastic_beanstalk_jar.txt) | N/A |
