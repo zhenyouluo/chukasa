@@ -94,4 +94,4 @@ Ubuntu 16.04，Docker，CentOS with QSV，Raspberry Pi 3 Model B with Raspbian�
 | AWS Elastic Beanstalk<br>(Java) | N/A | [構築手順](procedure/procedure_aws_elastic_beanstalk_jar.txt) | N/A |
 | AWS Elastic Beanstalk<br>(Docker) | N/A | [構築手順](procedure/procedure_aws_elastic_beanstalk_docker_jar.txt) | N/A |
 | AWS Elastic Beanstalk<br>(Multi-container Docker) | N/A | [構築手順](procedure/procedure_aws_elastic_beanstalk_multi_container_docker_jar_db.txt) | N/A |
-| Raspberry Pi 3 Model B<br>+ Raspbian | N/A | N/A | [構築手順](procedure/procedure_raspberry_pi_3_raspbian_jessie.txt) |
+| Raspberry Pi 3 Model B<br>+ Raspbian Jessie | N/A | N/A | [構築手順](procedure/procedure_raspberry_pi_3_raspbian_jessie.txt) |
