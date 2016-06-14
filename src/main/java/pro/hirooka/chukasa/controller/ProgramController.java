@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import pro.hirooka.chukasa.domain.recorder.MP4TranscodingStatus;
+import pro.hirooka.chukasa.domain.recorder.M4vTranscodingStatus;
 import pro.hirooka.chukasa.domain.recorder.Program;
 import pro.hirooka.chukasa.domain.recorder.RecordingStatus;
 import pro.hirooka.chukasa.domain.recorder.ReservedProgram;
@@ -72,7 +72,7 @@ public class ProgramController {
         createdReservedProgram.setRecordingDuration(reservedProgram.getDuration());
         createdReservedProgram.setFileName("");
         createdReservedProgram.setRecordingStatus(RecordingStatus.Reserved);
-        createdReservedProgram.setMp4TranscodingStatus(MP4TranscodingStatus.None);
+        createdReservedProgram.setM4vTranscodingStatus(M4vTranscodingStatus.None);
 
         log.info("createdReservedProgram -> {}", createdReservedProgram.toString());
         recorderService.create(createdReservedProgram);

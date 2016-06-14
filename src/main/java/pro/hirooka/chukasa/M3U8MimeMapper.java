@@ -13,6 +13,7 @@ public class M3U8MimeMapper implements EmbeddedServletContainerCustomizer{
         MimeMappings mimeMappings = new MimeMappings(MimeMappings.DEFAULT);
         mimeMappings.add("m3u8", "application/x-mpegURL");
         mimeMappings.add("ts", "video/MP2T");
+        mimeMappings.add("m4v", "video/x-m4v");
         container.setMimeMappings(mimeMappings);
     }
 }

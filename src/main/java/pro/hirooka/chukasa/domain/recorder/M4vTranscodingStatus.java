@@ -1,6 +1,6 @@
 package pro.hirooka.chukasa.domain.recorder;
 
-public enum MP4TranscodingStatus {
+public enum M4vTranscodingStatus {
     Transcoding,
     Transcoded,
     None

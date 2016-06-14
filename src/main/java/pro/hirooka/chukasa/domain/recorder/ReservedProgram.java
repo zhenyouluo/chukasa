@@ -30,5 +30,5 @@ public class ReservedProgram {
     private long begin;
     private String fileName;
     RecordingStatus recordingStatus;
-    MP4TranscodingStatus mp4TranscodingStatus;
+    M4vTranscodingStatus m4vTranscodingStatus;
 }
