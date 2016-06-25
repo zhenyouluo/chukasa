@@ -8,22 +8,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "chukasa")
 public class ChukasaConfiguration {
-    String streamRootPathName;
-    String livePathName;
-    String streamFileNamePrefix;
-    String m3u8PlaylistName;
-//    boolean recorderEnabled;
+    String[] videoFileExtension;
     long recorderStartMargin;
     long recorderStopMargin;
-//    int epgDays;
-//    int epgSpan;
-//    String epgBaseUrl;
-//    boolean epgAccessOnBootEnabled;
-//    long epgAccessOnBootIgnoreInterval;
-//    boolean epgAccessEnabled;
-//    Integer[] physicalChannel;
-//    String[] physicalChannelName;
-    String[] videoFileExtension;
     String alternativeHlsPlayer;
     String epgdumpExecuteScheduleCron;
     long epgdumpExecuteOnBootIgnoreInterval;

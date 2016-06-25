@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pro.hirooka.chukasa.ChukasaConstant;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
@@ -17,6 +18,8 @@ import java.nio.file.Files;
 public class DirectoryCreator implements IDirectoryCreator{
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
+    final String LIVE_PATH_NAME = ChukasaConstant.LIVE_PATH_NAME;
 
     @Autowired
     IChukasaModelManagementComponent chukasaModelManagementComponent;
@@ -58,12 +61,12 @@ public class DirectoryCreator implements IDirectoryCreator{
         String tempEncPath = "";
         String tempPath = chukasaModel.getSystemConfiguration().getTempPath();
         if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.CAPTURE)){
-            streamPath = streamRootPath + FILE_SEPARATOR + chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getLivePathName();
+            streamPath = streamRootPath + FILE_SEPARATOR + chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName() + FILE_SEPARATOR + LIVE_PATH_NAME;
             chukasaModel.setStreamPath(streamPath);
         }else if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEB_CAMERA) {
-            streamPath = streamRootPath + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getLivePathName();
+            streamPath = streamRootPath + FILE_SEPARATOR + LIVE_PATH_NAME;
             chukasaModel.setStreamPath(streamPath);
-            tempEncPath = tempPath + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getLivePathName();
+            tempEncPath = tempPath + FILE_SEPARATOR + LIVE_PATH_NAME;
             chukasaModel.setTempEncPath(tempEncPath);
         } else {
             streamPath = streamRootPath + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName();

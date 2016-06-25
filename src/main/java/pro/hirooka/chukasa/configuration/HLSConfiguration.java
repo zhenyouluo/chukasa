@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "hls")
 public class HLSConfiguration {
-    int mpeg2TsPacketLength;
     int duration;
     int uriInPlaylist;
-    String streamExtension;
 }

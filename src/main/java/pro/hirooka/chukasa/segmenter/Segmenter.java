@@ -2,6 +2,7 @@ package pro.hirooka.chukasa.segmenter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import pro.hirooka.chukasa.ChukasaConstant;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.encrypter.Encrypter;
@@ -16,6 +17,10 @@ import java.util.*;
 public class Segmenter extends TimerTask {
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
+    final String STREAM_FILE_NAME_PREFIX = ChukasaConstant.STREAM_FILE_NAME_PREFIX;
+    final String STREAM_FILE_EXTENSION = ChukasaConstant.STREAM_FILE_EXTENSION;
+    final int MPEG2_TS_PACKET_LENGTH = ChukasaConstant.MPEG2_TS_PACKET_LENGTH;
 
     private final String SYNC_WORD = "47";
 
@@ -56,7 +61,6 @@ public class Segmenter extends TimerTask {
         Set<Integer> elementaryPIDSet = new HashSet<>();
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
-        int mpeg2TsPacketLength = chukasaModel.getHlsConfiguration().getMpeg2TsPacketLength();
 
         long readByte = readByteInput;
         int seqTs = seqTsInput;
@@ -66,14 +70,14 @@ public class Segmenter extends TimerTask {
         try {
             FileInputStream fis = null;
             if(chukasaModel.getChukasaSettings().getStreamingType() != StreamingType.OKKAKE) {
-                fis = new FileInputStream(chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension());
+                fis = new FileInputStream(chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION);
             }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
                 fis = new FileInputStream(chukasaModel.getSystemConfiguration().getFilePath() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName());
             }
 
             BufferedInputStream bis = new BufferedInputStream(fis);
             bis.skip(readByte);
-            byte[] buf = new byte[mpeg2TsPacketLength];
+            byte[] buf = new byte[MPEG2_TS_PACKET_LENGTH];
 
             boolean ignorePAT = false;
             boolean ignorePMT = false;
@@ -113,15 +117,15 @@ public class Segmenter extends TimerTask {
 
                             File tempSegDir = new File(chukasaModel.getTempEncPath());
                             tempSegDir.mkdirs();
-                            f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTs + chukasaModel.getHlsConfiguration().getStreamExtension());
-                            bos = new BufferedOutputStream(f, mpeg2TsPacketLength);
+                            f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqTs + STREAM_FILE_EXTENSION);
+                            bos = new BufferedOutputStream(f, MPEG2_TS_PACKET_LENGTH );
                             log.info("Begin Segmentation of seqTs : {}", seqTs);
                             flagCreateFile = false;
 
                         } else {
 
-                            f = new FileOutputStream(chukasaModel.getStreamPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTs + chukasaModel.getHlsConfiguration().getStreamExtension());
-                            bos = new BufferedOutputStream(f, mpeg2TsPacketLength);
+                            f = new FileOutputStream(chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqTs + STREAM_FILE_EXTENSION);
+                            bos = new BufferedOutputStream(f, MPEG2_TS_PACKET_LENGTH );
                             log.info("Begin Segmentation of seqTs : {}", seqTs);
                             flagCreateFile = false;
 
@@ -133,8 +137,8 @@ public class Segmenter extends TimerTask {
 
                             File tempSegDir = new File(chukasaModel.getTempEncPath());
                             tempSegDir.mkdirs();
-                            f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTs + chukasaModel.getHlsConfiguration().getStreamExtension());
-                            bos = new BufferedOutputStream(f, mpeg2TsPacketLength);
+                            f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqTs + STREAM_FILE_EXTENSION);
+                            bos = new BufferedOutputStream(f, MPEG2_TS_PACKET_LENGTH );
                             log.info("Begin Segmentation of seqTs : {}", seqTs);
                             flagCreateFile = false;
 
@@ -142,8 +146,8 @@ public class Segmenter extends TimerTask {
 
                             File tempSegDir = new File(chukasaModel.getTempEncPath());
                             tempSegDir.mkdirs();
-                            f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTs + chukasaModel.getHlsConfiguration().getStreamExtension());
-                            bos = new BufferedOutputStream(f, mpeg2TsPacketLength);
+                            f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqTs + STREAM_FILE_EXTENSION);
+                            bos = new BufferedOutputStream(f, MPEG2_TS_PACKET_LENGTH );
                             log.info("Begin Segmentation of seqTs : {}", seqTs);
                             flagCreateFile = false;
 
@@ -416,7 +420,7 @@ public class Segmenter extends TimerTask {
 
                             //int readPes = 4; //TS_PACKET_HEADER_LENGTH
                             int readPES = 4 + adaptationFieldLength;
-                            while(readPES < (mpeg2TsPacketLength - 4)){ //TS_PACKET_HEADER_LENGTH
+                            while(readPES < (MPEG2_TS_PACKET_LENGTH  - 4)){ //TS_PACKET_HEADER_LENGTH
 
                                 if(String.format("%02x", buf[readPES]).equals("00") && String.format("%02x", buf[readPES+1]).equals("00") && String.format("%02x", buf[readPES+2]).equals("01")){ // Packet Start Code Prefix 0x000001
                                     // PES Packet Header
@@ -427,10 +431,10 @@ public class Segmenter extends TimerTask {
 
                                     if((192 <= streamID) && (streamID <= 239)){
                                         if((192 <= streamID) && (streamID <= 223)){ // 0xC0=192 0xDF=223 Audio
-                                            //log.info("{}, {}, {}, PES start code (Audo), {}, {}", countPacket, countPacket*mpeg2TsPacketLength, pid, streamID, streamIDHex);
+                                            //log.info("{}, {}, {}, PES start code (Audo), {}, {}", countPacket, countPacket*MPEG2_TS_PACKET_LENGTH , pid, streamID, streamIDHex);
                                             break ;
                                         }else if((224 <= streamID) && (streamID <= 239)){ // 0xE0=224 0xEF=239 Video
-                                            //log.info("{}, {}, {}, PES start code (Video), {}, {}", countPacket, countPacket*mpeg2TsPacketLength, pid, streamID, streamIDHex);
+                                            //log.info("{}, {}, {}, PES start code (Video), {}, {}", countPacket, countPacket*MPEG2_TS_PACKET_LENGTH , pid, streamID, streamIDHex);
                                             isVideo = true;
                                         }
                                     }
@@ -470,7 +474,7 @@ public class Segmenter extends TimerTask {
                                                                     ((buf[readPES + 12] & 0xff) * 128) +
                                                                     ((buf[readPES + 13] >>> 1) & 0x7f & 0xff);
                                                     double pts = new BigDecimal(ptsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
-                                                    //log.info("{}, {}, PTS, {}, {}, {}, {}", countPacket, countPacket*mpeg2TsPacketLength, Long.toBinaryString(ptsLong), Long.toHexString(ptsLong), ptsLong, String.format("%.4f", pts));
+                                                    //log.info("{}, {}, PTS, {}, {}, {}, {}", countPacket, countPacket*MPEG2_TS_PACKET_LENGTH , Long.toBinaryString(ptsLong), Long.toHexString(ptsLong), ptsLong, String.format("%.4f", pts));
 
                                                     break;
 
@@ -483,7 +487,7 @@ public class Segmenter extends TimerTask {
                                                                     ((buf[readPES + 12] & 0xff) * 128) +
                                                                     ((buf[readPES + 13] >>> 1) & 0x7f & 0xff);
                                                     double pts = new BigDecimal(ptsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
-                                                    log.info("{}, {}, PTS, {}, {}, {}, {}", countPacket, countPacket*mpeg2TsPacketLength, Long.toBinaryString(ptsLong), Long.toHexString(ptsLong), ptsLong, String.format("%.4f", pts));
+                                                    log.info("{}, {}, PTS, {}, {}, {}, {}", countPacket, countPacket*MPEG2_TS_PACKET_LENGTH , Long.toBinaryString(ptsLong), Long.toHexString(ptsLong), ptsLong, String.format("%.4f", pts));
 
                                                     long dtsLong =
                                                             (((buf[readPES + 14] >>> 1) & 0x7 & 0xff) * 1073741824) +
@@ -492,7 +496,7 @@ public class Segmenter extends TimerTask {
                                                                     ((buf[readPES + 17] & 0xff) * 128) +
                                                                     ((buf[readPES + 18] >>> 1) & 0x7f & 0xff);
                                                     double dts = new BigDecimal(dtsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
-                                                    log.info("{}, {}, DTS, {}, {}, {}, {}", countPacket, countPacket * mpeg2TsPacketLength, Long.toBinaryString(dtsLong), Long.toHexString(dtsLong), dtsLong, String.format("%.4f", dts));
+                                                    log.info("{}, {}, DTS, {}, {}, {}, {}", countPacket, countPacket * MPEG2_TS_PACKET_LENGTH, Long.toBinaryString(dtsLong), Long.toHexString(dtsLong), dtsLong, String.format("%.4f", dts));
 
                                                     BigDecimal pcrSec = new BigDecimal(dtsLong / 90000.0).setScale(4, BigDecimal.ROUND_HALF_UP);
                                                     chukasaModel.setLastPcrSec(pcrSec);
@@ -547,7 +551,7 @@ public class Segmenter extends TimerTask {
                                             if (pesPacketLength != 0) {
                                                 readPES = readPES + pesPacketLength;
                                             } else {
-                                                readPES = readPES + mpeg2TsPacketLength; // while PES packet からの追い出し
+                                                readPES = readPES + MPEG2_TS_PACKET_LENGTH; // while PES packet からの追い出し
                                             }
                                         } // if streamid
                                     }else{
@@ -621,7 +625,7 @@ public class Segmenter extends TimerTask {
             }
 
             long[] ret = new long[2];
-            ret[0] = (mpeg2TsPacketLength * (countPacket)) + readByte; // MPEG2-TS byte length ever read
+            ret[0] = (MPEG2_TS_PACKET_LENGTH * (countPacket)) + readByte; // MPEG2-TS byte length ever read
             ret[1] = seqTs; // MPEG2-TS sequences ever segmented
             return ret;
 
@@ -638,7 +642,6 @@ public class Segmenter extends TimerTask {
     long[] readPCR(long readByteInput, int seqTsInput) {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
-        int mpeg2TsPacketLength = chukasaModel.getHlsConfiguration().getMpeg2TsPacketLength();
 
         long readByte = readByteInput;
         int seqTs = seqTsInput;
@@ -648,14 +651,14 @@ public class Segmenter extends TimerTask {
         try {
             FileInputStream fis = null;
             if(chukasaModel.getChukasaSettings().getStreamingType() != StreamingType.OKKAKE) {
-                fis = new FileInputStream(chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension());
+                fis = new FileInputStream(chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION);
             }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
                 fis = new FileInputStream(chukasaModel.getSystemConfiguration().getFilePath() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName());
             }
 
             BufferedInputStream bis = new BufferedInputStream(fis);
             bis.skip(readByte);
-            byte[] buf = new byte[mpeg2TsPacketLength];
+            byte[] buf = new byte[MPEG2_TS_PACKET_LENGTH];
 
             boolean flagCreateFile = true;
             FileOutputStream f = null;
@@ -689,15 +692,15 @@ public class Segmenter extends TimerTask {
 
                             File tempSegDir = new File(chukasaModel.getTempEncPath());
                             tempSegDir.mkdirs();
-                            f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTs + chukasaModel.getHlsConfiguration().getStreamExtension());
-                            bos = new BufferedOutputStream(f, mpeg2TsPacketLength);
+                            f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqTs + STREAM_FILE_EXTENSION);
+                            bos = new BufferedOutputStream(f, MPEG2_TS_PACKET_LENGTH );
                             log.info("Begin Segmentation of seqTs : {}", seqTs);
                             flagCreateFile = false;
 
                         } else {
 
-                            f = new FileOutputStream(chukasaModel.getStreamPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTs + chukasaModel.getHlsConfiguration().getStreamExtension());
-                            bos = new BufferedOutputStream(f, mpeg2TsPacketLength);
+                            f = new FileOutputStream(chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqTs + STREAM_FILE_EXTENSION);
+                            bos = new BufferedOutputStream(f, MPEG2_TS_PACKET_LENGTH );
                             log.info("Begin Segmentation of seqTs : {}", seqTs);
                             flagCreateFile = false;
 
@@ -709,8 +712,8 @@ public class Segmenter extends TimerTask {
 
                             File tempSegDir = new File(chukasaModel.getTempEncPath());
                             tempSegDir.mkdirs();
-                            f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTs + chukasaModel.getHlsConfiguration().getStreamExtension());
-                            bos = new BufferedOutputStream(f, mpeg2TsPacketLength);
+                            f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqTs + STREAM_FILE_EXTENSION);
+                            bos = new BufferedOutputStream(f, MPEG2_TS_PACKET_LENGTH );
                             log.info("Begin Segmentation of seqTs : {}", seqTs);
                             flagCreateFile = false;
 
@@ -718,8 +721,8 @@ public class Segmenter extends TimerTask {
 
                             File tempSegDir = new File(chukasaModel.getTempEncPath());
                             tempSegDir.mkdirs();
-                            f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTs + chukasaModel.getHlsConfiguration().getStreamExtension());
-                            bos = new BufferedOutputStream(f, mpeg2TsPacketLength);
+                            f = new FileOutputStream(chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqTs + STREAM_FILE_EXTENSION);
+                            bos = new BufferedOutputStream(f, MPEG2_TS_PACKET_LENGTH );
                             log.info("Begin Segmentation of seqTs : {}", seqTs);
                             flagCreateFile = false;
 
@@ -953,7 +956,7 @@ public class Segmenter extends TimerTask {
             }
 
             long[] ret = new long[2];
-            ret[0] = (mpeg2TsPacketLength * (countPacket)) + readByte; // MPEG2-TS byte length ever read
+            ret[0] = (MPEG2_TS_PACKET_LENGTH  * (countPacket)) + readByte; // MPEG2-TS byte length ever read
             ret[1] = seqTs; // MPEG2-TS sequences ever segmented
             return ret;
 

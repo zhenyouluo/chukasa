@@ -2,6 +2,7 @@ package pro.hirooka.chukasa.encrypter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import pro.hirooka.chukasa.ChukasaConstant;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
@@ -20,6 +21,10 @@ public class Encrypter implements Runnable {
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
+    final String STREAM_FILE_NAME_PREFIX = ChukasaConstant.STREAM_FILE_NAME_PREFIX;
+    final String STREAM_FILE_EXTENSION = ChukasaConstant.STREAM_FILE_EXTENSION;
+    final int MPEG2_TS_PACKET_LENGTH = ChukasaConstant.MPEG2_TS_PACKET_LENGTH;
+
     private int adaptiveBitrateStreaming;
 
     private IChukasaModelManagementComponent chukasaModelManagementComponent;
@@ -35,7 +40,6 @@ public class Encrypter implements Runnable {
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
         String streamPath = chukasaModel.getStreamPath();
         String tempEncPath = chukasaModel.getTempEncPath();
-        int tsPacketLength = chukasaModel.getHlsConfiguration().getMpeg2TsPacketLength();
 
         int seqTsEnc = 0; //getSeqTsEnc();
         seqTsEnc = chukasaModel.getSeqTsEnc();
@@ -90,19 +94,19 @@ public class Encrypter implements Runnable {
             chukasaModel.getIvArrayList().add(ivHex);
             chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
-            fis = new FileInputStream(tempEncPath + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTsEnc + chukasaModel.getHlsConfiguration().getStreamExtension());
+            fis = new FileInputStream(tempEncPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqTsEnc + STREAM_FILE_EXTENSION);
             bis = new BufferedInputStream(fis);
-            fos = new FileOutputStream(streamPath + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTsEnc + chukasaModel.getHlsConfiguration().getStreamExtension());
+            fos = new FileOutputStream(streamPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqTsEnc + STREAM_FILE_EXTENSION);
             cos = new CipherOutputStream(fos, c);
             if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
                 // TODO:
-                fis = new FileInputStream(tempEncPath + FILE_SEPARATOR + "fileSequenceEncoded" + seqTsEnc + chukasaModel.getHlsConfiguration().getStreamExtension());
+                fis = new FileInputStream(tempEncPath + FILE_SEPARATOR + "fileSequenceEncoded" + seqTsEnc + STREAM_FILE_EXTENSION);
                 bis = new BufferedInputStream(fis);
-                fos = new FileOutputStream(streamPath + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + seqTsEnc + chukasaModel.getHlsConfiguration().getStreamExtension());
+                fos = new FileOutputStream(streamPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqTsEnc + STREAM_FILE_EXTENSION);
                 cos = new CipherOutputStream(fos, c);
             }
 
-            byte[] buf = new byte[tsPacketLength];
+            byte[] buf = new byte[MPEG2_TS_PACKET_LENGTH];
 
             int ch;
             while((ch = bis.read(buf)) != -1){

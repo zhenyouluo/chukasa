@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import pro.hirooka.chukasa.ChukasaConstant;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.HLSConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
@@ -30,6 +31,12 @@ import java.nio.file.Files;
 public class IOSPlayerController {
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
+    final String STREAM_ROOT_PATH_NAME = ChukasaConstant.STREAM_ROOT_PATH_NAME;
+    final String LIVE_PATH_NAME = ChukasaConstant.LIVE_PATH_NAME;
+    final String M3U8_FILE_NAME_PREFIX = ChukasaConstant.M3U8_FILE_NAME_PREFIX;
+    final String M3U8_FILE_EXTENSION = ChukasaConstant.M3U8_FILE_EXTENSION;
+    final String M3U8_FILE_NAME = M3U8_FILE_NAME_PREFIX + M3U8_FILE_EXTENSION;
 
     @Autowired
     ChukasaConfiguration chukasaConfiguration;
@@ -85,7 +92,7 @@ public class IOSPlayerController {
             chukasaModel.getChukasaSettings().setVideoBitrate(videoBitrate);
             chukasaModel.getChukasaSettings().setAudioBitrate(audioBitrate);
 
-            String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + chukasaConfiguration.getStreamRootPathName();
+            String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + STREAM_ROOT_PATH_NAME;
             chukasaModel.setStreamRootPath(streamRootPath);
 
             chukasaModel = chukasaModelManagementComponent.create(0, chukasaModel);
@@ -102,23 +109,23 @@ public class IOSPlayerController {
             if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEB_CAMERA
                     || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.CAPTURE){
                 playlistURI = "/"
-                        + chukasaModel.getChukasaConfiguration().getStreamRootPathName()
+                        + STREAM_ROOT_PATH_NAME
                         + FILE_SEPARATOR
-                        + chukasaModel.getChukasaConfiguration().getLivePathName()
+                        + LIVE_PATH_NAME
                         + FILE_SEPARATOR
                         + chukasaModel.getChukasaSettings().getVideoBitrate()
                         + FILE_SEPARATOR
-                        + chukasaModel.getChukasaConfiguration().getM3u8PlaylistName();
+                        + M3U8_FILE_NAME;
             }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE
                     || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
                 playlistURI = "/"
-                        + chukasaModel.getChukasaConfiguration().getStreamRootPathName()
+                        + STREAM_ROOT_PATH_NAME
                         + FILE_SEPARATOR
                         + chukasaModel.getChukasaSettings().getFileName()
                         + FILE_SEPARATOR
                         + chukasaModel.getChukasaSettings().getVideoBitrate()
                         + FILE_SEPARATOR
-                        + chukasaModel.getChukasaConfiguration().getM3u8PlaylistName();
+                        + M3U8_FILE_NAME;
             }
             log.info("playlistURI = {}", playlistURI);
 
@@ -139,7 +146,7 @@ public class IOSPlayerController {
         if(chukasaModelManagementComponent.get().size() > 0){
             log.warn("cannot remove files bacause streaming is not finished.");
         }else {
-            String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + chukasaConfiguration.getStreamRootPathName();
+            String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + STREAM_ROOT_PATH_NAME;
             if(Files.exists(new File(streamRootPath).toPath())) {
                 chukasaRemover.setStreamRootPath(streamRootPath);
                 chukasaRemover.remove();

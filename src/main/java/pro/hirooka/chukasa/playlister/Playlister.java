@@ -16,6 +16,13 @@ public class Playlister extends TimerTask {
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
+    final String initialStreamPath = ChukasaConstant.INITIAL_STREAM_PATH;
+    final String STREAM_FILE_NAME_PREFIX = ChukasaConstant.STREAM_FILE_NAME_PREFIX;
+    final String STREAM_FILE_EXTENSION = ChukasaConstant.STREAM_FILE_EXTENSION;
+    final String M3U8_FILE_NAME_PREFIX = ChukasaConstant.M3U8_FILE_NAME_PREFIX;
+    final String M3U8_FILE_EXTENSION = ChukasaConstant.M3U8_FILE_EXTENSION;
+    final String M3U8_FILE_NAME = M3U8_FILE_NAME_PREFIX + M3U8_FILE_EXTENSION;
+
     private int adaptiveBitrateStreaming;
 
     private IChukasaModelManagementComponent chukasaModelManagementComponent;
@@ -29,8 +36,6 @@ public class Playlister extends TimerTask {
 
     @Override
     public void run() {
-
-        String initialStreamPath = ChukasaConstant.INITIAL_STREAM_PATH;
 
         try {
 
@@ -46,7 +51,7 @@ public class Playlister extends TimerTask {
                 PlaylistType playlistType = chukasaModel.getPlaylistType();
                 double segmentedTsDuration = (double) chukasaModel.getHlsConfiguration().getDuration();
                 int uriInPlaylist = chukasaModel.getHlsConfiguration().getUriInPlaylist();
-                String playlistPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getM3u8PlaylistName();
+                String playlistPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + M3U8_FILE_NAME;
 
                 int seqPl = 0;
                 seqPl = chukasaModel.getSeqPl();
@@ -86,7 +91,7 @@ public class Playlister extends TimerTask {
                             for (int i = iInitial; i < iInitial + uriInPlaylist - sequenceTs - 1; i++) {
                                 bw.write("#EXTINF:" + (double) chukasaModel.getHlsConfiguration().getDuration() + ",");
                                 bw.newLine();
-                                bw.write(initialStreamPath + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(initialStreamPath + "/" + "i" + i + STREAM_FILE_EXTENSION);
                                 bw.newLine();
                                 nInitial++;
                             }
@@ -94,7 +99,7 @@ public class Playlister extends TimerTask {
                             for (int i = 0; i < iInitial + uriInPlaylist - sequenceTs - 1; i++) {
                                 bw.write("#EXTINF:" + (double) chukasaModel.getHlsConfiguration().getDuration() + ",");
                                 bw.newLine();
-                                bw.write(initialStreamPath + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(initialStreamPath + "/" + "i" + i + STREAM_FILE_EXTENSION);
                                 bw.newLine();
                                 nInitial++;
                             }
@@ -115,7 +120,7 @@ public class Playlister extends TimerTask {
                                 //bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
                                 bw.write("#EXTINF:" + chukasaModel.getExtinfList().get(i) + ",");
                                 bw.newLine();
-                                bw.write(chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(STREAM_FILE_NAME_PREFIX + i + STREAM_FILE_EXTENSION);
                                 bw.newLine();
                             }
                         }else if (playlistType == PlaylistType.EVENT) {
@@ -126,7 +131,7 @@ public class Playlister extends TimerTask {
                                 bw.newLine();
                                 bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
                                 bw.newLine();
-                                bw.write(chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(STREAM_FILE_NAME_PREFIX + i + STREAM_FILE_EXTENSION);
                                 bw.newLine();
                             }
                         }
@@ -155,7 +160,7 @@ public class Playlister extends TimerTask {
                             for (int i = 0; i < chukasaModel.getSequenceInitialPlaylist() + uriInPlaylist - 1 - 1 ; i++) {
                                 bw.write("#EXTINF:" + (double) chukasaModel.getHlsConfiguration().getDuration() + ",");
                                 bw.newLine();
-                                bw.write(initialStreamPath + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(initialStreamPath + "/" + "i" + i + STREAM_FILE_EXTENSION);
                                 bw.newLine();
 
                             }
@@ -173,7 +178,7 @@ public class Playlister extends TimerTask {
                                 //bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
                                 bw.write("#EXTINF:" + chukasaModel.getExtinfList().get(i) + ",");
                                 bw.newLine();
-                                bw.write(chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(STREAM_FILE_NAME_PREFIX + i + STREAM_FILE_EXTENSION);
                                 bw.newLine();
                             }
                         }else if(playlistType == PlaylistType.EVENT){
@@ -185,7 +190,7 @@ public class Playlister extends TimerTask {
                                 bw.newLine();
                                 bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
                                 bw.newLine();
-                                bw.write(chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(STREAM_FILE_NAME_PREFIX + i + STREAM_FILE_EXTENSION);
                                 bw.newLine();
                             }
                         }
@@ -241,14 +246,14 @@ public class Playlister extends TimerTask {
                             for (int i = iInitial; i < iInitial + uriInPlaylist - sequenceTs - 1; i++) {
                                 bw.write("#EXTINF:" + (double) chukasaModel.getHlsConfiguration().getDuration() + ",");
                                 bw.newLine();
-                                bw.write(initialStreamPath + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(initialStreamPath + "/" + "i" + i + STREAM_FILE_EXTENSION);
                                 bw.newLine();
                             }
                         }else if (playlistType == PlaylistType.EVENT) {
                             for (int i = 0; i < iInitial + uriInPlaylist - sequenceTs - 1; i++) {
                                 bw.write("#EXTINF:" + (double) chukasaModel.getHlsConfiguration().getDuration() + ",");
                                 bw.newLine();
-                                bw.write(initialStreamPath + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(initialStreamPath + "/" + "i" + i + STREAM_FILE_EXTENSION);
                                 bw.newLine();
                             }
                         }
@@ -264,14 +269,14 @@ public class Playlister extends TimerTask {
                                 //bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
                                 bw.write("#EXTINF:" + chukasaModel.getExtinfList().get(i) + ",");
                                 bw.newLine();
-                                bw.write(chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(STREAM_FILE_NAME_PREFIX + i + STREAM_FILE_EXTENSION);
                                 bw.newLine();
                             }
                         }else if (playlistType.equals(PlaylistType.EVENT)) {
                             for (int i = 0; i < sequenceTs + 1; i++) {
                                 bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
                                 bw.newLine();
-                                bw.write(chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(STREAM_FILE_NAME_PREFIX + i + STREAM_FILE_EXTENSION);
                                 bw.newLine();
                             }
                         }
@@ -300,7 +305,7 @@ public class Playlister extends TimerTask {
                             for (int i = 0; i < chukasaModel.getSequenceInitialPlaylist() + uriInPlaylist - 1 - 1 ; i++) {
                                 bw.write("#EXTINF:" + (double) chukasaModel.getHlsConfiguration().getDuration() + ",");
                                 bw.newLine();
-                                bw.write(initialStreamPath + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(initialStreamPath + "/" + "i" + i + STREAM_FILE_EXTENSION);
                                 bw.newLine();
 
                             }
@@ -314,7 +319,7 @@ public class Playlister extends TimerTask {
                                 //bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
                                 bw.write("#EXTINF:" + chukasaModel.getExtinfList().get(i) + ",");
                                 bw.newLine();
-                                bw.write(chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(STREAM_FILE_NAME_PREFIX + i + STREAM_FILE_EXTENSION);
                                 bw.newLine();
                             }
                         }else if(playlistType == PlaylistType.EVENT){
@@ -322,7 +327,7 @@ public class Playlister extends TimerTask {
                             for (int i = initSeqPl; i < (sequenceTs + 1); i++) {
                                 bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
                                 bw.newLine();
-                                bw.write(chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(STREAM_FILE_NAME_PREFIX + i + STREAM_FILE_EXTENSION);
                                 bw.newLine();
                             }
                         }
@@ -356,7 +361,7 @@ public class Playlister extends TimerTask {
                 PlaylistType playlistType = chukasaModel.getPlaylistType();
                 double segmentedTsDuration = (double) chukasaModel.getHlsConfiguration().getDuration();
                 int uriInPlaylist = chukasaModel.getHlsConfiguration().getUriInPlaylist();
-                String playlistPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getM3u8PlaylistName();
+                String playlistPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + M3U8_FILE_NAME;
 
                 int seqPl = chukasaModel.getSequenceInitialPlaylist();
                 seqPl++;
@@ -388,7 +393,7 @@ public class Playlister extends TimerTask {
                 for (int i = initSeqPl; i < (seqPl + uriInPlaylist); i++) {
                     bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
                     bw.newLine();
-                    bw.write(initialStreamPath + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                    bw.write(initialStreamPath + "/" + "i" + i + STREAM_FILE_EXTENSION);
                     bw.newLine();
                 }
 

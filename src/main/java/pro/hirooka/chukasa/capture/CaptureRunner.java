@@ -3,6 +3,7 @@ package pro.hirooka.chukasa.capture;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import pro.hirooka.chukasa.ChukasaConstant;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.domain.recorder.Program;
@@ -24,6 +25,9 @@ import static java.util.Objects.requireNonNull;
 public class CaptureRunner implements Runnable {
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
+    final String STREAM_FILE_NAME_PREFIX = ChukasaConstant.STREAM_FILE_NAME_PREFIX;
+    final String STREAM_FILE_EXTENSION = ChukasaConstant.STREAM_FILE_EXTENSION;
 
     private int adaptiveBitrateStreaming;
 
@@ -71,7 +75,7 @@ public class CaptureRunner implements Runnable {
                     "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
                     "-segment_list", chukasaModel.getStreamPath() + FILE_SEPARATOR + "ffmpeg.m3u8",
 //                    "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension()
-                    chukasaModel.getStreamPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + "%d" + chukasaModel.getHlsConfiguration().getStreamExtension()
+                    chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION
             };
             commandArray = commandArrayTemporary;
         }else{
@@ -96,7 +100,7 @@ public class CaptureRunner implements Runnable {
                     "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                     "-f", "mpegts",
                     "-x264opts", "keyint=10:min-keyint=10",
-                    "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension()
+                    "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
             };
             commandArray = commandArrayTemporary;
         }
