@@ -6,6 +6,7 @@ import pro.hirooka.chukasa.configuration.HLSConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.chukasa.type.PlaylistType;
 import pro.hirooka.chukasa.playlister.PlaylisterRunner;
+import pro.hirooka.chukasa.segmenter.FFmpegHLSSegmenterRunner;
 import pro.hirooka.chukasa.segmenter.SegmenterRunner;
 
 import java.math.BigDecimal;
@@ -50,6 +51,7 @@ public class ChukasaModel {
     private double duration;
     private List<Double> extinfList;
     private BigDecimal nextInit;
+    private int segmentedSequenceByFFmpeg;
 
     // Encrypter
     private ArrayList<String> keyArrayList;
@@ -64,6 +66,7 @@ public class ChukasaModel {
 
     // Flag for Timer
     private boolean flagTimerSegmenter;
+    private boolean flagTimerFFmpegHLSSegmenter;
     private boolean flagTimerPlaylister;
 
     // Remover
@@ -73,6 +76,7 @@ public class ChukasaModel {
     private long ffmpegPID;
 
     private SegmenterRunner segmenterRunner;
+    private FFmpegHLSSegmenterRunner ffmpegHLSSegmenterRunner;
     private PlaylisterRunner playlisterRunner;
     private UUID uuid;
 
@@ -112,6 +116,7 @@ public class ChukasaModel {
         this.duration = 0;
         this.extinfList = new ArrayList<>();
         this.nextInit = new BigDecimal("0.0");
+        this.segmentedSequenceByFFmpeg = -1;
 
         // Encrypter
         keyArrayList = new ArrayList<>();
@@ -126,6 +131,7 @@ public class ChukasaModel {
 
         // Flag for Timer
         this.flagTimerSegmenter = false;
+        this.flagTimerFFmpegHLSSegmenter = false;
         this.flagTimerPlaylister = false;
 
         // Remover
@@ -135,8 +141,9 @@ public class ChukasaModel {
         this.ffmpegPID = -1;
 
         this.segmenterRunner = null;
+        this.ffmpegHLSSegmenterRunner = null;
         this.playlisterRunner = null;
-        this.uuid = UUID.randomUUID();
+        this.uuid = null;
     }
 
 }

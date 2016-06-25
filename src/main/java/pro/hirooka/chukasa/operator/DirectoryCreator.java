@@ -25,7 +25,7 @@ public class DirectoryCreator implements IDirectoryCreator{
     public void setup(int adaptiveBitrateStreaming) {
 
         // directory
-        // streamRootPath ... from Context
+        // streamRootPath ... Context + 設定ファイル
         // streamPath ... streamRootPath + ChukasaConfiguration
         // temporaryPath ... SystemConfiguration
         // temporaryEncpryterPath ... tempPath + ChukasaConfiguration
@@ -45,7 +45,7 @@ public class DirectoryCreator implements IDirectoryCreator{
         // create directory to deploy segmented MPEG2-TS files
         String streamRootPath = chukasaModel.getStreamRootPath();
         log.info("streamRootPath: {}", streamRootPath);
-        chukasaModel.setStreamRootPath(streamRootPath);
+//        chukasaModel.setStreamRootPath(streamRootPath);
 
         if (new File(streamRootPath).mkdirs()) {
             log.info("streamRootPath is created : {}", streamRootPath);
@@ -57,7 +57,10 @@ public class DirectoryCreator implements IDirectoryCreator{
         String streamPath = "";
         String tempEncPath = "";
         String tempPath = chukasaModel.getSystemConfiguration().getTempPath();
-        if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEB_CAMERA || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.CAPTURE) {
+        if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.CAPTURE)){
+            streamPath = streamRootPath + FILE_SEPARATOR + chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getLivePathName();
+            chukasaModel.setStreamPath(streamPath);
+        }else if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEB_CAMERA) {
             streamPath = streamRootPath + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getLivePathName();
             chukasaModel.setStreamPath(streamPath);
             tempEncPath = tempPath + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getLivePathName();
@@ -81,7 +84,7 @@ public class DirectoryCreator implements IDirectoryCreator{
         }
 
         // create directory to deploy segmented MPEG2-TS files (per Video bitrate...)
-        streamPath = streamPath + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getVideoBitrate();
+//        streamPath = streamPath + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName();
         if(Files.exists(new File(streamPath).toPath())){
             try {
                 FileUtils.cleanDirectory(new File(streamPath));
@@ -99,7 +102,7 @@ public class DirectoryCreator implements IDirectoryCreator{
             }
         }
 
-        tempEncPath = tempEncPath + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getVideoBitrate();
+        tempEncPath = tempEncPath + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName();
         if(Files.exists(new File(tempEncPath).toPath())){
             try {
                 FileUtils.cleanDirectory(new File(tempEncPath));

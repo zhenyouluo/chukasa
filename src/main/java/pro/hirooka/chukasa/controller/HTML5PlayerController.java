@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Controller
@@ -105,8 +106,11 @@ public class HTML5PlayerController {
 
             ChukasaModel chukasaModel = new ChukasaModel();
 
+            chukasaModel.setUuid(UUID.randomUUID());
+
             // TODO: adaptive
             chukasaModel.setAdaptiveBitrateStreaming(0);
+            chukasaModel = chukasaModelManagementComponent.create(0, chukasaModel);
 
             chukasaModel.setChukasaConfiguration(chukasaConfiguration);
             chukasaModel.setSystemConfiguration(systemConfiguration);
@@ -122,10 +126,9 @@ public class HTML5PlayerController {
             chukasaModel.getChukasaSettings().setAudioBitrate(audioBitrate);
 
             String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + chukasaConfiguration.getStreamRootPathName();
-            streamRootPath = streamRootPath + FILE_SEPARATOR + chukasaModel.getUuid().toString();
             chukasaModel.setStreamRootPath(streamRootPath);
 
-            chukasaModel = chukasaModelManagementComponent.create(0, chukasaModel);
+            chukasaModelManagementComponent.update(0, chukasaModel);
 
             directoryCreator.setup(0);
 
@@ -143,9 +146,11 @@ public class HTML5PlayerController {
                         + FILE_SEPARATOR
                         + chukasaModel.getUuid().toString()
                         + FILE_SEPARATOR
-                        + chukasaModel.getChukasaConfiguration().getLivePathName()
+                        + chukasaModel.getAdaptiveBitrateStreaming()
                         + FILE_SEPARATOR
-                        + chukasaModel.getChukasaSettings().getVideoBitrate()
+                        + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName()
+                        + FILE_SEPARATOR
+                        + chukasaModel.getChukasaConfiguration().getLivePathName()
                         + FILE_SEPARATOR
                         + chukasaModel.getChukasaConfiguration().getM3u8PlaylistName();
             }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE

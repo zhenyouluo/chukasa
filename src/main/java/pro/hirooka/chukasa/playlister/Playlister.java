@@ -1,6 +1,7 @@
 package pro.hirooka.chukasa.playlister;
 
 import lombok.extern.slf4j.Slf4j;
+import pro.hirooka.chukasa.ChukasaConstant;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.PlaylistType;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
@@ -29,11 +30,15 @@ public class Playlister extends TimerTask {
     @Override
     public void run() {
 
+        String initialStreamPath = ChukasaConstant.INITIAL_STREAM_PATH;
+
         try {
 
             ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
 
+            int targetDuration = chukasaModel.getHlsConfiguration().getDuration() + 1;
             int sequenceTs = chukasaModel.getSeqTs();
+            log.info("sequenceTs = {}", sequenceTs);
 
 
             if(sequenceTs >= 0) {
@@ -56,7 +61,7 @@ public class Playlister extends TimerTask {
                     bw.newLine();
                     bw.write("#EXT-X-VERSION:7");
                     bw.newLine();
-                    bw.write("#EXT-X-TARGETDURATION:" + Long.toString(Math.round(segmentedTsDuration)));
+                    bw.write("#EXT-X-TARGETDURATION:" + targetDuration);
                     bw.newLine();
 
                     if(!(sequenceTs >= (uriInPlaylist - 1))) {
@@ -81,7 +86,7 @@ public class Playlister extends TimerTask {
                             for (int i = iInitial; i < iInitial + uriInPlaylist - sequenceTs - 1; i++) {
                                 bw.write("#EXTINF:" + (double) chukasaModel.getHlsConfiguration().getDuration() + ",");
                                 bw.newLine();
-                                bw.write("/istream/500-" + chukasaModel.getHlsConfiguration().getDuration() + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(initialStreamPath + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
                                 bw.newLine();
                                 nInitial++;
                             }
@@ -89,7 +94,7 @@ public class Playlister extends TimerTask {
                             for (int i = 0; i < iInitial + uriInPlaylist - sequenceTs - 1; i++) {
                                 bw.write("#EXTINF:" + (double) chukasaModel.getHlsConfiguration().getDuration() + ",");
                                 bw.newLine();
-                                bw.write("/istream/500-" + chukasaModel.getHlsConfiguration().getDuration() + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(initialStreamPath + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
                                 bw.newLine();
                                 nInitial++;
                             }
@@ -150,7 +155,7 @@ public class Playlister extends TimerTask {
                             for (int i = 0; i < chukasaModel.getSequenceInitialPlaylist() + uriInPlaylist - 1 - 1 ; i++) {
                                 bw.write("#EXTINF:" + (double) chukasaModel.getHlsConfiguration().getDuration() + ",");
                                 bw.newLine();
-                                bw.write("/istream/500-" + chukasaModel.getHlsConfiguration().getDuration() + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(initialStreamPath + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
                                 bw.newLine();
 
                             }
@@ -205,50 +210,46 @@ public class Playlister extends TimerTask {
 
                 } else {
 
-                    File f = new File(playlistPath);
-                    FileWriter fw = new FileWriter(f);
-                    BufferedWriter bw = new BufferedWriter(fw);
+                    BufferedWriter bw = new BufferedWriter(new FileWriter(new File(playlistPath)));
 
                     bw.write("#EXTM3U");
                     bw.newLine();
                     bw.write("#EXT-X-VERSION:7");
                     bw.newLine();
-                    bw.write("#EXT-X-TARGETDURATION:" + Long.toString(Math.round(segmentedTsDuration)));
+                    bw.write("#EXT-X-TARGETDURATION:" + targetDuration);
                     bw.newLine();
 
-                    if(!(sequenceTs >= (uriInPlaylist - 1))){
+//                    if(!(sequenceTs >= (uriInPlaylist - 1))){
+                    if(!(seqPl >= (uriInPlaylist - 1))){
 
                         // MIX STREAM //
 
                         int iInitial = chukasaModel.getSequenceInitialPlaylist();
                         iInitial++;
 
-                        if (playlistType == PlaylistType.LIVE) {
+                        if (playlistType.equals(PlaylistType.LIVE)) {
                             bw.write("#EXT-X-MEDIA-SEQUENCE:" + iInitial);
                             bw.newLine();
                             bw.write("#EXT-X-DISCONTINUITY-SEQUENCE:" + 1);
-                        } else if (playlistType == PlaylistType.EVENT) {
+                        } else if (playlistType.equals(PlaylistType.EVENT)) {
                             bw.write("#EXT-X-MEDIA-SEQUENCE:0");
                         }
 
                         bw.newLine();
 
-                        int nInitial = 0;
-                        if (playlistType == PlaylistType.LIVE) {
+                        if (playlistType.equals(PlaylistType.LIVE)) {
                             for (int i = iInitial; i < iInitial + uriInPlaylist - sequenceTs - 1; i++) {
                                 bw.write("#EXTINF:" + (double) chukasaModel.getHlsConfiguration().getDuration() + ",");
                                 bw.newLine();
-                                bw.write("/istream/500-" + chukasaModel.getHlsConfiguration().getDuration() + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(initialStreamPath + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
                                 bw.newLine();
-                                nInitial++;
                             }
                         }else if (playlistType == PlaylistType.EVENT) {
                             for (int i = 0; i < iInitial + uriInPlaylist - sequenceTs - 1; i++) {
                                 bw.write("#EXTINF:" + (double) chukasaModel.getHlsConfiguration().getDuration() + ",");
                                 bw.newLine();
-                                bw.write("/istream/500-" + chukasaModel.getHlsConfiguration().getDuration() + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(initialStreamPath + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
                                 bw.newLine();
-                                nInitial++;
                             }
                         }
 
@@ -256,9 +257,9 @@ public class Playlister extends TimerTask {
                         bw.newLine();
 
                         chukasaModel.setSequenceInitialPlaylist(iInitial);
-                        chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+//                        chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
-                        if (playlistType == PlaylistType.LIVE) {
+                        if (playlistType.equals(PlaylistType.LIVE)) {
                             for (int i = 0 ; i < sequenceTs + 1; i++) {
                                 //bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
                                 bw.write("#EXTINF:" + chukasaModel.getExtinfList().get(i) + ",");
@@ -266,7 +267,7 @@ public class Playlister extends TimerTask {
                                 bw.write(chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + i + chukasaModel.getHlsConfiguration().getStreamExtension());
                                 bw.newLine();
                             }
-                        }else if (playlistType == PlaylistType.EVENT) {
+                        }else if (playlistType.equals(PlaylistType.EVENT)) {
                             for (int i = 0; i < sequenceTs + 1; i++) {
                                 bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
                                 bw.newLine();
@@ -279,7 +280,7 @@ public class Playlister extends TimerTask {
 
                         // ONLY LIVE STREAM
 
-                        if (playlistType == PlaylistType.LIVE) {
+                        if (playlistType.equals(PlaylistType.LIVE)) {
                             int mediaSequence = seqPl - (uriInPlaylist - 1);
                             mediaSequence = mediaSequence + chukasaModel.getSequenceInitialPlaylist() + uriInPlaylist - 1 - 1;
                             bw.write("#EXT-X-MEDIA-SEQUENCE:" + mediaSequence);
@@ -299,7 +300,7 @@ public class Playlister extends TimerTask {
                             for (int i = 0; i < chukasaModel.getSequenceInitialPlaylist() + uriInPlaylist - 1 - 1 ; i++) {
                                 bw.write("#EXTINF:" + (double) chukasaModel.getHlsConfiguration().getDuration() + ",");
                                 bw.newLine();
-                                bw.write("/istream/500-" + chukasaModel.getHlsConfiguration().getDuration() + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                                bw.write(initialStreamPath + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
                                 bw.newLine();
 
                             }
@@ -336,7 +337,6 @@ public class Playlister extends TimerTask {
                         }
                     }
                     bw.close();
-                    fw.close();
 
                     if (chukasaModel.isFlagLastPl()) {
                         chukasaModel.setFlagTimerPlaylister(true);
@@ -347,7 +347,7 @@ public class Playlister extends TimerTask {
 
                 seqPl++;
                 chukasaModel.setSeqPl(seqPl);
-                chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+                chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
             } else {
 
@@ -358,13 +358,10 @@ public class Playlister extends TimerTask {
                 int uriInPlaylist = chukasaModel.getHlsConfiguration().getUriInPlaylist();
                 String playlistPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getM3u8PlaylistName();
 
-                int seqPl =
-                 chukasaModel.getSequenceInitialPlaylist();
+                int seqPl = chukasaModel.getSequenceInitialPlaylist();
                 seqPl++;
 
-                File f = new File(playlistPath);
-                FileWriter fw = new FileWriter(f);
-                BufferedWriter bw = new BufferedWriter(fw);
+                BufferedWriter bw = new BufferedWriter(new FileWriter(new File(playlistPath)));
 
                 bw.write("#EXTM3U");
                 bw.newLine();
@@ -372,7 +369,7 @@ public class Playlister extends TimerTask {
                 bw.newLine();
                 bw.write("#EXT-X-ALLOW-CACHE:NO");
                 bw.newLine();
-                bw.write("#EXT-X-TARGETDURATION:" + Long.toString(Math.round(segmentedTsDuration)));
+                bw.write("#EXT-X-TARGETDURATION:" + targetDuration);
                 bw.newLine();
 
                 if (playlistType == PlaylistType.LIVE) {
@@ -384,29 +381,23 @@ public class Playlister extends TimerTask {
                 bw.newLine();
 
                 int initSeqPl = 0;
-                if (playlistType == PlaylistType.LIVE) {
+                if (playlistType.equals(PlaylistType.LIVE)) {
                     initSeqPl = seqPl;
-                } else if (playlistType == PlaylistType.EVENT) {
-                    initSeqPl = 0;
                 }
 
                 for (int i = initSeqPl; i < (seqPl + uriInPlaylist); i++) {
                     bw.write("#EXTINF:" + Double.toString(segmentedTsDuration) + ",");
                     bw.newLine();
-                    bw.write("/istream/500-" + chukasaModel.getHlsConfiguration().getDuration() + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
+                    bw.write(initialStreamPath + "/" + "i" + i + chukasaModel.getHlsConfiguration().getStreamExtension());
                     bw.newLine();
                 }
 
                 bw.close();
-                fw.close();
 
-                //seqPl++;
                 chukasaModel.setSequenceInitialPlaylist(seqPl);
-                chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+                chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
             }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

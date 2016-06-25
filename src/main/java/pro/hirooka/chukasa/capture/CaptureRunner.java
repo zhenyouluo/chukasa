@@ -1,12 +1,22 @@
 package pro.hirooka.chukasa.capture;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
+import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
+import pro.hirooka.chukasa.domain.recorder.Program;
+import pro.hirooka.chukasa.encrypter.Encrypter;
 import pro.hirooka.chukasa.segmenter.SegmenterRunner;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.transcoder.FFmpegRunner;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -28,6 +38,7 @@ public class CaptureRunner implements Runnable {
     public void run() {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+        log.info("StreamPath: {}", chukasaModel.getStreamPath());
 
         boolean isQSV = chukasaModel.getSystemConfiguration().isQuickSyncVideoEnabled();
 
@@ -49,12 +60,18 @@ public class CaptureRunner implements Runnable {
                     "-ac", "2",
                     "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
                     "-vcodec", "h264_qsv",
+                    "-g", "60",
                     "-profile:v", "high",
-                    "-level", "4.1",
+                    "-level", "4.2",
                     "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate()+"k",
                     "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
-                    "-f", "mpegts",
-                    "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension()
+//                    "-f", "mpegts",
+                    "-f", "segment",
+//                    "-segment_format", "mpegts",
+                    "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
+                    "-segment_list", chukasaModel.getStreamPath() + FILE_SEPARATOR + "ffmpeg.m3u8",
+//                    "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + chukasaModel.getChukasaSettings().getVideoBitrate() + chukasaModel.getHlsConfiguration().getStreamExtension()
+                    chukasaModel.getStreamPath() + FILE_SEPARATOR + chukasaModel.getChukasaConfiguration().getStreamFileNamePrefix() + "%d" + chukasaModel.getHlsConfiguration().getStreamExtension()
             };
             commandArray = commandArrayTemporary;
         }else{
@@ -144,22 +161,22 @@ public class CaptureRunner implements Runnable {
                 boolean isTranscoding = false;
                 boolean isSegmenterStarted = false;
                 while((str = bufferedReader.readLine()) != null){
-                    log.info("{}", str);
-                    if(str.startsWith("frame=")){
-                        if(!isTranscoding){
-                            isTranscoding = true;
-                            chukasaModel.setTrascoding(isTranscoding);
-                            chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-                            if(!isSegmenterStarted) {
-                                isSegmenterStarted = true;
-                                SegmenterRunner segmenterRunner = new SegmenterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
-                                Thread sThread = new Thread(segmenterRunner, "__SegmenterRunner__");
-                                sThread.start();
-                                chukasaModel.setSegmenterRunner(segmenterRunner);
-                                chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-                            }
-                        }
-                    }
+//                    log.info("{}", str);
+//                    if(str.startsWith("frame=")){
+//                        if(!isTranscoding){
+//                            isTranscoding = true;
+//                            chukasaModel.setTrascoding(isTranscoding);
+//                            chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+//                            if(!isSegmenterStarted) {
+//                                isSegmenterStarted = true;
+//                                SegmenterRunner segmenterRunner = new SegmenterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+//                                Thread sThread = new Thread(segmenterRunner, "__SegmenterRunner__");
+//                                sThread.start();
+//                                chukasaModel.setSegmenterRunner(segmenterRunner);
+//                                chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+//                            }
+//                        }
+//                    }
                 }
                 isTranscoding = false;
                 chukasaModel.setTrascoding(isTranscoding);

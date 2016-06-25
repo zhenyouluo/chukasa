@@ -11,6 +11,7 @@ import pro.hirooka.chukasa.capture.CaptureRunner;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.playlister.PlaylisterRunner;
+import pro.hirooka.chukasa.segmenter.FFmpegHLSSegmenterRunner;
 import pro.hirooka.chukasa.segmenter.SegmenterRunner;
 import pro.hirooka.chukasa.transcoder.FFmpegRunner;
 
@@ -59,6 +60,10 @@ public class ChukasaTaskService implements IChukasaTaskService {
 //            SegmenterRunner segmenterRunner = new SegmenterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
 //            Thread sThread = new Thread(segmenterRunner, "__SegmenterRunner__");
 //            sThread.start();
+
+            FFmpegHLSSegmenterRunner ffmpegHLSSegmenterRunner = new FFmpegHLSSegmenterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+            taskExecutor.execute(ffmpegHLSSegmenterRunner);
+            chukasaModel.setFfmpegHLSSegmenterRunner(ffmpegHLSSegmenterRunner);
 
             PlaylisterRunner playlisterRunner = new PlaylisterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
             taskExecutor.execute(playlisterRunner);

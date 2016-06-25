@@ -27,6 +27,7 @@ public class ChukasaStopper {
         // if set flag true -> break while loop
         for(ChukasaModel chukasaModel : chukasaModelList){
             chukasaModel.setFlagTimerSegmenter(true);
+            chukasaModel.setFlagTimerFFmpegHLSSegmenter(true);
             chukasaModel.setFlagTimerPlaylister(true);
             if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
                 chukasaModel.setFlagRemoveFile(true);

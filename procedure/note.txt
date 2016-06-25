@@ -194,3 +194,6 @@ db.program.distinct("channel")
 avconv -i sintel_trailer-1080p.mp4 -acodec aac -strict experimental -ab 128k -ac 2 -ar 44100 -vcodec h264_omx -b:v 1000k -threads 1 -f mpegts -y output.ts
 recdvb --b25 --strip XX - - | avconv -i - -acodec aac -strict experimental -ab 128k -ac 2 -ar 44100 -vcodec h264_omx -b:v 1000k -threads 1 -f mpegts -y 20.ts
 avconv -f video4linux2 -s 640x360 -i /dev/video0 -f alsa -ac 1 -i hw:0,0 -acodec aac -strict experimental -ab 128k -ar 44100 -vcodec h264_omx -b:v 1000k -threads 1 -t 30 -f mpegts -y 20.ts
+
+
+/usr/local/bin/ffmpeg -i now_transcoding.ts -acodec aac -ab 160k -ar 44100 -ac 2 -s 1280x720 -vcodec h264_qsv -g 60 -profile:v high -level 4.2 -b:v 2560k -threads 1 -f segment -segment_time 2 -segment_list i.m3u8 i%d.ts
