@@ -32,8 +32,6 @@ public class Playlister extends TimerTask {
         this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
     }
 
-    // TODO too redundant
-
     @Override
     public void run() {
 
@@ -44,7 +42,6 @@ public class Playlister extends TimerTask {
             int targetDuration = chukasaModel.getHlsConfiguration().getDuration() + 1;
             int sequenceTs = chukasaModel.getSeqTs();
             log.info("sequenceTs = {}", sequenceTs);
-
 
             if(sequenceTs >= 0) {
 

@@ -32,22 +32,22 @@ public class FFmpegHLSSegmenter extends TimerTask {
         int sequence = chukasaModel.getSeqTs();
         String streamPath = chukasaModel.getStreamPath();
         log.info("sequence = {}", sequence);
-        log.info("streamPath = {}", streamPath);
+        log.debug("streamPath = {}", streamPath);
 
         String tsPath = streamPath + FILE_SEPARATOR + "chukasa" + (sequence + 1) + ".ts";
         File file = new File(tsPath);
         if(file.exists()){
-            log.info("file exists: {}", file.getAbsolutePath());
+            log.debug("file exists: {}", file.getAbsolutePath());
             tsPath = streamPath + FILE_SEPARATOR + "chukasa" + (sequence + 2) + ".ts";
             file = new File(tsPath);
             if(file.exists()) {
-                log.info("file exists: {}", file.getAbsolutePath());
+                log.debug("file exists: {}", file.getAbsolutePath());
                 sequence = sequence + 1;
                 chukasaModel.setSeqTs(sequence);
 
                 List<Double> extinfList = chukasaModel.getExtinfList();
                 List<Double> ffmpegM3U8EXTINFList = getEXTINFList(streamPath + FILE_SEPARATOR + "ffmpeg.m3u8");
-                if(ffmpegM3U8EXTINFList.size() > sequence){
+                if(sequence >= 0 && ffmpegM3U8EXTINFList.size() > 0){
                     extinfList.add(ffmpegM3U8EXTINFList.get(sequence));
                 }else{
                     extinfList.add((double)chukasaModel.getHlsConfiguration().getDuration());
@@ -70,13 +70,16 @@ public class FFmpegHLSSegmenter extends TimerTask {
             while ((str = bufferedReader.readLine()) != null) {
                 if (str.startsWith(EXTINF_TAG)) {
                     try {
-                        extinfList.add(Double.parseDouble(str.split(EXTINF_TAG)[1].split(",")[0]));
+                        double extinf = Double.parseDouble(str.split(EXTINF_TAG)[1].split(",")[0]);
+                        log.debug("extinf = {}", extinf);
+                        extinfList.add(extinf);
                     }catch(NumberFormatException e){
                         log.error("{} {}", e.getMessage(), e);
                         break;
                     }
                 }
             }
+            return extinfList;
         } catch (IOException e) {
             log.error("{} {}", e.getMessage(), e);
         }
