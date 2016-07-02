@@ -70,7 +70,7 @@ public class Segmenter extends TimerTask {
         try {
             FileInputStream fis = null;
             if(chukasaModel.getChukasaSettings().getStreamingType() != StreamingType.OKKAKE) {
-                fis = new FileInputStream(chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION);
+                fis = new FileInputStream(chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION);
             }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
                 fis = new FileInputStream(chukasaModel.getSystemConfiguration().getFilePath() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName());
             }
@@ -651,7 +651,7 @@ public class Segmenter extends TimerTask {
         try {
             FileInputStream fis = null;
             if(chukasaModel.getChukasaSettings().getStreamingType() != StreamingType.OKKAKE) {
-                fis = new FileInputStream(chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION);
+                fis = new FileInputStream(chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION);
             }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
                 fis = new FileInputStream(chukasaModel.getSystemConfiguration().getFilePath() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName());
             }

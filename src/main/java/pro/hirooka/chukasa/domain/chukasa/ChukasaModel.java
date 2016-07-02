@@ -4,9 +4,10 @@ import lombok.Data;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.HLSConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.detector.FFmpegHLSStreamDetectorRunner;
 import pro.hirooka.chukasa.domain.chukasa.type.PlaylistType;
+import pro.hirooka.chukasa.encrypter.FFmpegHLSEncrypterRunner;
 import pro.hirooka.chukasa.playlister.PlaylisterRunner;
-import pro.hirooka.chukasa.segmenter.FFmpegHLSSegmenterRunner;
 import pro.hirooka.chukasa.segmenter.SegmenterRunner;
 
 import java.math.BigDecimal;
@@ -76,7 +77,8 @@ public class ChukasaModel {
     private long ffmpegPID;
 
     private SegmenterRunner segmenterRunner;
-    private FFmpegHLSSegmenterRunner ffmpegHLSSegmenterRunner;
+    private FFmpegHLSStreamDetectorRunner ffmpegHLSStreamDetectorRunner;
+    private FFmpegHLSEncrypterRunner ffmpegHLSEncrypterRunner;
     private PlaylisterRunner playlisterRunner;
     private UUID uuid;
 
@@ -141,7 +143,8 @@ public class ChukasaModel {
         this.ffmpegPID = -1;
 
         this.segmenterRunner = null;
-        this.ffmpegHLSSegmenterRunner = null;
+        this.ffmpegHLSEncrypterRunner = null;
+        this.ffmpegHLSStreamDetectorRunner = null;
         this.playlisterRunner = null;
         this.uuid = null;
     }

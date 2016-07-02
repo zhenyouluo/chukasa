@@ -19,9 +19,8 @@ public class Playlister extends TimerTask {
     final String initialStreamPath = ChukasaConstant.INITIAL_STREAM_PATH;
     final String STREAM_FILE_NAME_PREFIX = ChukasaConstant.STREAM_FILE_NAME_PREFIX;
     final String STREAM_FILE_EXTENSION = ChukasaConstant.STREAM_FILE_EXTENSION;
-    final String M3U8_FILE_NAME_PREFIX = ChukasaConstant.M3U8_FILE_NAME_PREFIX;
+    final String M3U8_FILE_NAME = ChukasaConstant.M3U8_FILE_NAME;
     final String M3U8_FILE_EXTENSION = ChukasaConstant.M3U8_FILE_EXTENSION;
-    final String M3U8_FILE_NAME = M3U8_FILE_NAME_PREFIX + M3U8_FILE_EXTENSION;
 
     private int adaptiveBitrateStreaming;
 
@@ -48,7 +47,7 @@ public class Playlister extends TimerTask {
                 PlaylistType playlistType = chukasaModel.getPlaylistType();
                 double segmentedTsDuration = (double) chukasaModel.getHlsConfiguration().getDuration();
                 int uriInPlaylist = chukasaModel.getHlsConfiguration().getUriInPlaylist();
-                String playlistPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + M3U8_FILE_NAME;
+                String playlistPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
 
                 int seqPl = 0;
                 seqPl = chukasaModel.getSeqPl();
@@ -358,7 +357,7 @@ public class Playlister extends TimerTask {
                 PlaylistType playlistType = chukasaModel.getPlaylistType();
                 double segmentedTsDuration = (double) chukasaModel.getHlsConfiguration().getDuration();
                 int uriInPlaylist = chukasaModel.getHlsConfiguration().getUriInPlaylist();
-                String playlistPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + M3U8_FILE_NAME;
+                String playlistPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
 
                 int seqPl = chukasaModel.getSequenceInitialPlaylist();
                 seqPl++;

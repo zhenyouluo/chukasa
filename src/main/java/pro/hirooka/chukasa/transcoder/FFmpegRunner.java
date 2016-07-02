@@ -69,7 +69,7 @@ public class FFmpegRunner implements Runnable {
                         "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                         "-t", Integer.toString(chukasaModel.getChukasaSettings().getTotalWebCameraLiveduration()),
                         "-f", "mpegts",
-                        "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
+                        "-y", chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
                 };
                 cmdArray = cmdArrayTemporary;
             }else{
@@ -97,7 +97,7 @@ public class FFmpegRunner implements Runnable {
                         "-t", Integer.toString(chukasaModel.getChukasaSettings().getTotalWebCameraLiveduration()),
                         "-f", "mpegts",
                         "-x264opts", "keyint=10:min-keyint=10",
-                        "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
+                        "-y", chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
                 };
                 cmdArray = cmdArrayTemporary;
             }
@@ -120,7 +120,7 @@ public class FFmpegRunner implements Runnable {
                         "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
                         "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                         "-f", "mpegts",
-                        "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
+                        "-y", chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
                 };
                 cmdArray = cmdArrayTemporary;
             }else if(!isQSV && isOpenMAX){
@@ -138,7 +138,7 @@ public class FFmpegRunner implements Runnable {
                         "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
                         "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                         "-f", "mpegts",
-                        "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
+                        "-y", chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
                 };
                 cmdArray = cmdArrayTemporary;
             }else{
@@ -159,7 +159,7 @@ public class FFmpegRunner implements Runnable {
                         "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                         "-f", "mpegts",
                         "-x264opts", "keyint=10:min-keyint=10",
-                        "-y", chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
+                        "-y", chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
                 };
                 cmdArray = cmdArrayTemporary;
             }

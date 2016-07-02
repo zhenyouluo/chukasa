@@ -25,7 +25,7 @@ public class ChukasaRemover {
     public void remove(){
 
         requireNonNull(systemConfiguration, "systemConfiguration");
-        String tempPath = systemConfiguration.getTempPath();
+        String tempPath = systemConfiguration.getTemporaryPath();
 
         log.info("remove command is called.");
         log.info("streamRootPath: {} and tempPath: {} are to be removed.", streamRootPath, tempPath);

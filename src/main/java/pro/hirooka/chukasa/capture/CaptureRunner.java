@@ -17,6 +17,8 @@ public class CaptureRunner implements Runnable {
 
     final String STREAM_FILE_NAME_PREFIX = ChukasaConstant.STREAM_FILE_NAME_PREFIX;
     final String STREAM_FILE_EXTENSION = ChukasaConstant.STREAM_FILE_EXTENSION;
+    final String FFMPEG_HLS_M3U8_FILE_NAME = ChukasaConstant.FFMPEG_HLS_M3U8_FILE_NAME;
+    final String M3U8_FILE_EXTENSION = ChukasaConstant.M3U8_FILE_EXTENSION;
 
     private int adaptiveBitrateStreaming;
 
@@ -34,6 +36,12 @@ public class CaptureRunner implements Runnable {
         log.debug("StreamPath: {}", chukasaModel.getStreamPath());
 
         boolean isQSV = chukasaModel.getSystemConfiguration().isQuickSyncVideoEnabled();
+
+        boolean isEncryption = chukasaModel.getChukasaSettings().isEncrypted();
+        String ffmpegOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
+        if(isEncryption){
+            ffmpegOutputPath = chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;;
+        }
 
         String[] commandArray = {""};
 
@@ -60,8 +68,8 @@ public class CaptureRunner implements Runnable {
                     "-f", "segment",
                     "-segment_format", "mpegts",
                     "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-                    "-segment_list", chukasaModel.getStreamPath() + FILE_SEPARATOR + "ffmpeg.m3u8",
-                    chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION
+                    "-segment_list", chukasaModel.getStreamPath() + FILE_SEPARATOR + FFMPEG_HLS_M3U8_FILE_NAME + M3U8_FILE_EXTENSION,
+                    ffmpegOutputPath
             };
             commandArray = commandArrayTemporary;
         }else{
@@ -87,9 +95,9 @@ public class CaptureRunner implements Runnable {
                     "-f", "segment",
                     "-segment_format", "mpegts",
                     "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-                    "-segment_list", chukasaModel.getStreamPath() + FILE_SEPARATOR + "ffmpeg.m3u8",
+                    "-segment_list", chukasaModel.getStreamPath() + FILE_SEPARATOR + FFMPEG_HLS_M3U8_FILE_NAME + M3U8_FILE_EXTENSION,
                     "-x264opts", "keyint=10:min-keyint=10",
-                    chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION
+                    ffmpegOutputPath
             };
             commandArray = commandArrayTemporary;
         }
@@ -100,7 +108,7 @@ public class CaptureRunner implements Runnable {
         }
         log.info("command = {}", command);
 
-        String captureShell = chukasaModel.getSystemConfiguration().getTempPath() + FILE_SEPARATOR + "capture.sh";
+        String captureShell = chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + "capture.sh";
         File file = new File(captureShell);
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
             bufferedWriter.write("#!/bin/bash");

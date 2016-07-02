@@ -44,9 +44,8 @@ public class HTML5PlayerController {
 
     final String STREAM_ROOT_PATH_NAME = ChukasaConstant.STREAM_ROOT_PATH_NAME;
     final String LIVE_PATH_NAME = ChukasaConstant.LIVE_PATH_NAME;
-    final String M3U8_FILE_NAME_PREFIX = ChukasaConstant.M3U8_FILE_NAME_PREFIX;
+    final String M3U8_FILE_NAME = ChukasaConstant.M3U8_FILE_NAME;
     final String M3U8_FILE_EXTENSION = ChukasaConstant.M3U8_FILE_EXTENSION;
-    final String M3U8_FILE_NAME = M3U8_FILE_NAME_PREFIX + M3U8_FILE_EXTENSION;
 
     @Autowired
     ChukasaConfiguration chukasaConfiguration;
@@ -80,12 +79,6 @@ public class HTML5PlayerController {
         for(ChukasaModel chukasaModel : chukasaModelManagementComponent.get()){
             chukasaModel.getSegmenterRunner().stop();
             chukasaModel.getPlaylisterRunner().stop();
-//            FFmpegInitializer ffmpegInitializer = new FFmpegInitializer((long)chukasaModel.getFfmpegPID());
-//            Thread ffmpegInitializerThread = new Thread(ffmpegInitializer);
-//            ffmpegInitializerThread.start();
-//            ChukasaRemoverRunner chukasaRemoverRunner = new ChukasaRemoverRunner(systemConfiguration, chukasaModel.getStreamRootPath(), chukasaModel.getUuid());
-//            Thread thread = new Thread(chukasaRemoverRunner);
-//            thread.start();
             SimpleAsyncTaskExecutor ffmpegInitializerSimpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
             FFmpegInitializer ffmpegInitializer = new FFmpegInitializer(chukasaModel.getFfmpegPID());
             ffmpegInitializerSimpleAsyncTaskExecutor.execute(ffmpegInitializer);
@@ -132,7 +125,7 @@ public class HTML5PlayerController {
             chukasaModel.getChukasaSettings().setVideoBitrate(videoBitrate);
             chukasaModel.getChukasaSettings().setAudioBitrate(audioBitrate);
 
-            String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + STREAM_ROOT_PATH_NAME;
+            String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("");
             chukasaModel.setStreamRootPath(streamRootPath);
 
             chukasaModelManagementComponent.update(0, chukasaModel);
@@ -159,7 +152,7 @@ public class HTML5PlayerController {
                         + FILE_SEPARATOR
                         + LIVE_PATH_NAME
                         + FILE_SEPARATOR
-                        + M3U8_FILE_NAME;
+                        + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
             }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE
                     || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
                 playlistURI = "/"
@@ -171,7 +164,7 @@ public class HTML5PlayerController {
                         + FILE_SEPARATOR
                         + chukasaModel.getChukasaSettings().getVideoBitrate()
                         + FILE_SEPARATOR
-                        + M3U8_FILE_NAME;
+                        + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
             }
             log.info(playlistURI);
 
@@ -256,7 +249,7 @@ public class HTML5PlayerController {
                     + FILE_SEPARATOR
                     + chukasaModel.getChukasaSettings().getVideoBitrate()
                     + FILE_SEPARATOR
-                    + M3U8_FILE_NAME;
+                    + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
             log.info(playlistURI);
 
             HTML5PlayerModel html5PlayerModel = new HTML5PlayerModel();

@@ -19,6 +19,7 @@ public class DirectoryCreator implements IDirectoryCreator{
 
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
+    final String STREAM_ROOT_PATH_NAME = ChukasaConstant.STREAM_ROOT_PATH_NAME;
     final String LIVE_PATH_NAME = ChukasaConstant.LIVE_PATH_NAME;
 
     @Autowired
@@ -28,7 +29,7 @@ public class DirectoryCreator implements IDirectoryCreator{
     public void setup(int adaptiveBitrateStreaming) {
 
         // directory
-        // streamRootPath ... Context + 設定ファイル
+        // streamRootPath ... Context + 定数ファイル
         // streamPath ... streamRootPath + ChukasaConfiguration
         // temporaryPath ... SystemConfiguration
         // temporaryEncpryterPath ... tempPath + ChukasaConfiguration
@@ -36,69 +37,72 @@ public class DirectoryCreator implements IDirectoryCreator{
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
 
-        // create temporary direcotory
-        String temporaryPath = chukasaModel.getSystemConfiguration().getTempPath();
-        temporaryPath = temporaryPath + FILE_SEPARATOR + chukasaModel.getUuid().toString();
-        if (new File(temporaryPath).mkdirs()) {
-            log.info("temporaryPath is created : {}", temporaryPath);
-        } else {
-            log.error("temporaryPath cannot be created {}", temporaryPath);
-        }
-
         // create directory to deploy segmented MPEG2-TS files
-        String streamRootPath = chukasaModel.getStreamRootPath();
+        String streamRootPath = chukasaModel.getStreamRootPath() + STREAM_ROOT_PATH_NAME;
         log.info("streamRootPath: {}", streamRootPath);
-//        chukasaModel.setStreamRootPath(streamRootPath);
+//        if (new File(streamRootPath).mkdirs()) {
+//            log.info("streamRootPath is created : {}", streamRootPath);
+//        } else {
+//            log.error("streamRootPath cannot be created {}", streamRootPath);
+//        }
 
-        if (new File(streamRootPath).mkdirs()) {
-            log.info("streamRootPath is created : {}", streamRootPath);
-        } else {
-            log.error("streamRootPath cannot be created {}", streamRootPath);
-        }
+        // create temporary direcotory
+        String temporaryPath = chukasaModel.getSystemConfiguration().getTemporaryPath();
+//        if (new File(temporaryPath).mkdirs()) {
+//            log.info("temporaryPath is created : {}", temporaryPath);
+//        } else {
+//            log.error("temporaryPath cannot be created {}", temporaryPath);
+//        }
 
         // create directory to deploy segmented MPEG2-TS files (under streamRootPath)
+        String basementStreamPath = "";
         String streamPath = "";
+        String temporaryEncryptedStreamPath = "";
         String tempEncPath = "";
-        String tempPath = chukasaModel.getSystemConfiguration().getTempPath();
-        if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.CAPTURE)){
-            streamPath = streamRootPath + FILE_SEPARATOR + chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName() + FILE_SEPARATOR + LIVE_PATH_NAME;
+        String tempPath = chukasaModel.getSystemConfiguration().getTemporaryPath();
+        if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.CAPTURE) || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEB_CAMERA)){
+            basementStreamPath = chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName() + FILE_SEPARATOR + LIVE_PATH_NAME;
+            streamPath = streamRootPath + FILE_SEPARATOR + basementStreamPath;
             chukasaModel.setStreamPath(streamPath);
+            temporaryEncryptedStreamPath = temporaryPath + FILE_SEPARATOR + basementStreamPath;
+            chukasaModel.setTempEncPath(temporaryEncryptedStreamPath);
         }else if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEB_CAMERA) {
             streamPath = streamRootPath + FILE_SEPARATOR + LIVE_PATH_NAME;
             chukasaModel.setStreamPath(streamPath);
             tempEncPath = tempPath + FILE_SEPARATOR + LIVE_PATH_NAME;
             chukasaModel.setTempEncPath(tempEncPath);
         } else {
-            streamPath = streamRootPath + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName();
+            basementStreamPath = chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName();
+            streamPath = streamRootPath + FILE_SEPARATOR + basementStreamPath;
             chukasaModel.setStreamPath(streamPath);
-            tempEncPath = tempPath + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName();
-            chukasaModel.setTempEncPath(tempEncPath);
+            temporaryEncryptedStreamPath = temporaryPath + FILE_SEPARATOR + basementStreamPath;
+            chukasaModel.setTempEncPath(temporaryEncryptedStreamPath);
         }
 
-        if (new File(streamPath).mkdirs()) {
-            log.info("streamPath is created {}", streamPath);
-        } else {
-            log.error("streamPath cannot be created {}", streamPath);
-        }
-        if (new File(tempEncPath).mkdirs()) {
-            log.info("tempEncPath is created {}", tempEncPath);
-        } else {
-            log.error("tempEncPath cannot be created {}", tempEncPath);
-        }
+//        if (new File(streamPath).mkdirs()) {
+//            log.info("streamPath is created {}", streamPath);
+//        } else {
+//            log.error("streamPath cannot be created {}", streamPath);
+//        }
+//        if (new File(tempEncPath).mkdirs()) {
+//            log.info("tempEncPath is created {}", tempEncPath);
+//        } else {
+//            log.error("tempEncPath cannot be created {}", tempEncPath);
+//        }
 
         // create directory to deploy segmented MPEG2-TS files (per Video bitrate...)
 //        streamPath = streamPath + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName();
         if(Files.exists(new File(streamPath).toPath())){
             try {
                 FileUtils.cleanDirectory(new File(streamPath));
-                chukasaModel.setStreamPath(streamPath);
+//                chukasaModel.setStreamPath(streamPath);
                 log.info("clean {} as streamPath", streamPath);
             } catch (IOException e) {
                 log.error("cannot clean {} as streamPath", streamPath);
             }
         }else{
             if(new File(streamPath).mkdirs()){
-                chukasaModel.setStreamPath(streamPath);
+//                chukasaModel.setStreamPath(streamPath);
                 log.info("create {} as streamPath", streamPath);
             }else{
                 log.error("cannot create {} as streamPath", streamPath);
@@ -106,22 +110,23 @@ public class DirectoryCreator implements IDirectoryCreator{
         }
 
         tempEncPath = tempEncPath + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName();
-        if(Files.exists(new File(tempEncPath).toPath())){
+        if(Files.exists(new File(temporaryEncryptedStreamPath).toPath())){
             try {
-                FileUtils.cleanDirectory(new File(tempEncPath));
-                chukasaModel.setTempEncPath(tempEncPath);
+                FileUtils.cleanDirectory(new File(temporaryEncryptedStreamPath));
+//                chukasaModel.setTempEncPath(tempEncPath);
                 log.info("clean {} as tempEncPath", tempEncPath);
             } catch (IOException e) {
                 log.error("cannot clean {} as tempEncPath", tempEncPath);
             }
         }else{
-            if(new File(tempEncPath).mkdirs()){
-                chukasaModel.setTempEncPath(tempEncPath);
+            if(new File(temporaryEncryptedStreamPath).mkdirs()){
+//                chukasaModel.setTempEncPath(tempEncPath);
                 log.info("create {} as tempEncPath", tempEncPath);
             }else{
                 log.error("cannot create {} as tempEncPath", tempEncPath);
             }
         }
 
+        chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
     }
 }

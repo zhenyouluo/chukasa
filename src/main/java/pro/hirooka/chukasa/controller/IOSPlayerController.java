@@ -34,9 +34,8 @@ public class IOSPlayerController {
 
     final String STREAM_ROOT_PATH_NAME = ChukasaConstant.STREAM_ROOT_PATH_NAME;
     final String LIVE_PATH_NAME = ChukasaConstant.LIVE_PATH_NAME;
-    final String M3U8_FILE_NAME_PREFIX = ChukasaConstant.M3U8_FILE_NAME_PREFIX;
+    final String M3U8_FILE_NAME = ChukasaConstant.M3U8_FILE_NAME;
     final String M3U8_FILE_EXTENSION = ChukasaConstant.M3U8_FILE_EXTENSION;
-    final String M3U8_FILE_NAME = M3U8_FILE_NAME_PREFIX + M3U8_FILE_EXTENSION;
 
     @Autowired
     ChukasaConfiguration chukasaConfiguration;
@@ -115,7 +114,7 @@ public class IOSPlayerController {
                         + FILE_SEPARATOR
                         + chukasaModel.getChukasaSettings().getVideoBitrate()
                         + FILE_SEPARATOR
-                        + M3U8_FILE_NAME;
+                        + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
             }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE
                     || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
                 playlistURI = "/"
@@ -125,7 +124,7 @@ public class IOSPlayerController {
                         + FILE_SEPARATOR
                         + chukasaModel.getChukasaSettings().getVideoBitrate()
                         + FILE_SEPARATOR
-                        + M3U8_FILE_NAME;
+                        + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
             }
             log.info("playlistURI = {}", playlistURI);
 

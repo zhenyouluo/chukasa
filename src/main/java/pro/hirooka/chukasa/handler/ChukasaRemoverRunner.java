@@ -31,7 +31,7 @@ public class ChukasaRemoverRunner implements Runnable {
     public void run() {
 
         requireNonNull(systemConfiguration, "systemConfiguration");
-        String tempPath = systemConfiguration.getTempPath() + FILE_SEPARATOR + uuid.toString();
+        String tempPath = systemConfiguration.getTemporaryPath() + FILE_SEPARATOR + uuid.toString();
 
         log.info("remove command is called.");
         log.info("streamRootPath: {} and tempPath: {} are to be removed.", streamRootPath, tempPath);

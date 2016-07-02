@@ -12,7 +12,7 @@ public class SystemConfiguration {
     String recpt1Path;
     String webCameraDeviceName;
     int webCameraAudioChannel;
-    String tempPath;
+    String temporaryPath;
     String filePath;
     int ffmpegThreads;
     boolean quickSyncVideoEnabled;
