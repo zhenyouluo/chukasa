@@ -37,10 +37,12 @@ public class CaptureRunner implements Runnable {
 
         boolean isQSV = chukasaModel.getSystemConfiguration().isQuickSyncVideoEnabled();
 
-        boolean isEncryption = chukasaModel.getChukasaSettings().isEncrypted();
+        boolean isEncrypted = chukasaModel.getChukasaSettings().isEncrypted();
         String ffmpegOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
-        if(isEncryption){
-            ffmpegOutputPath = chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;;
+        String m3u8OutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + FFMPEG_HLS_M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
+        if(isEncrypted){
+            ffmpegOutputPath = chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
+            m3u8OutputPath = chukasaModel.getTempEncPath() + FILE_SEPARATOR + FFMPEG_HLS_M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
         }
 
         String[] commandArray = {""};
@@ -68,7 +70,7 @@ public class CaptureRunner implements Runnable {
                     "-f", "segment",
                     "-segment_format", "mpegts",
                     "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-                    "-segment_list", chukasaModel.getStreamPath() + FILE_SEPARATOR + FFMPEG_HLS_M3U8_FILE_NAME + M3U8_FILE_EXTENSION,
+                    "-segment_list", m3u8OutputPath,
                     ffmpegOutputPath
             };
             commandArray = commandArrayTemporary;
@@ -95,7 +97,7 @@ public class CaptureRunner implements Runnable {
                     "-f", "segment",
                     "-segment_format", "mpegts",
                     "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-                    "-segment_list", chukasaModel.getStreamPath() + FILE_SEPARATOR + FFMPEG_HLS_M3U8_FILE_NAME + M3U8_FILE_EXTENSION,
+                    "-segment_list", m3u8OutputPath,
                     "-x264opts", "keyint=10:min-keyint=10",
                     ffmpegOutputPath
             };

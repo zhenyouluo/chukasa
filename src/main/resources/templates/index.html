@@ -73,6 +73,14 @@
                     </select>
                 </div>
 
+                <div class="form-group">
+                    <label for="playlistTypeNow">Playlist Type</label>
+                    <select class="form-control" id="playlistTypeNow" name="playlistType">
+                        <option value="LIVE" selected="selected">Live</option>
+                        <option value="EVNET">Event</option>
+                    </select>
+                </div>
+
             <span th:if="${isSupported == true}">
                 <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
             </span>
