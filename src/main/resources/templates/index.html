@@ -132,10 +132,18 @@
                 </ul>
 
                 <div class="form-group">
-                    <label for="encryptionNow">Encryption</label>
+                    <label for="encryptionCapture">Encryption</label>
                     <select class="form-control" id="encryptionCapture" name="encrypted">
                         <option value="true">AES-128/CBC/PKCS7Padding</option>
                         <option value="false" selected="selected">None</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="playlistTypeCapture">Playlist Type</label>
+                    <select class="form-control" id="playlistTypeCapture" name="playlistType">
+                        <option value="LIVE" selected="selected">Live</option>
+                        <option value="EVNET">Event</option>
                     </select>
                 </div>
 
@@ -190,10 +198,18 @@
                 </ul>
 
                 <div class="form-group">
-                    <label for="encryptionNow">Encryption</label>
+                    <label for="encryptionFile">Encryption</label>
                     <select class="form-control" id="encryptionFile" name="encrypted">
                         <option value="true">AES-128/CBC/PKCS7Padding</option>
                         <option value="false" selected="selected">None</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="playlistTypeFile">Playlist Type</label>
+                    <select class="form-control" id="playlistTypeFile" name="playlistType">
+                        <option value="LIVE" selected="selected">Live</option>
+                        <option value="EVNET">Event</option>
                     </select>
                 </div>
 
@@ -247,10 +263,18 @@
                 </ul>
 
                 <div class="form-group">
-                    <label for="encryptionNow">Encryption</label>
+                    <label for="encryptionFile">Encryption</label>
                     <select class="form-control" id="encryptionFile" name="encrypted">
                         <option value="true">AES-128/CBC/PKCS7Padding</option>
                         <option value="false" selected="selected">None</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="playlistTypeFile">Playlist Type</label>
+                    <select class="form-control" id="playlistTypeFile" name="playlistType">
+                        <option value="LIVE" selected="selected">Live</option>
+                        <option value="EVNET">Event</option>
                     </select>
                 </div>
 
@@ -305,10 +329,18 @@
                 </ul>
 
                 <div class="form-group">
-                    <label for="encryptionNow">Encryption</label>
+                    <label for="encryptionOkkake">Encryption</label>
                     <select class="form-control" id="encryptionOkkake" name="encrypted">
                         <option value="true">AES-128/CBC/PKCS7Padding</option>
                         <option value="false" selected="selected">None</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="playlistTypeOkkake">Playlist Type</label>
+                    <select class="form-control" id="playlistTypeOkkake" name="playlistType">
+                        <option value="LIVE" selected="selected">Live</option>
+                        <option value="EVNET">Event</option>
                     </select>
                 </div>
 
@@ -356,7 +388,7 @@
                 </ul>
 
                 <div class="form-group">
-                    <label for="encryptionNow">Encryption</label>
+                    <label for="encryptionWebCamera">Encryption</label>
                     <select class="form-control" id="encryptionWebCamera" name="encrypted">
                         <option value="true">AES-128/CBC/PKCS7Padding</option>
                         <option value="false" selected="selected">None</option>
@@ -364,9 +396,17 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="totalWebCameraLivedurationWebCamera">Live Duration [s]</label>
-                    <input type="text" class="form-control" id="totalWebCameraLivedurationWebCamera" name="totalWebCameraLiveduration" value="600"/>
+                    <label for="playlistTypeWebCamera">Playlist Type</label>
+                    <select class="form-control" id="playlistTypeWebCamera" name="playlistType">
+                        <option value="LIVE" selected="selected">Live</option>
+                        <option value="EVNET">Event</option>
+                    </select>
                 </div>
+
+                <!--<div class="form-group">-->
+                    <!--<label for="totalWebCameraLivedurationWebCamera">Live Duration [s]</label>-->
+                    <!--<input type="text" class="form-control" id="totalWebCameraLivedurationWebCamera" name="totalWebCameraLiveduration" value="600"/>-->
+                <!--</div>-->
 
             <span th:if="${isSupported == true}">
                 <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>

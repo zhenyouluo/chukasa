@@ -31,17 +31,20 @@ public class ChukasaTaskService implements IChukasaTaskService {
 
             FFmpegRunner ffmpegRunner = new FFmpegRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
             taskExecutor.execute(ffmpegRunner);
-//            Thread fThread = new Thread(ffmpegRunner, "__FFmpegRunner__");
-//            fThread.start();
 
-//            SegmenterRunner segmenterRunner = new SegmenterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
-//            Thread sThread = new Thread(segmenterRunner, "__SegmenterRunner__");
-//            sThread.start();
+            if(chukasaModel.getChukasaSettings().isEncrypted()) {
+                FFmpegHLSEncrypterRunner ffmpegHLSEncrypterRunner = new FFmpegHLSEncrypterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+                taskExecutor.execute(ffmpegHLSEncrypterRunner);
+                chukasaModel.setFfmpegHLSEncrypterRunner(ffmpegHLSEncrypterRunner);
+            }else{
+                FFmpegHLSStreamDetectorRunner ffmpegHLSStreamDetectorRunner = new FFmpegHLSStreamDetectorRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+                taskExecutor.execute(ffmpegHLSStreamDetectorRunner);
+                chukasaModel.setFfmpegHLSStreamDetectorRunner(ffmpegHLSStreamDetectorRunner);
+            }
 
             PlaylisterRunner playlisterRunner = new PlaylisterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
             taskExecutor.execute(playlisterRunner);
-//            Thread pThread = new Thread(playlisterRunner, "__PlaylisterRunner__");
-//            pThread.start();
+
             chukasaModel.setPlaylisterRunner(playlisterRunner);
             chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 

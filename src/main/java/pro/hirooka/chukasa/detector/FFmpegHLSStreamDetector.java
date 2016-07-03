@@ -38,30 +38,32 @@ public class FFmpegHLSStreamDetector extends TimerTask {
     public void run() {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
-        int sequence = chukasaModel.getSeqTs();
+        int sequenceTS = chukasaModel.getSeqTs();
         String streamPath = chukasaModel.getStreamPath();
-        log.info("sequence = {}", sequence);
+        log.info("sequenceTS = {}", sequenceTS);
         log.debug("streamPath = {}", streamPath);
 
-        String tsPath = streamPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + (sequence + 1) + STREAM_FILE_EXTENSION;
+        String tsPath = streamPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + (sequenceTS + 1) + STREAM_FILE_EXTENSION;
         File file = new File(tsPath);
         if(file.exists()){
             log.debug("file exists: {}", file.getAbsolutePath());
-            tsPath = streamPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + (sequence + 2) + STREAM_FILE_EXTENSION;
+            tsPath = streamPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + (sequenceTS + 2) + STREAM_FILE_EXTENSION;
             file = new File(tsPath);
             if(file.exists()) {
                 log.debug("file exists: {}", file.getAbsolutePath());
-                sequence = sequence + 1;
-                chukasaModel.setSeqTs(sequence);
+                sequenceTS = sequenceTS + 1;
+                chukasaModel.setSeqTs(sequenceTS);
 
-                List<Double> extinfList = chukasaModel.getExtinfList();
-                List<Double> ffmpegM3U8EXTINFList = getEXTINFList(streamPath + FILE_SEPARATOR + FFMPEG_HLS_M3U8_FILE_NAME + M3U8_FILE_EXTENSION);
-                if(sequence >= 0 && ffmpegM3U8EXTINFList.size() > 0){
-                    extinfList.add(ffmpegM3U8EXTINFList.get(sequence));
-                }else{
-                    extinfList.add((double)chukasaModel.getHlsConfiguration().getDuration());
-                }
-                chukasaModel.setExtinfList(extinfList);
+                // FFmpeg のプレイリストから EXTINF を読み取るのはいったんやめるです．強制的に値を設定するです．
+//                List<Double> extinfList = chukasaModel.getExtinfList();
+//                List<Double> ffmpegM3U8EXTINFList = getEXTINFList(streamPath + FILE_SEPARATOR + FFMPEG_HLS_M3U8_FILE_NAME + M3U8_FILE_EXTENSION);
+//                if(sequenceTS >= 0 && ffmpegM3U8EXTINFList.size() > 0){
+//                    extinfList.add(ffmpegM3U8EXTINFList.get(sequenceTS));
+//                }else{
+//                    extinfList.add((double)chukasaModel.getHlsConfiguration().getDuration());
+//                }
+//                chukasaModel.setExtinfList(extinfList);
+                chukasaModel.getExtinfList().add((double)chukasaModel.getHlsConfiguration().getDuration());
 
                 chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
             }

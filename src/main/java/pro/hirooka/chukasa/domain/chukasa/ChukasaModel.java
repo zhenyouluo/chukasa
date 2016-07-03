@@ -126,7 +126,7 @@ public class ChukasaModel {
 
         // Playlister
         this.playlistType = PlaylistType.LIVE;
-        this.seqPl = 0;
+        this.seqPl = -1;
         this.namePl = "playlist.m3u8";
         this.flagLastPl = false;
         this.sequenceInitialPlaylist = -1;

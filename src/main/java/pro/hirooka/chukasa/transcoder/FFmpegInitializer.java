@@ -18,7 +18,7 @@ public class FFmpegInitializer implements Runnable {
         String[] cmdArrayPID = {"kill", "-KILL", Long.toString(pid) };
         ProcessBuilder pbPID = new ProcessBuilder(cmdArrayPID);
         try {
-            Process prPID = pbPID.start();
+            pbPID.start();
             log.info("{} stopped ffmpeg (PID: {}).", this.getClass().getName(), pid);
         } catch (IOException e) {
             log.error("{} {}", e.getMessage(), e);

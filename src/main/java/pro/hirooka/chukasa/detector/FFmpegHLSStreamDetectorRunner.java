@@ -24,22 +24,19 @@ public class FFmpegHLSStreamDetectorRunner implements Runnable {
     @Override
     public void run() {
 
-        ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
-
-        Timer segmenterTimer = new Timer();
-        segmenterTimer.scheduleAtFixedRate(new FFmpegHLSStreamDetector(adaptiveBitrateStreaming, chukasaModelManagementComponent), 0, chukasaModel.getHlsConfiguration().getDuration() * 1000);
+        Timer detectorTimer = new Timer();
+        detectorTimer.scheduleAtFixedRate(new FFmpegHLSStreamDetector(adaptiveBitrateStreaming, chukasaModelManagementComponent), 0, 1000);
 
         while(isRunning){
-            chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
+            ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
             if(chukasaModel == null || chukasaModel.isFlagTimerSegmenter()){
-                segmenterTimer.cancel();
-                segmenterTimer = null;
+                detectorTimer.cancel();
                 log.info("{} is completed.", this.getClass().getName());
                 break;
             }
         }
         if(!isRunning){
-            segmenterTimer.cancel();
+            detectorTimer.cancel();
         }
     }
 }

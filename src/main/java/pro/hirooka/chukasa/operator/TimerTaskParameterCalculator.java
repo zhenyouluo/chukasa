@@ -25,9 +25,9 @@ public class TimerTaskParameterCalculator implements ITimerTaskParameterCalculat
         int uriInPlaylist = chukasaModel.getHlsConfiguration().getUriInPlaylist();
         long timerSegmenterDelay = (long) (duration * 1000 * (uriInPlaylist - 1));
 
-        if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEB_CAMERA) {
-            timerSegmenterDelay = (long) (duration * 1000 * uriInPlaylist);
-        }
+//        if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEB_CAMERA) {
+//            timerSegmenterDelay = (long) (duration * 1000 * uriInPlaylist);
+//        }
 
         if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
             //timerSegmenterDelay = (long)(DURATION * 1000 * (URI_IN_PLAYLIST));
@@ -35,7 +35,8 @@ public class TimerTaskParameterCalculator implements ITimerTaskParameterCalculat
             timerSegmenterDelay = (long) (duration * 1000);
         }
 
-        if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.CAPTURE) {
+        if (chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.CAPTURE)
+                || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEB_CAMERA)) {
             timerSegmenterDelay = (long) (duration * 1000 * (uriInPlaylist)) + 1000;
             timerSegmenterDelay = (long) (duration * 1000);
             // timerSegmenterDelay = 0;

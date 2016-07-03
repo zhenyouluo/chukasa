@@ -29,6 +29,7 @@ public class FFmpegHLSEncrypter extends TimerTask {
     final String M3U8_FILE_EXTENSION = ChukasaConstant.M3U8_FILE_EXTENSION;
     final String HLS_KEY_FILE_EXTENSION = ChukasaConstant.HLS_KEY_FILE_EXTENSION;
     final String HLS_IV_FILE_EXTENSION = ChukasaConstant.HLS_IV_FILE_EXTENSION;
+    final int HLS_KEY_LENGTH = ChukasaConstant.HLS_KEY_LENGTH;
     final int MPEG2_TS_PACKET_LENGTH = ChukasaConstant.MPEG2_TS_PACKET_LENGTH;
 
     private int adaptiveBitrateStreaming;
@@ -44,30 +45,30 @@ public class FFmpegHLSEncrypter extends TimerTask {
     public void run() {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
-        int sequence = chukasaModel.getSeqTs();
+        int sequenceTS = chukasaModel.getSeqTs();
         String streamPath = chukasaModel.getStreamPath();
         String temporaryStreamPath = chukasaModel.getTempEncPath();
-        log.info("sequence = {}", sequence);
+        log.info("sequenceTS = {}", sequenceTS);
         log.debug("streamPath = {}", streamPath);
         log.debug("temporaryStreamPath = {}", temporaryStreamPath);
 
-        String tsPath = chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + (sequence + 1) + STREAM_FILE_EXTENSION;
+        String tsPath = chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + (sequenceTS + 1) + STREAM_FILE_EXTENSION;
         File file = new File(tsPath);
         if (file.exists()) {
             log.info("file exists: {}", file.getAbsolutePath());
-            String nextTSPath = chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + (sequence + 2) + STREAM_FILE_EXTENSION;
+            String nextTSPath = chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + (sequenceTS + 2) + STREAM_FILE_EXTENSION;
             File nextFile = new File(nextTSPath);
             if (nextFile.exists()) {
                 log.info("file exists: {}", nextFile.getAbsolutePath());
 
                 try {
                     Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-                    Key key = makeKey(128);
+                    Key key = makeKey(HLS_KEY_LENGTH);
                     Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding", "BC");
                     cipher.init(Cipher.ENCRYPT_MODE, key);
 
                     String keyPrefix = RandomStringUtils.randomAlphabetic(10);
-                    FileOutputStream keyFileOutputStream = new FileOutputStream(streamPath + FILE_SEPARATOR + keyPrefix + (sequence + 1) + HLS_KEY_FILE_EXTENSION);
+                    FileOutputStream keyFileOutputStream = new FileOutputStream(streamPath + FILE_SEPARATOR + keyPrefix + (sequenceTS + 1) + HLS_KEY_FILE_EXTENSION);
 
                     chukasaModel.getKeyArrayList().add(keyPrefix);
 
@@ -84,14 +85,14 @@ public class FFmpegHLSEncrypter extends TimerTask {
                     }
 
                     String ivPrefix = RandomStringUtils.randomAlphabetic(10);
-                    FileWriter ivFileWriter = new FileWriter(streamPath + FILE_SEPARATOR + ivPrefix + (sequence + 1) + HLS_IV_FILE_EXTENSION);
+                    FileWriter ivFileWriter = new FileWriter(streamPath + FILE_SEPARATOR + ivPrefix + (sequenceTS + 1) + HLS_IV_FILE_EXTENSION);
                     ivFileWriter.write(ivHex);
                     ivFileWriter.close();
 
                     chukasaModel.getIvArrayList().add(ivHex);
 
-                    BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(temporaryStreamPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + (sequence + 1) + STREAM_FILE_EXTENSION));
-                    FileOutputStream fileOutputStream = new FileOutputStream(streamPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + (sequence + 1) + STREAM_FILE_EXTENSION);
+                    BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(temporaryStreamPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + (sequenceTS + 1) + STREAM_FILE_EXTENSION));
+                    FileOutputStream fileOutputStream = new FileOutputStream(streamPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + (sequenceTS + 1) + STREAM_FILE_EXTENSION);
                     CipherOutputStream cipherOutputStream = new CipherOutputStream(fileOutputStream, cipher);
 
                     byte[] buf = new byte[MPEG2_TS_PACKET_LENGTH];
@@ -104,17 +105,19 @@ public class FFmpegHLSEncrypter extends TimerTask {
                     fileOutputStream.close();
                     bufferedInputStream.close();
 
-                    sequence = sequence + 1;
-                    chukasaModel.setSeqTs(sequence);
+                    sequenceTS = sequenceTS + 1;
+                    chukasaModel.setSeqTs(sequenceTS);
 
-                    List<Double> extinfList = chukasaModel.getExtinfList();
-                    List<Double> ffmpegM3U8EXTINFList = getEXTINFList(temporaryStreamPath + FILE_SEPARATOR + FFMPEG_HLS_M3U8_FILE_NAME + M3U8_FILE_EXTENSION);
-                    if (sequence >= 0 && ffmpegM3U8EXTINFList.size() > 0) {
-                        extinfList.add(ffmpegM3U8EXTINFList.get(sequence));
-                    } else {
-                        extinfList.add((double) chukasaModel.getHlsConfiguration().getDuration());
-                    }
-                    chukasaModel.setExtinfList(extinfList);
+                    // FFmpeg のプレイリストから EXTINF を読み取るのはいったんやめるです．強制的に値を設定するです．
+//                    List<Double> extinfList = chukasaModel.getExtinfList();
+//                    List<Double> ffmpegM3U8EXTINFList = getEXTINFList(temporaryStreamPath + FILE_SEPARATOR + FFMPEG_HLS_M3U8_FILE_NAME + M3U8_FILE_EXTENSION);
+//                    if (sequenceTS >= 0 && ffmpegM3U8EXTINFList.size() > 0) {
+//                        extinfList.add(ffmpegM3U8EXTINFList.get(sequenceTS));
+//                    } else {
+//                        extinfList.add((double) chukasaModel.getHlsConfiguration().getDuration());
+//                    }
+//                    chukasaModel.setExtinfList(extinfList);
+                    chukasaModel.getExtinfList().add((double)chukasaModel.getHlsConfiguration().getDuration());
 
                     chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 

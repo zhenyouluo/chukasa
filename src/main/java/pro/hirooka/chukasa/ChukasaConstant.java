@@ -11,5 +11,6 @@ public class ChukasaConstant {
     public static final String M3U8_FILE_EXTENSION = ".m3u8";
     public static final String HLS_KEY_FILE_EXTENSION = ".key";
     public static final String HLS_IV_FILE_EXTENSION = ".iv";
+    public static final int HLS_KEY_LENGTH = 128;
     public static int MPEG2_TS_PACKET_LENGTH = 188;
 }
