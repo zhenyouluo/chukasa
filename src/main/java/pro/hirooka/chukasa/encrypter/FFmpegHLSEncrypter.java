@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import pro.hirooka.chukasa.ChukasaConstant;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
+import pro.hirooka.chukasa.domain.chukasa.type.PlaylistType;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 
 import javax.crypto.Cipher;
@@ -120,6 +121,31 @@ public class FFmpegHLSEncrypter extends TimerTask {
                     chukasaModel.getExtinfList().add((double)chukasaModel.getHlsConfiguration().getDuration());
 
                     chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+
+                    // PlaylistType に関わらず，テンポラリディレクトリ内の過去の不要なファイルを削除する．
+                    File temporaryTSFile = new File(temporaryStreamPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + (sequenceTS) + STREAM_FILE_EXTENSION);
+                    if(temporaryTSFile.exists()) {
+                        temporaryTSFile.delete();
+                    }
+                    // LIVE プレイリストの場合は過去の不要なファイルを削除する．
+                    if(chukasaModel.getChukasaSettings().getPlaylistType().equals(PlaylistType.LIVE)) {
+                        int sequencePlaylist = chukasaModel.getSeqPl();
+                        int URI_IN_PLAYLIST = chukasaModel.getHlsConfiguration().getUriInPlaylist();
+                        for (int i = 0; i < sequencePlaylist - URI_IN_PLAYLIST; i++) {
+                            File oldTSFile = new File(streamPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + i + STREAM_FILE_EXTENSION);
+                            if (oldTSFile.exists()) {
+                                oldTSFile.delete();
+                            }
+                            File oldKeyFile = new File(streamPath + FILE_SEPARATOR + keyPrefix + i + HLS_KEY_FILE_EXTENSION);
+                            if(oldKeyFile.exists()){
+                                oldKeyFile.delete();
+                            }
+                            File oldIVFile = new File(streamPath + FILE_SEPARATOR + ivPrefix + i + HLS_IV_FILE_EXTENSION);
+                            if(oldIVFile.exists()){
+                                oldIVFile.delete();
+                            }
+                        }
+                    }
 
                 } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException | InvalidKeyException | IOException e) {
                     log.error("{} {}", e.getMessage(), e);

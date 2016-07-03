@@ -3,6 +3,7 @@ package pro.hirooka.chukasa.detector;
 import lombok.extern.slf4j.Slf4j;
 import pro.hirooka.chukasa.ChukasaConstant;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
+import pro.hirooka.chukasa.domain.chukasa.type.PlaylistType;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 
 import java.io.BufferedReader;
@@ -66,6 +67,18 @@ public class FFmpegHLSStreamDetector extends TimerTask {
                 chukasaModel.getExtinfList().add((double)chukasaModel.getHlsConfiguration().getDuration());
 
                 chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+
+                // LIVE プレイリストの場合は過去の不要なファイルを削除する．
+                if(chukasaModel.getChukasaSettings().getPlaylistType().equals(PlaylistType.LIVE)) {
+                    int sequencePlaylist = chukasaModel.getSeqPl();
+                    int URI_IN_PLAYLIST = chukasaModel.getHlsConfiguration().getUriInPlaylist();
+                    for (int i = 0; i < sequencePlaylist - URI_IN_PLAYLIST; i++) {
+                        File oldTSFile = new File(streamPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + i + STREAM_FILE_EXTENSION);
+                        if (oldTSFile.exists()) {
+                            oldTSFile.delete();
+                        }
+                    }
+                }
             }
         }
     }

@@ -70,7 +70,7 @@ public class CaptureRunner implements Runnable {
                     "-f", "segment",
                     "-segment_format", "mpegts",
                     "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-                    "-segment_list", m3u8OutputPath,
+//                    "-segment_list", m3u8OutputPath,
                     ffmpegOutputPath
             };
             commandArray = commandArrayTemporary;
@@ -97,7 +97,7 @@ public class CaptureRunner implements Runnable {
                     "-f", "segment",
                     "-segment_format", "mpegts",
                     "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-                    "-segment_list", m3u8OutputPath,
+//                    "-segment_list", m3u8OutputPath,
                     "-x264opts", "keyint=10:min-keyint=10",
                     ffmpegOutputPath
             };

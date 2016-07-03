@@ -81,7 +81,7 @@ public class FFmpegRunner implements Runnable {
                         "-f", "segment",
                         "-segment_format", "mpegts",
                         "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-                        "-segment_list", m3u8OutputPath,
+//                        "-segment_list", m3u8OutputPath,
                         ffmpegOutputPath
 //                        "-t", Integer.toString(chukasaModel.getChukasaSettings().getTotalWebCameraLiveduration()),
 //                        "-f", "mpegts",
