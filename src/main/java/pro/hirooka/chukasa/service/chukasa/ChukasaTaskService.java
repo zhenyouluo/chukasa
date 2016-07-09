@@ -73,15 +73,11 @@ public class ChukasaTaskService implements IChukasaTaskService {
 
             SegmenterRunner segmenterRunner = new SegmenterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
             taskExecutor.execute(segmenterRunner);
-//            Thread sThread = new Thread(segmenterRunner, "__SegmenterRunner__");
-//            sThread.start();
             chukasaModel.setSegmenterRunner(segmenterRunner);
             chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
             PlaylisterRunner playlisterRunner = new PlaylisterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
             taskExecutor.execute(playlisterRunner);
-//            Thread pThread = new Thread(playlisterRunner, "__PlaylisterRunner__");
-//            pThread.start();
             chukasaModel.setPlaylisterRunner(playlisterRunner);
             chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 

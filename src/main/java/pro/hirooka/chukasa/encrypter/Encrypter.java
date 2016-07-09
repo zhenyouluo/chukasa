@@ -43,7 +43,7 @@ public class Encrypter implements Runnable {
 
         int seqTsEnc = 0; //getSeqTsEnc();
         seqTsEnc = chukasaModel.getSeqTsEnc();
-        if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+        if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.OKKAKE)){
             seqTsEnc = chukasaModel.getSeqTsOkkake() - 1;
         }
         if(chukasaModel.isFlagLastTs()) {
@@ -98,7 +98,7 @@ public class Encrypter implements Runnable {
             bis = new BufferedInputStream(fis);
             fos = new FileOutputStream(streamPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqTsEnc + STREAM_FILE_EXTENSION);
             cos = new CipherOutputStream(fos, c);
-            if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+            if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.OKKAKE)){
                 // TODO:
                 fis = new FileInputStream(tempEncPath + FILE_SEPARATOR + "fileSequenceEncoded" + seqTsEnc + STREAM_FILE_EXTENSION);
                 bis = new BufferedInputStream(fis);

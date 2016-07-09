@@ -233,7 +233,47 @@ public class FFmpegRunner implements Runnable {
 
             }else{
 
-                // TODO:
+                if(isQSV){
+                    String[] cmdArrayTemporary = {
+
+                            chukasaModel.getSystemConfiguration().getFfmpegPath(),
+                            "-i", chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqCapturedTimeShifted + STREAM_FILE_EXTENSION,
+                            "-acodec", "aac",
+                            "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
+                            "-ac", "2",
+                            "-ar", "44100",
+                            "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
+                            "-vcodec", "h264_qsv",
+                            "-profile:v", "high",
+                            "-level", "4.1",
+                            "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
+                            "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
+                            "-f", "mpegts",
+                            "-y", chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqCapturedTimeShifted + STREAM_FILE_EXTENSION
+                    };
+                    cmdArray = cmdArrayTemporary;
+                }else{
+                    String[] cmdArrayTemporary = {
+
+                            chukasaModel.getSystemConfiguration().getFfmpegPath(),
+                            "-i", chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqCapturedTimeShifted + STREAM_FILE_EXTENSION,
+                            "-acodec", "aac",
+                            "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
+                            "-ac", "2",
+                            "-ar", "44100",
+                            "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
+                            "-vcodec", "libx264",
+                            "-profile:v", "high",
+                            "-level", "4.1",
+                            "-preset:v", "superfast",
+                            "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
+                            "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
+                            "-f", "mpegts",
+                            "-x264opts", "keyint=10:min-keyint=10",
+                            "-y", chukasaModel.getTempEncPath() + FILE_SEPARATOR + "fileSequenceEncoded" + seqCapturedTimeShifted + STREAM_FILE_EXTENSION // TODO
+                    };
+                    cmdArray = cmdArrayTemporary;
+                }
 
             }
 

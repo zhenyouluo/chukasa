@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import pro.hirooka.chukasa.ChukasaConstant;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.PlaylistType;
+import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 
 import java.io.*;
@@ -38,14 +39,21 @@ public class Playlister extends TimerTask {
 
             ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
 
+            final int URI_IN_PLAYLIST = chukasaModel.getHlsConfiguration().getUriInPlaylist();
             final int TARGET_DURATION = chukasaModel.getHlsConfiguration().getDuration() + 1;
+
             int sequenceTS = chukasaModel.getSeqTs();
             int sequencePlaylist = chukasaModel.getSeqPl();
             log.info("sequenceTS = {}, sequencePlaylist = {}", sequenceTS, sequencePlaylist);
 
+            boolean isOkkake = false;
+            if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.OKKAKE)){
+                isOkkake = true;
+            }
+
             // イニシャルストリームのみか否か．
             // sequenceTS が 0 以上にならない限りイニシャルストリームを流し続ける．
-            if(sequenceTS >= 0) {
+            if((!isOkkake && sequenceTS >= 0) || (isOkkake && sequenceTS >= URI_IN_PLAYLIST - 1)) {
 
                 if(sequencePlaylist >= sequenceTS){
                     log.warn("skip Playlister");
@@ -54,7 +62,6 @@ public class Playlister extends TimerTask {
 
                 final PlaylistType PLAYLIST_TYPE = chukasaModel.getPlaylistType();
                 final double DURATION = (double) chukasaModel.getHlsConfiguration().getDuration();
-                final int URI_IN_PLAYLIST = chukasaModel.getHlsConfiguration().getUriInPlaylist();
                 final String PLAYLIST_FILE_PATH = chukasaModel.getStreamPath() + FILE_SEPARATOR + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
 
                 sequencePlaylist = chukasaModel.getSeqPl();
