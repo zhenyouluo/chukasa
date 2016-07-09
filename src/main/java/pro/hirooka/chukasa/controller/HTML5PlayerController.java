@@ -46,6 +46,7 @@ public class HTML5PlayerController {
     final String LIVE_PATH_NAME = ChukasaConstant.LIVE_PATH_NAME;
     final String M3U8_FILE_NAME = ChukasaConstant.M3U8_FILE_NAME;
     final String M3U8_FILE_EXTENSION = ChukasaConstant.M3U8_FILE_EXTENSION;
+    final String ALTERNATIVE_HLS_PLAYER = ChukasaConstant.ALTERNATIVE_HLS_PLAYER;
 
     @Autowired
     ChukasaConfiguration chukasaConfiguration;
@@ -160,9 +161,11 @@ public class HTML5PlayerController {
                         + FILE_SEPARATOR
                         + chukasaModel.getUuid().toString()
                         + FILE_SEPARATOR
-                        + chukasaModel.getChukasaSettings().getFileName()
+                        + chukasaModel.getAdaptiveBitrateStreaming()
                         + FILE_SEPARATOR
-                        + chukasaModel.getChukasaSettings().getVideoBitrate()
+                        + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName()
+                        + FILE_SEPARATOR
+                        + chukasaModel.getChukasaSettings().getFileName()
                         + FILE_SEPARATOR
                         + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
             }
@@ -175,7 +178,7 @@ public class HTML5PlayerController {
             if(isNativeHlsSupported){
                 return "player";
             }else{
-                return chukasaConfiguration.getAlternativeHlsPlayer() + "-player";
+                return ALTERNATIVE_HLS_PLAYER + "-player";
             }
 
         }

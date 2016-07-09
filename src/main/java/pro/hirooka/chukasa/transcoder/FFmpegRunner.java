@@ -1,6 +1,7 @@
 package pro.hirooka.chukasa.transcoder;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import pro.hirooka.chukasa.ChukasaConstant;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
@@ -83,9 +84,6 @@ public class FFmpegRunner implements Runnable {
                         "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
 //                        "-segment_list", m3u8OutputPath,
                         ffmpegOutputPath
-//                        "-t", Integer.toString(chukasaModel.getChukasaSettings().getTotalWebCameraLiveduration()),
-//                        "-f", "mpegts",
-//                        "-y", chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
                 };
                 cmdArray = cmdArrayTemporary;
             }else{
@@ -110,15 +108,16 @@ public class FFmpegRunner implements Runnable {
                         "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
                         "-pix_fmt", "yuv420p",
                         "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
-                        "-t", Integer.toString(chukasaModel.getChukasaSettings().getTotalWebCameraLiveduration()),
-                        "-f", "mpegts",
                         "-x264opts", "keyint=10:min-keyint=10",
-                        "-y", chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
+                        "-f", "segment",
+                        "-segment_format", "mpegts",
+                        "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
+                        ffmpegOutputPath
                 };
                 cmdArray = cmdArrayTemporary;
             }
 
-        }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE){
+        }else if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.FILE)){
 
             if(isQSV && !isOpenMAX || isQSV) {
                 String[] cmdArrayTemporary = {
@@ -135,8 +134,10 @@ public class FFmpegRunner implements Runnable {
                         "-level", "4.1",
                         "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
                         "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
-                        "-f", "mpegts",
-                        "-y", chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
+                        "-f", "segment",
+                        "-segment_format", "mpegts",
+                        "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
+                        ffmpegOutputPath
                 };
                 cmdArray = cmdArrayTemporary;
             }else if(!isQSV && isOpenMAX){
@@ -153,8 +154,10 @@ public class FFmpegRunner implements Runnable {
                         "-vcodec", "h264_omx",
                         "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
                         "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
-                        "-f", "mpegts",
-                        "-y", chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
+                        "-f", "segment",
+                        "-segment_format", "mpegts",
+                        "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
+                        ffmpegOutputPath
                 };
                 cmdArray = cmdArrayTemporary;
             }else{
@@ -173,9 +176,11 @@ public class FFmpegRunner implements Runnable {
                         "-preset:v", "superfast",
                         "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
                         "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
-                        "-f", "mpegts",
                         "-x264opts", "keyint=10:min-keyint=10",
-                        "-y", chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + chukasaModel.getChukasaSettings().getVideoBitrate() + STREAM_FILE_EXTENSION
+                        "-f", "segment",
+                        "-segment_format", "mpegts",
+                        "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
+                        ffmpegOutputPath
                 };
                 cmdArray = cmdArrayTemporary;
             }
@@ -245,8 +250,6 @@ public class FFmpegRunner implements Runnable {
 
             log.info("Begin FFmpeg");
             Process process = processBuilder.start();
-//            InputStream is = process.getErrorStream();
-//            InputStreamReader isr = new InputStreamReader(is);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
             long pid = -1;
@@ -292,21 +295,19 @@ public class FFmpegRunner implements Runnable {
             chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
             isSegmenterStarted = false;
             bufferedReader.close();
-//            isr.close();
-//            is.close();
             process.destroy();
             log.info("End FFmpeg");
             log.info("{} is completed.", this.getClass().getName());
 
-            if(chukasaModel != null && chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+            if(chukasaModel != null && chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.OKKAKE)){
                 if(chukasaModel.getChukasaSettings().isEncrypted()){
                     seqCapturedTimeShifted = seqCapturedTimeShifted + 1;
                     chukasaModel.setSeqTsOkkake(seqCapturedTimeShifted);
                     chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
+                    SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
                     Encrypter encrypter = new Encrypter(adaptiveBitrateStreaming, chukasaModelManagementComponent);
-                    Thread thread = new Thread(encrypter);
-                    thread.start();
+                    taskExecutor.execute(encrypter);
                 }
             }
 

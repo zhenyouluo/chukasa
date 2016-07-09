@@ -2,7 +2,6 @@ package pro.hirooka.chukasa.service.chukasa;
 
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
-import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 
 import java.util.ArrayList;
 import java.util.List;

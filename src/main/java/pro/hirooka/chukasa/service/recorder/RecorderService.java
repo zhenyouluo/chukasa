@@ -6,9 +6,11 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.recorder.RecordingProgramModel;
 import pro.hirooka.chukasa.domain.recorder.ReservedProgram;
 import pro.hirooka.chukasa.recorder.*;
 import pro.hirooka.chukasa.repository.IReservedProgramRepository;
+import pro.hirooka.chukasa.service.chukasa.IRecordingProgramManagementComponent;
 import pro.hirooka.chukasa.service.system.ISystemService;
 
 import javax.annotation.PostConstruct;
@@ -27,6 +29,8 @@ public class RecorderService implements IRecorderService {
     IReservedProgramRepository reservedProgramRepository;
     @Autowired
     ISystemService systemService;
+    @Autowired
+    IRecordingProgramManagementComponent recordingProgramManagementComponent;
 
     @PostConstruct
     public void init(){
@@ -57,6 +61,12 @@ public class RecorderService implements IRecorderService {
                         SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
                         RecorderRunner recorderRunner = new RecorderRunner(systemConfiguration, reservedProgram);
                         simpleAsyncTaskExecutor.execute(recorderRunner);
+
+                        RecordingProgramModel recordingProgramModel = new RecordingProgramModel();
+                        recordingProgramModel.setFileName(reservedProgram.getFileName());
+                        recordingProgramModel.setStartRecording(reservedProgram.getStartRecording());
+                        recordingProgramModel.setStopRecording(reservedProgram.getStopRecording());
+                        recordingProgramManagementComponent.create(reservedProgram.getId(), recordingProgramModel);
 
                     } else if (now > startRecording && now > stopRecording) {
 
@@ -118,6 +128,12 @@ public class RecorderService implements IRecorderService {
             SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
             RecorderRunner recorderRunner = new RecorderRunner(systemConfiguration, reservedProgram);
             simpleAsyncTaskExecutor.execute(recorderRunner);
+
+            RecordingProgramModel recordingProgramModel = new RecordingProgramModel();
+            recordingProgramModel.setFileName(reservedProgram.getFileName());
+            recordingProgramModel.setStartRecording(reservedProgram.getStartRecording());
+            recordingProgramModel.setStopRecording(reservedProgram.getStopRecording());
+            recordingProgramManagementComponent.create(reservedProgram.getId(), recordingProgramModel);
 
         }else if(now > startRecording && now > stopRecording){
 

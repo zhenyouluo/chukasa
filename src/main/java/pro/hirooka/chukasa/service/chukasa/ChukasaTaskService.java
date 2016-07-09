@@ -69,7 +69,7 @@ public class ChukasaTaskService implements IChukasaTaskService {
             chukasaModel.setPlaylisterRunner(playlisterRunner);
             chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
-        }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+        }else if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.OKKAKE)){
 
             SegmenterRunner segmenterRunner = new SegmenterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
             taskExecutor.execute(segmenterRunner);

@@ -13,8 +13,12 @@ import pro.hirooka.chukasa.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.chukasa.VideoFileModel;
 import pro.hirooka.chukasa.domain.recorder.Program;
+import pro.hirooka.chukasa.domain.recorder.RecordingProgramModel;
+import pro.hirooka.chukasa.domain.recorder.ReservedProgram;
+import pro.hirooka.chukasa.service.chukasa.IRecordingProgramManagementComponent;
 import pro.hirooka.chukasa.service.recorder.IProgramTableService;
 import pro.hirooka.chukasa.service.epgdump.ILastEpgdumpExecutedService;
+import pro.hirooka.chukasa.service.recorder.IRecorderService;
 import pro.hirooka.chukasa.service.system.ISystemService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +30,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Controller
 public class IndexController {
+
+    static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
     @Autowired
     SystemConfiguration systemConfiguration;
@@ -41,6 +47,10 @@ public class IndexController {
     ILastEpgdumpExecutedService lastEpgdumpExecutedService;
     @Autowired
     private HttpServletRequest httpServletRequest;
+    @Autowired
+    IRecordingProgramManagementComponent recordingProgramManagementComponent;
+    @Autowired
+    IRecorderService recorderService;
 
     @RequestMapping("/")
     String index(Model model){
@@ -127,19 +137,53 @@ public class IndexController {
 
         // Okkake
         List<VideoFileModel> okkakeVideoFileModelList = new ArrayList<>();
-        File okkakeVideoFileDirectory = new File(systemConfiguration.getFilePath());
-        File[] okkakeVideoFileArray = okkakeVideoFileDirectory.listFiles();
-        if(okkakeVideoFileArray != null) {
-            for (File file : fileArray) {
-                if(file.getName().endsWith(".ts")){
-                    VideoFileModel okkakeVideoFileModel = new VideoFileModel();
-                    okkakeVideoFileModel.setName(file.getName());
-                    okkakeVideoFileModelList.add(okkakeVideoFileModel);
+        List<RecordingProgramModel> recordingProgramModelList = recordingProgramManagementComponent.get();
+        for(RecordingProgramModel recordingProgramModel : recordingProgramModelList){
+            Date now = new Date();
+            if(recordingProgramModel.getStopRecording() > now.getTime() && now.getTime() > recordingProgramModel.getStartRecording()){
+                String file = systemConfiguration.getFilePath() + FILE_SEPARATOR + recordingProgramModel.getFileName();
+                if(new File(file).exists()){
+                    VideoFileModel videoFileModel = new VideoFileModel();
+                    videoFileModel.setName(recordingProgramModel.getFileName());
+                    okkakeVideoFileModelList.add(videoFileModel);
                 }
             }
-        }else{
-            log.warn("'{}' does not exist.", okkakeVideoFileDirectory);
         }
+        List<ReservedProgram> reservedProgramList = recorderService.read();
+        for(ReservedProgram reservedProgram : reservedProgramList){
+            Date now = new Date();
+            if(reservedProgram.getStopRecording() > now.getTime() && now.getTime() > reservedProgram.getStartRecording()){
+                String file = systemConfiguration.getFilePath() + FILE_SEPARATOR + reservedProgram.getFileName();
+                if(new File(file).exists()){
+                    boolean isDuplicated = false;
+                    for(RecordingProgramModel recordingProgramModel : recordingProgramModelList){
+                        if(recordingProgramModel.getFileName().equals(reservedProgram.getFileName())){
+                            isDuplicated = true;
+                            break;
+                        }
+                    }
+                    if(!isDuplicated) {
+                        VideoFileModel videoFileModel = new VideoFileModel();
+                        videoFileModel.setName(reservedProgram.getFileName());
+                        okkakeVideoFileModelList.add(videoFileModel);
+                    }
+                }
+            }
+        }
+
+//        File okkakeVideoFileDirectory = new File(systemConfiguration.getFilePath());
+//        File[] okkakeVideoFileArray = okkakeVideoFileDirectory.listFiles();
+//        if(okkakeVideoFileArray != null) {
+//            for (File file : fileArray) {
+//                if(file.getName().endsWith(".ts")){
+//                    VideoFileModel okkakeVideoFileModel = new VideoFileModel();
+//                    okkakeVideoFileModel.setName(file.getName());
+//                    okkakeVideoFileModelList.add(okkakeVideoFileModel);
+//                }
+//            }
+//        }else{
+//            log.warn("'{}' does not exist.", okkakeVideoFileDirectory);
+//        }
 
         model.addAttribute("isSupported", isSupported);
         model.addAttribute("isPTxByChannel", isPTxByChannel);
