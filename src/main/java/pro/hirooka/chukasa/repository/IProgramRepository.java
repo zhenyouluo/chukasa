@@ -6,7 +6,7 @@ import pro.hirooka.chukasa.domain.recorder.Program;
 
 import java.util.List;
 
-public interface IProgramRepository extends MongoRepository<Program, Long> {
+public interface IProgramRepository extends MongoRepository<Program, String> {
 
     // ex. {$and:[{'piyo':{$eq:123}},{'channel':{$regex:/^GR_/}}]}
     //@Query("{$and:[{'piyo':{$eq:?0}},{'channel':{$regex:?1}}]}")
@@ -24,4 +24,10 @@ public interface IProgramRepository extends MongoRepository<Program, Long> {
 
     @Query("{$and:[{'physicalChannel':{$eq:?0}},{'start':{$lte:?2}},{'start':{$gte:?1}}]}")
     Program findOneByPhysicalChannelAndFromAndToLike(int physicalChannel, long from, long to);
+
+    @Query("{$and:[{'begin':{$lte:?0}},{'end':{$lte:?0}}]}")
+    List<Program> deleteByDate(long date);
+
+//    @Query("{$and:[{'begin':{$lte:?0}},{'end':{$lte:?0}}]}")
+//    Long deleteProgramByDate(long date); // 機能しない...
 }

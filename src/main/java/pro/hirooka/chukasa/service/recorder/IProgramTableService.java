@@ -8,13 +8,13 @@ public interface IProgramTableService {
     Program create(Program program);
     List<Program> read();
     List<Program> read(int ch);
-    List<Program> read(String beginDate);
+    List<Program> readByBeginDate(String beginDate);
     List<Program> read(int ch, String beginDate);
     List<Program> readByNow(long now);
-    Program read(long id);
+    Program read(String id);
     Program readNow(int ch, long now);
     Program update(Program Program);
-    void delete(long id);
+    void delete(String id);
     void deleteAll();
     int getNumberOfPhysicalChannels();
 }

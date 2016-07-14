@@ -2,10 +2,18 @@ package pro.hirooka.chukasa.service.recorder;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.domain.recorder.Program;
 import pro.hirooka.chukasa.repository.IProgramRepository;
+import pro.hirooka.chukasa.service.system.ISystemService;
 
+import javax.annotation.PostConstruct;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +22,15 @@ import java.util.stream.Collectors;
 public class ProgramTableService implements IProgramTableService {
 
     @Autowired
+    private ISystemService systemService;
+
+    @Autowired
     private IProgramRepository programRepository;
+
+    @PostConstruct
+    public void init(){
+        deleteOldProgram();
+    }
 
     @Override
     public Program create(Program Program) {
@@ -32,7 +48,7 @@ public class ProgramTableService implements IProgramTableService {
     }
 
     @Override
-    public List<Program> read(String beginDate) {
+    public List<Program> readByBeginDate(String beginDate) {
         return null;
     }
 
@@ -47,7 +63,7 @@ public class ProgramTableService implements IProgramTableService {
     }
 
     @Override
-    public Program read(long id) {
+    public Program read(String id) {
         return programRepository.findOne(id);
     }
 
@@ -62,7 +78,7 @@ public class ProgramTableService implements IProgramTableService {
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(String id) {
         programRepository.delete(id);
     }
 
@@ -74,5 +90,31 @@ public class ProgramTableService implements IProgramTableService {
     @Override
     public int getNumberOfPhysicalChannels() {
         return programRepository.findAll().stream().map(Program::getChannel).collect(Collectors.toSet()).size();
+    }
+
+    @Scheduled(cron = "0 0 6 * * *")
+    void execute(){
+        deleteOldProgram();
+    }
+
+    void deleteOldProgram(){
+
+        if(systemService.isMongoDB()) {
+            Date date = new Date();
+            Instant instant = Instant.ofEpochMilli(date.getTime());
+            ZonedDateTime zonedDateTime = ZonedDateTime.from(instant.atZone(ZoneId.systemDefault())).minusDays(1);
+            int year = zonedDateTime.getYear();
+            int month = zonedDateTime.getMonthValue();
+            int day = zonedDateTime.getDayOfMonth();
+            ZonedDateTime thresholdZonedDateTime = ZonedDateTime.of(year, month, day, 0, 0, 0, 0, ZoneId.systemDefault());
+
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
+            String thresholdZonedDateTimeString = thresholdZonedDateTime.format(dateTimeFormatter);
+            log.info("thresholdZonedDateTime = {}, {}", thresholdZonedDateTimeString, thresholdZonedDateTime.toEpochSecond());
+
+            List<Program> toBeDeletedProgramList = programRepository.deleteByDate(thresholdZonedDateTime.toEpochSecond() * 1000);
+            log.info("toBeDeletedProgramList.size() = {}", toBeDeletedProgramList.size());
+            toBeDeletedProgramList.forEach(program -> programRepository.delete(program.getId()));
+        }
     }
 }
