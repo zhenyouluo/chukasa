@@ -28,6 +28,9 @@ public interface IProgramRepository extends MongoRepository<Program, String> {
     @Query("{$and:[{'begin':{$lte:?0}},{'end':{$lte:?0}}]}")
     List<Program> deleteByDate(long date);
 
+    @Query("{'end':{$lte:?0}}")
+    List<Program> deleteByEnd(long end);
+
 //    @Query("{$and:[{'begin':{$lte:?0}},{'end':{$lte:?0}}]}")
 //    Long deleteProgramByDate(long date); // 機能しない...
 }

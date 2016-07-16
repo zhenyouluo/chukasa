@@ -3,7 +3,7 @@ package pro.hirooka.chukasa.service.recorder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.recorder.Program;
 import pro.hirooka.chukasa.repository.IProgramRepository;
 import pro.hirooka.chukasa.service.system.ISystemService;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
+@Service
 public class ProgramTableService implements IProgramTableService {
 
     @Autowired
@@ -102,7 +102,7 @@ public class ProgramTableService implements IProgramTableService {
         if(systemService.isMongoDB()) {
             Date date = new Date();
             Instant instant = Instant.ofEpochMilli(date.getTime());
-            ZonedDateTime zonedDateTime = ZonedDateTime.from(instant.atZone(ZoneId.systemDefault())).minusDays(1);
+            ZonedDateTime zonedDateTime = ZonedDateTime.from(instant.atZone(ZoneId.systemDefault())).minusDays(0);
             int year = zonedDateTime.getYear();
             int month = zonedDateTime.getMonthValue();
             int day = zonedDateTime.getDayOfMonth();
@@ -112,7 +112,7 @@ public class ProgramTableService implements IProgramTableService {
             String thresholdZonedDateTimeString = thresholdZonedDateTime.format(dateTimeFormatter);
             log.info("thresholdZonedDateTime = {}, {}", thresholdZonedDateTimeString, thresholdZonedDateTime.toEpochSecond());
 
-            List<Program> toBeDeletedProgramList = programRepository.deleteByDate(thresholdZonedDateTime.toEpochSecond() * 1000);
+            List<Program> toBeDeletedProgramList = programRepository.deleteByEnd(thresholdZonedDateTime.toEpochSecond() * 1000);
             log.info("toBeDeletedProgramList.size() = {}", toBeDeletedProgramList.size());
             toBeDeletedProgramList.forEach(program -> programRepository.delete(program.getId()));
         }
