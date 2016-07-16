@@ -1,4 +1,0 @@
-JAVA_HOME="/usr/java/default"
-LIBVA_DRIVER_NAME="iHD"
-MFX_HOME="/opt/intel/mediasdk"
-LIBVA_DRIVERS_PATH="/opt/intel/mediasdk/lib64"
