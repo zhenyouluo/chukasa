@@ -16,6 +16,7 @@ import pro.hirooka.chukasa.domain.recorder.ReservedProgram;
 import pro.hirooka.chukasa.service.recorder.IProgramTableService;
 import pro.hirooka.chukasa.service.recorder.IRecorderService;
 
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -30,7 +31,17 @@ public class ProgramController {
 
     @RequestMapping(method = RequestMethod.GET)
     String read(Model model){
-        List<Program> programList = programTableService.read();
+        //List<Program> programList = programTableService.read();
+        Date now = new Date();
+        List<Program> programList = programTableService.readOneDayByNow(now.getTime());
+        model.addAttribute("programList", programList);
+        return "programs/list";
+    }
+
+    @RequestMapping(value = "now", method = RequestMethod.GET)
+    String readNow(Model model){
+        Date now = new Date();
+        List<Program> programList = programTableService.readByNow(now.getTime());
         model.addAttribute("programList", programList);
         return "programs/list";
     }

@@ -11,6 +11,7 @@ public interface IProgramTableService {
     List<Program> readByBeginDate(String beginDate);
     List<Program> read(int ch, String beginDate);
     List<Program> readByNow(long now);
+    List<Program> readOneDayByNow(long now);
     Program read(String id);
     Program readNow(int ch, long now);
     Program update(Program Program);

@@ -63,6 +63,21 @@ public class ProgramTableService implements IProgramTableService {
     }
 
     @Override
+    public List<Program> readOneDayByNow(long now) {
+        Instant instant = Instant.ofEpochMilli(now);
+        ZonedDateTime nowZonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
+        ZonedDateTime tomorrowZonedDateTime = ZonedDateTime.from(instant.atZone(ZoneId.systemDefault())).plusDays(1);
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
+        String nowZonedDateTimeString = nowZonedDateTime.format(dateTimeFormatter);
+        String tomorrowZonedDateTimeString = tomorrowZonedDateTime.format(dateTimeFormatter);
+        log.info("nowZonedDateTime = {}, {}", nowZonedDateTimeString, nowZonedDateTime.toEpochSecond());
+        log.info("tomorrowZonedDateTime = {}, {}", tomorrowZonedDateTimeString, tomorrowZonedDateTime.toEpochSecond());
+
+        return programRepository.findAllByBeginAndEndLike(now, tomorrowZonedDateTime.toEpochSecond() * 1000);
+    }
+
+    @Override
     public Program read(String id) {
         return programRepository.findOne(id);
     }
@@ -102,7 +117,7 @@ public class ProgramTableService implements IProgramTableService {
         if(systemService.isMongoDB()) {
             Date date = new Date();
             Instant instant = Instant.ofEpochMilli(date.getTime());
-            ZonedDateTime zonedDateTime = ZonedDateTime.from(instant.atZone(ZoneId.systemDefault())).minusDays(0);
+            ZonedDateTime zonedDateTime = ZonedDateTime.from(instant.atZone(ZoneId.systemDefault())).minusDays(1);
             int year = zonedDateTime.getYear();
             int month = zonedDateTime.getMonthValue();
             int day = zonedDateTime.getDayOfMonth();
