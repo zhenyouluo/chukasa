@@ -58,7 +58,7 @@ chukasa 用のディレクトリを作成します．video ディレクトリに
     sed -i -e "s/spring.data.mongodb.host=localhost/spring.data.mongodb.host=mongo/g" src/main/resources/application.properties
     ./gradlew build
 
-Docker イメージをビルドします．Core i3 6100 で 30 - 40 分程度かかります．
+Docker イメージをビルドします．Core i3 6100 で 30 分程度かかります．
 
 yourName は何か設定してください．
 
@@ -85,13 +85,13 @@ QSV を使用した低負荷なストリーミングができます．
 
 ## Run Anywhere
 
-Ubuntu 16.04，Docker，CentOS with QSV，Raspberry Pi 3 Model B with Raspbian、AWS Elastic Beanstalk など，いろいろな環境で起動させることができます．(動作するとは言っていない)
+Ubuntu 16.04.1，Docker，CentOS with QSV，Raspberry Pi 3 Model B with Raspbian、AWS Elastic Beanstalk など，いろいろな環境で起動させることができます．(動作するとは言っていない)
 
 |   | Streaming & Recording | Streaming only | Recording only |
 |:---:|:---:|:---:|:---:|
 | CentOS 7.1<br>with QSV | [構築手順](procedure/procedure_centos_7_1_qsv.txt) | N/A | N/A |
-| Ubuntu 16.04<br>(Local) | [構築手順](procedure/procedure_ubuntu_16_04_local.txt) | N/A | N/A |
-| Ubuntu 16.04<br>(Docker) | [構築手順](procedure/procedure_ubuntu_16_04_docker.txt) | N/A | N/A |
+| Ubuntu 16.04.1<br>(Local) | [構築手順](procedure/procedure_ubuntu_16_04_1_local.txt) | N/A | N/A |
+| Ubuntu 16.04.1<br>(Docker) | [構築手順](procedure/procedure_ubuntu_16_04_1_docker.txt) | N/A | N/A |
 | AWS Elastic Beanstalk<br>(Java) | N/A | [構築手順](procedure/procedure_aws_elastic_beanstalk_jar.txt) | N/A |
 | AWS Elastic Beanstalk<br>(Docker) | N/A | [構築手順](procedure/procedure_aws_elastic_beanstalk_docker_jar.txt) | N/A |
 | AWS Elastic Beanstalk<br>(Multi-container Docker) | N/A | [構築手順](procedure/procedure_aws_elastic_beanstalk_multi_container_docker_jar_db.txt) | N/A |
