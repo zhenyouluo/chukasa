@@ -95,17 +95,17 @@ sed -i -e "s/spring.data.mongodb.host=localhost/spring.data.mongodb.host=mongo/g
 # build chukasa Docker image
 docker build -t hirooka/chukasa:0.0.1-SNAPSHOT .
 # or pull Docker image
-# docker pull hirooka/chukasa:0.0.1-SNAPSHOT-DB
+# docker pull hirooka/chukasa:0.0.1-SNAPSHOT
 
 # push if needed
-# docker push hirooka/chukasa:0.0.1-SNAPSHOT-DB
+# docker push hirooka/chukasa:0.0.1-SNAPSHOT
 
 # pull and run MongoDB Docker image
 docker pull mongo
 docker run --name some-mongo -d mongo
 
 # run chukasa Docker image with MongoDB Docker image
-docker run --link some-mongo:mongo --privileged --volume /dev/:/dev/ --volume /var/run/pcscd/pcscd.comm:/var/run/pcscd/pcscd.comm -v /opt/chukasa/video:/opt/chukasa/video -p 80:80 -v /etc/localtime:/etc/localtime:ro -it hirooka/chukasa:0.0.1-SNAPSHOT-DB /bin/bash
+docker run --link some-mongo:mongo --privileged --volume /dev/:/dev/ --volume /var/run/pcscd/pcscd.comm:/var/run/pcscd/pcscd.comm -v /opt/chukasa/video:/opt/chukasa/video -p 80:80 -v /etc/localtime:/etc/localtime:ro -it hirooka/chukasa:0.0.1-SNAPSHOT /bin/bash
 
 #*******************************************************************************************************************
 # End Of File
