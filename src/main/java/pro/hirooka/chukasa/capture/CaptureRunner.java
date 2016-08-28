@@ -36,6 +36,7 @@ public class CaptureRunner implements Runnable {
         log.debug("StreamPath: {}", chukasaModel.getStreamPath());
 
         boolean isQSV = chukasaModel.getSystemConfiguration().isQuickSyncVideoEnabled();
+        boolean isOpenMAX = chukasaModel.getSystemConfiguration().isOpenmaxEnabled();
 
         boolean isEncrypted = chukasaModel.getChukasaSettings().isEncrypted();
         String ffmpegOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
@@ -47,7 +48,36 @@ public class CaptureRunner implements Runnable {
 
         String[] commandArray = {""};
 
-        if(isQSV){
+        if(isOpenMAX){
+            String[] commandArrayTemporary =  {
+                    chukasaModel.getSystemConfiguration().getRecpt1Path(),
+                    "--b25", "--strip",
+                    Integer.toString(chukasaModel.getChukasaSettings().getCh()),
+                    "-", "-",
+                    "|",
+                    chukasaModel.getSystemConfiguration().getFfmpegPath(),
+                    "-i", "-",
+                    "-acodec", "copy",
+                    //"-acodec", "aac",
+                    //"-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
+                    //"-ar", "44100",
+                    //"-ac", "2",
+                    //"-s", chukasaModel.getChukasaSettings().getVideoResolution(),
+                    "-c:v", "h264_omx",
+                    //"-vcodec", "h264_qsv",
+                    //"-g", "60",
+                    //"-profile:v", "high",
+                    //"-level", "4.2",
+                    //"-b:v", chukasaModel.getChukasaSettings().getVideoBitrate()+"k",
+                    "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
+                    "-f", "segment",
+                    "-segment_format", "mpegts",
+                    "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
+//                    "-segment_list", m3u8OutputPath,
+                    ffmpegOutputPath
+            };
+            commandArray = commandArrayTemporary;
+        } else if(isQSV){
             String[] commandArrayTemporary =  {
                     chukasaModel.getSystemConfiguration().getRecpt1Path(),
                     "--b25", "--strip",

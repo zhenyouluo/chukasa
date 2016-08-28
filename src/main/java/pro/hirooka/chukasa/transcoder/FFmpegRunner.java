@@ -58,6 +58,35 @@ public class FFmpegRunner implements Runnable {
 
         if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEB_CAMERA)) {
 
+            if(isOpenMAX){
+                String[] cmdArrayTemporary = {
+
+                        chukasaModel.getSystemConfiguration().getFfmpegPath(),
+                        "-f", "video4linux2",
+                        "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
+                        "-i", chukasaModel.getSystemConfiguration().getWebCameraDeviceName(),
+                        "-f", "alsa",
+                        "-ac", Integer.toString(chukasaModel.getSystemConfiguration().getWebCameraAudioChannel()),
+                        "-i", "hw:0,0",
+                        "-acodec", "aac",
+                        "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
+                        "-ar", "44100",
+                        "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
+                        "-vcodec", "h264_omx",
+                        //"-g", "60",
+                        //"-profile:v", "high",
+                        //"-level", "4.2",
+                        "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
+                        "-pix_fmt", "yuv420p",
+                        "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
+                        "-f", "segment",
+                        "-segment_format", "mpegts",
+                        "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
+//                        "-segment_list", m3u8OutputPath,
+                        ffmpegOutputPath
+                };
+                cmdArray = cmdArrayTemporary;
+            }else
             if(isQSV){
                 String[] cmdArrayTemporary = {
 
@@ -119,7 +148,26 @@ public class FFmpegRunner implements Runnable {
 
         }else if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.FILE)){
 
-            if(isQSV && !isOpenMAX || isQSV) {
+            if(isOpenMAX){
+                String[] cmdArrayTemporary = {
+
+                        chukasaModel.getSystemConfiguration().getFfmpegPath(),
+                        "-i", chukasaModel.getSystemConfiguration().getFilePath() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName(),
+                        "-acodec", "aac",
+                        //"-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
+                        //"-ac", "2",
+                        //"-ar", "44100",
+                        //"-s", chukasaModel.getChukasaSettings().getVideoResolution(),
+                        "-vcodec", "h264_omx",
+                        //"-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
+                        "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
+                        "-f", "segment",
+                        "-segment_format", "mpegts",
+                        "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
+                        ffmpegOutputPath
+                };
+                cmdArray = cmdArrayTemporary;
+            }else if(isQSV) {
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -132,26 +180,6 @@ public class FFmpegRunner implements Runnable {
                         "-vcodec", "h264_qsv",
                         "-profile:v", "high",
                         "-level", "4.1",
-                        "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
-                        "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
-                        "-f", "segment",
-                        "-segment_format", "mpegts",
-                        "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-                        ffmpegOutputPath
-                };
-                cmdArray = cmdArrayTemporary;
-            }else if(!isQSV && isOpenMAX){
-                String[] cmdArrayTemporary = {
-
-                        chukasaModel.getSystemConfiguration().getFfmpegPath(),
-                        "-i", chukasaModel.getSystemConfiguration().getFilePath() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName(),
-                        "-acodec", "aac",
-                        "-strict", "experimental",
-                        "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
-                        "-ac", "2",
-                        "-ar", "44100",
-                        //"-s", chukasaModel.getChukasaSettings().getVideoResolution(),
-                        "-vcodec", "h264_omx",
                         "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
                         "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                         "-f", "segment",
