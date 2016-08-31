@@ -12,11 +12,11 @@ PT3 の出力，Web カメラの映像とそのマイクの音声，任意のビ
 
 ## Safari
 
-![Safari demo](https://hirooka.pro/chukasa_web.gif)
+![Safari demo](gif/chukasa_web.gif)
 
 ## iOS App
 
-![iOS App demo](https://hirooka.pro/chukasa_ios.gif)
+![iOS App demo](gif/chukasa_ios.gif)
 
 # Features
 
