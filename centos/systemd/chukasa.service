@@ -1,6 +1,6 @@
 [Unit]
 Description=chukasa
-After=syslog.target
+After=syslog.target mongod.service
 
 [Service]
 # chenge it to your username
