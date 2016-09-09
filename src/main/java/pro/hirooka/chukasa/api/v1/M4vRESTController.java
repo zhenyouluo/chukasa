@@ -1,0 +1,46 @@
+package pro.hirooka.chukasa.api.v1;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.web.bind.annotation.*;
+import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.recorder.M4vFile;
+
+@Slf4j
+@RestController
+@RequestMapping("api/v1/m4v")
+public class M4vRESTController {
+
+    static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
+    @Autowired
+    SystemConfiguration systemConfiguration;
+
+    @RequestMapping(value = "/", method = RequestMethod.POST)
+    Resource downloadFile(@RequestBody M4vFile m4vFile){
+
+        String filePath = "";
+
+        switch (m4vFile.getType()){
+            case PHONE:
+            case PAD:
+                filePath = systemConfiguration.getFilePath() + FILE_SEPARATOR + m4vFile.getName() + ".ts.m4v";
+                break;
+            case WATCH:
+                filePath = systemConfiguration.getFilePath() + FILE_SEPARATOR + m4vFile.getName() + ".ts.watch.m4v";
+                break;
+            default:
+                break;
+        }
+
+        return new FileSystemResource(filePath);
+    }
+
+    @RequestMapping(value = "/{name}", method = RequestMethod.GET)
+    Resource downloadFile(@PathVariable String name){
+        String filePath = systemConfiguration.getFilePath() + FILE_SEPARATOR + name + ".ts.watch.m4v";
+        return new FileSystemResource(filePath);
+    }
+}
