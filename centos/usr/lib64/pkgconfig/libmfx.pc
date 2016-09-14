@@ -5,6 +5,6 @@ includedir=${prefix}/include
 
 Name: libmfx
 Description: Intel Media SDK
-Version: 16.4.2
+Version: 16.5
 Libs: -L${libdir} -lmfx -lva -lstdc++ -ldl -lva-drm -ldrm
 Cflags: -I${includedir} -I/usr/include/libdrm
