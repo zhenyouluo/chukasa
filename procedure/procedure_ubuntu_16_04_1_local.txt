@@ -5,11 +5,23 @@
 #*******************************************************************************************************************
 # 環境により異なる．
 # cat /proc/asound/modules にて事前に確認する．
+
+
+# ASUS Z170I PRO GAMING の場合
+# cat /proc/asound/modules
+#  0 snd_hda_intel
+#  1 snd_usb_audio
 sudo touch /etc/modprobe.d/alsa-base.conf
 sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
 sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
 sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
 sudo gpasswd -a $USER audio
+
+# ASUS B85M-E の場合
+#sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
+#sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+#sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
+#sudo sh -c "echo 'options snd_hda_intel index=2' >> /etc/modprobe.d/alsa-base.conf"
 
 #*******************************************************************************************************************
 # PT3
@@ -123,14 +135,14 @@ cd /tmp && \
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
 sudo sh -c "echo 'deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse' | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list"
 sudo apt-get update
-sudo apt-get install mongodb-org
+sudo apt-get -y install mongodb-org
 
 #*******************************************************************************************************************
 # nginx
 #*******************************************************************************************************************
 cd /tmp && \
     sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.11.3.tar.gz && \
+    wget http://nginx.org/download/nginx-1.11.4.tar.gz && \
     tar zxvf nginx-*.tar.gz && \
     cd nginx-* && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \

@@ -1,15 +1,26 @@
-# Ubuntu 16.04 and Docker
+# Ubuntu 16.04.1 and Docker
 
 #*******************************************************************************************************************
 # Web Camera (Audio)
 #*******************************************************************************************************************
 # 環境により異なる．
 # cat /proc/asound/modules にて事前に確認する．
+
+# ASUS Z170I PRO GAMING の場合
+# cat /proc/asound/modules
+#  0 snd_hda_intel
+#  1 snd_usb_audio
 sudo touch /etc/modprobe.d/alsa-base.conf
 sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
 sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
 sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
 sudo gpasswd -a $USER audio
+
+# ASUS B85M-E の場合
+#sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
+#sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+#sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
+#sudo sh -c "echo 'options snd_hda_intel index=2' >> /etc/modprobe.d/alsa-base.conf"
 
 #*******************************************************************************************************************
 # PT3
