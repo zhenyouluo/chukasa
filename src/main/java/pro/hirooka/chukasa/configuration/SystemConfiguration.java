@@ -15,6 +15,6 @@ public class SystemConfiguration {
     String temporaryPath;
     String filePath;
     int ffmpegThreads;
-    boolean quickSyncVideoEnabled;
-    boolean openmaxEnabled;
+//    boolean quickSyncVideoEnabled;
+//    boolean openmaxEnabled;
 }

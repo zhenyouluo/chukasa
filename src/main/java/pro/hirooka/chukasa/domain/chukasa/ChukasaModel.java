@@ -6,6 +6,7 @@ import pro.hirooka.chukasa.configuration.HLSConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.detector.FFmpegHLSStreamDetectorRunner;
 import pro.hirooka.chukasa.domain.chukasa.type.PlaylistType;
+import pro.hirooka.chukasa.domain.chukasa.type.VideoCodecType;
 import pro.hirooka.chukasa.encrypter.FFmpegHLSEncrypterRunner;
 import pro.hirooka.chukasa.playlister.PlaylisterRunner;
 import pro.hirooka.chukasa.segmenter.SegmenterRunner;
@@ -82,6 +83,8 @@ public class ChukasaModel {
     private PlaylisterRunner playlisterRunner;
     private UUID uuid;
 
+    private VideoCodecType videoCodecType;
+
     public ChukasaModel(){
 
         adaptiveBitrateStreaming = 0;
@@ -147,6 +150,8 @@ public class ChukasaModel {
         this.ffmpegHLSStreamDetectorRunner = null;
         this.playlisterRunner = null;
         this.uuid = null;
+
+        this.videoCodecType = VideoCodecType.UNKNOWN;
     }
 
 }

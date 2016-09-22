@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.configuration.MongoDBConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.chukasa.type.VideoCodecType;
 
 import java.io.*;
 
@@ -134,5 +135,43 @@ public class SystemService implements ISystemService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public VideoCodecType getVideoCodecType() {
+        final String H264_QSV = "--enable-libmfx";
+        final String H264 = "--enable-x264";
+        final String H264_OMX = "--enable-omx-rpi";
+        String ffmpeg = systemConfiguration.getFfmpegPath();
+        String[] command = {ffmpeg, "-version"};
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        try {
+            Process process = processBuilder.start();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String str = "";
+            while((str = bufferedReader.readLine()) != null){
+                log.info(str);
+                if(str.contains(H264_QSV)){
+                    bufferedReader.close();
+                    process.destroy();
+                    return VideoCodecType.H264_QSV;
+                }
+                if(str.contains(H264_OMX)){
+                    bufferedReader.close();
+                    process.destroy();
+                    return VideoCodecType.H264_OMX;
+                }
+                if(str.contains(H264)){
+                    bufferedReader.close();
+                    process.destroy();
+                    return VideoCodecType.H264;
+                }
+            }
+            bufferedReader.close();
+            process.destroy();
+        } catch (IOException e) {
+            log.error("{} {}", e.getMessage(), e);
+        }
+        return VideoCodecType.UNKNOWN;
     }
 }

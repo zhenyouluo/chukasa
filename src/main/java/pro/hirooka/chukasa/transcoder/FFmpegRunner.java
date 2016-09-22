@@ -5,6 +5,7 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import pro.hirooka.chukasa.ChukasaConstant;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
+import pro.hirooka.chukasa.domain.chukasa.type.VideoCodecType;
 import pro.hirooka.chukasa.encrypter.Encrypter;
 import pro.hirooka.chukasa.segmenter.SegmenterRunner;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
@@ -41,8 +42,9 @@ public class FFmpegRunner implements Runnable {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
 
-        boolean isQSV = chukasaModel.getSystemConfiguration().isQuickSyncVideoEnabled();
-        boolean isOpenMAX = chukasaModel.getSystemConfiguration().isOpenmaxEnabled();
+//        boolean isQSV = chukasaModel.getSystemConfiguration().isQuickSyncVideoEnabled();
+//        boolean isOpenMAX = chukasaModel.getSystemConfiguration().isOpenmaxEnabled();
+        VideoCodecType videoCodecType = chukasaModel.getVideoCodecType();
 
         boolean isEncrypted = chukasaModel.getChukasaSettings().isEncrypted();
         String ffmpegOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
@@ -58,7 +60,7 @@ public class FFmpegRunner implements Runnable {
 
         if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEB_CAMERA)) {
 
-            if(isOpenMAX){
+            if(videoCodecType.equals(VideoCodecType.H264_OMX)){
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -87,7 +89,7 @@ public class FFmpegRunner implements Runnable {
                 };
                 cmdArray = cmdArrayTemporary;
             }else
-            if(isQSV){
+            if(videoCodecType.equals(VideoCodecType.H264_QSV)){
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -115,7 +117,7 @@ public class FFmpegRunner implements Runnable {
                         ffmpegOutputPath
                 };
                 cmdArray = cmdArrayTemporary;
-            }else{
+            }else if(videoCodecType.equals(VideoCodecType.H264)){
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -148,7 +150,7 @@ public class FFmpegRunner implements Runnable {
 
         }else if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.FILE)){
 
-            if(isOpenMAX){
+            if(videoCodecType.equals(VideoCodecType.H264_OMX)){
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -167,7 +169,7 @@ public class FFmpegRunner implements Runnable {
                         ffmpegOutputPath
                 };
                 cmdArray = cmdArrayTemporary;
-            }else if(isQSV) {
+            }else if(videoCodecType.equals(VideoCodecType.H264_QSV)) {
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -188,7 +190,7 @@ public class FFmpegRunner implements Runnable {
                         ffmpegOutputPath
                 };
                 cmdArray = cmdArrayTemporary;
-            }else{
+            }else if(videoCodecType.equals(VideoCodecType.H264)){
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -217,7 +219,7 @@ public class FFmpegRunner implements Runnable {
 
             if(chukasaModel.getChukasaSettings().isEncrypted()){
 
-                if(isQSV){
+                if(videoCodecType.equals(VideoCodecType.H264_QSV)){
                     String[] cmdArrayTemporary = {
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -236,7 +238,7 @@ public class FFmpegRunner implements Runnable {
                             "-y", chukasaModel.getTempEncPath() + FILE_SEPARATOR + "fileSequenceEncoded" + seqCapturedTimeShifted + STREAM_FILE_EXTENSION // TODO
                     };
                     cmdArray = cmdArrayTemporary;
-                }else{
+                }else if(videoCodecType.equals(VideoCodecType.H264)){
                     String[] cmdArrayTemporary = {
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -261,7 +263,7 @@ public class FFmpegRunner implements Runnable {
 
             }else{
 
-                if(isQSV){
+                if(videoCodecType.equals(VideoCodecType.H264_QSV)){
                     String[] cmdArrayTemporary = {
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -280,7 +282,7 @@ public class FFmpegRunner implements Runnable {
                             "-y", chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqCapturedTimeShifted + STREAM_FILE_EXTENSION
                     };
                     cmdArray = cmdArrayTemporary;
-                }else{
+                }else if(videoCodecType.equals(VideoCodecType.H264)){
                     String[] cmdArrayTemporary = {
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),

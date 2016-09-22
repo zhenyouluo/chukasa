@@ -1,5 +1,7 @@
 package pro.hirooka.chukasa.service.system;
 
+import pro.hirooka.chukasa.domain.chukasa.type.VideoCodecType;
+
 public interface ISystemService {
     boolean isFFmpeg();
     boolean isWebCamera();
@@ -12,4 +14,5 @@ public interface ISystemService {
     boolean canFileStreaming();
     boolean canPTxStreaming();
     boolean canRecording();
+    VideoCodecType getVideoCodecType();
 }

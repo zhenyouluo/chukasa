@@ -58,8 +58,8 @@ public class IndexController {
         boolean isSupported = false;
         String userAgent = httpServletRequest.getHeader("user-agent");
         if((userAgent.contains("Mac OS X 10_11") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9")))
-                || (userAgent.contains("iPhone OS 9") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9")))
-                || (userAgent.contains("iPad; CPU OS 9") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9")))
+                || (userAgent.contains("iPhone OS 10") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("10")))
+                || (userAgent.contains("iPad; CPU OS 10") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("10")))
                 || (userAgent.contains("Windows") && userAgent.contains("Edge/"))
                 || (userAgent.contains("Chrome"))){
             isSupported = true;

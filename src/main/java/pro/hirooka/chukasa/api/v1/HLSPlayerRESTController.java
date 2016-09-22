@@ -18,6 +18,7 @@ import pro.hirooka.chukasa.domain.chukasa.ChukasaSettings;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaStatus;
 import pro.hirooka.chukasa.domain.chukasa.HLSPlaylist;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
+import pro.hirooka.chukasa.domain.chukasa.type.VideoCodecType;
 import pro.hirooka.chukasa.handler.ChukasaRemover;
 import pro.hirooka.chukasa.handler.ChukasaRemoverRunner;
 import pro.hirooka.chukasa.handler.ChukasaStopper;
@@ -25,6 +26,7 @@ import pro.hirooka.chukasa.operator.IDirectoryCreator;
 import pro.hirooka.chukasa.operator.ITimerTaskParameterCalculator;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 import pro.hirooka.chukasa.service.chukasa.IChukasaTaskService;
+import pro.hirooka.chukasa.service.system.ISystemService;
 import pro.hirooka.chukasa.transcoder.FFmpegInitializer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,6 +66,8 @@ public class  HLSPlayerRESTController {
     HttpServletRequest httpServletRequest;
     @Autowired
     IChukasaTaskService chukasaTaskService;
+    @Autowired
+    ISystemService systemService;
 
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     HLSPlaylist play(@RequestBody @Validated ChukasaSettings chukasaSettings, BindingResult bindingResult){
@@ -76,7 +80,7 @@ public class  HLSPlayerRESTController {
 
         // 再生前に FFmpeg, タイマー，ストリームをまっさらに．
         for(ChukasaModel chukasaModel : chukasaModelManagementComponent.get()){
-            chukasaModel.getSegmenterRunner().stop();
+            chukasaModel.getSegmenterRunner().stop(); // TODO: fix null
             chukasaModel.getPlaylisterRunner().stop();
             SimpleAsyncTaskExecutor ffmpegInitializerSimpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
             FFmpegInitializer ffmpegInitializer = new FFmpegInitializer(chukasaModel.getFfmpegPID());
@@ -104,6 +108,13 @@ public class  HLSPlayerRESTController {
 
             chukasaModel.setUuid(UUID.randomUUID());
             chukasaModel = chukasaModelManagementComponent.create(0, chukasaModel);
+
+            VideoCodecType videoCodecType = systemService.getVideoCodecType();
+            if(videoCodecType.equals(VideoCodecType.UNKNOWN)){
+                // TODO: error
+                log.equals("VideoCodecType.UNKNOWN");
+            }
+            chukasaModel.setVideoCodecType(videoCodecType);
 
             chukasaModel.setAdaptiveBitrateStreaming(0);
 

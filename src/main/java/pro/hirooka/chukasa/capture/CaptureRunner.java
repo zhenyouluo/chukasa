@@ -3,6 +3,7 @@ package pro.hirooka.chukasa.capture;
 import lombok.extern.slf4j.Slf4j;
 import pro.hirooka.chukasa.ChukasaConstant;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
+import pro.hirooka.chukasa.domain.chukasa.type.VideoCodecType;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 
 import java.io.*;
@@ -35,8 +36,9 @@ public class CaptureRunner implements Runnable {
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
         log.debug("StreamPath: {}", chukasaModel.getStreamPath());
 
-        boolean isQSV = chukasaModel.getSystemConfiguration().isQuickSyncVideoEnabled();
-        boolean isOpenMAX = chukasaModel.getSystemConfiguration().isOpenmaxEnabled();
+//        boolean isQSV = chukasaModel.getSystemConfiguration().isQuickSyncVideoEnabled();
+//        boolean isOpenMAX = chukasaModel.getSystemConfiguration().isOpenmaxEnabled();
+        VideoCodecType videoCodecType = chukasaModel.getVideoCodecType();
 
         boolean isEncrypted = chukasaModel.getChukasaSettings().isEncrypted();
         String ffmpegOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
@@ -48,7 +50,7 @@ public class CaptureRunner implements Runnable {
 
         String[] commandArray = {""};
 
-        if(isOpenMAX){
+        if(videoCodecType.equals(VideoCodecType.H264_OMX)){
             String[] commandArrayTemporary =  {
                     chukasaModel.getSystemConfiguration().getRecpt1Path(),
                     "--b25", "--strip",
@@ -77,7 +79,7 @@ public class CaptureRunner implements Runnable {
                     ffmpegOutputPath
             };
             commandArray = commandArrayTemporary;
-        } else if(isQSV){
+        } else if(videoCodecType.equals(VideoCodecType.H264_QSV)){
             String[] commandArrayTemporary =  {
                     chukasaModel.getSystemConfiguration().getRecpt1Path(),
                     "--b25", "--strip",
@@ -104,7 +106,7 @@ public class CaptureRunner implements Runnable {
                     ffmpegOutputPath
             };
             commandArray = commandArrayTemporary;
-        }else{
+        }else if(videoCodecType.equals(VideoCodecType.H264)){
             String[] commandArrayTemporary = {
                     chukasaModel.getSystemConfiguration().getRecpt1Path(),
                     "--b25", "--strip",

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
+import pro.hirooka.chukasa.domain.chukasa.type.VideoCodecType;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 
 @Slf4j
@@ -42,7 +43,7 @@ public class TimerTaskParameterCalculator implements ITimerTaskParameterCalculat
             // timerSegmenterDelay = 0;
         }
 
-        if(chukasaModel.getSystemConfiguration().isOpenmaxEnabled()){
+        if(chukasaModel.getVideoCodecType().equals(VideoCodecType.H264_OMX)){
             timerSegmenterDelay = timerSegmenterDelay + 3000; // todo
         }
         long timerSegmenterPeriod = (long) (duration * 1000);
