@@ -18,7 +18,7 @@ buildscript {
         //maven { url "http://repo.spring.io/milestone" }
     }
     dependencies {
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.4.0.RELEASE'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE'
     }
 }
 
@@ -32,11 +32,11 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
     compile 'org.webjars:bootstrap:3.3.6'
     compile 'org.projectlombok:lombok:1.16.10'
-    compile 'org.springframework.data:spring-data-mongodb:1.9.2.RELEASE'
+    compile 'org.springframework.data:spring-data-mongodb:1.9.3.RELEASE'
     compile 'org.springframework.boot:spring-boot-devtools'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'commons-io:commons-io:2.5'
-    compile 'org.bouncycastle:bcprov-jdk15on:1.54'
-    compile 'com.amazonaws:aws-java-sdk:1.11.28'
+    compile 'org.bouncycastle:bcprov-jdk15on:1.55'
+    compile 'com.amazonaws:aws-java-sdk:1.11.37'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
