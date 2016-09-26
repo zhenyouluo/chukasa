@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.detector.IChukasaBrowserDetector;
 import pro.hirooka.chukasa.domain.chukasa.VideoFileModel;
 import pro.hirooka.chukasa.domain.recorder.Program;
 import pro.hirooka.chukasa.domain.recorder.RecordingProgramModel;
@@ -51,17 +52,15 @@ public class IndexController {
     IRecordingProgramManagementComponent recordingProgramManagementComponent;
     @Autowired
     IRecorderService recorderService;
+    @Autowired
+    IChukasaBrowserDetector chukasaBrowserDetector;
 
     @RequestMapping("/")
     String index(Model model){
 
         boolean isSupported = false;
         String userAgent = httpServletRequest.getHeader("user-agent");
-        if((userAgent.contains("Mac OS X 10_11") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9")))
-                || (userAgent.contains("iPhone OS 10") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("10")))
-                || (userAgent.contains("iPad; CPU OS 10") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("10")))
-                || (userAgent.contains("Windows") && userAgent.contains("Edge/"))
-                || (userAgent.contains("Chrome"))){
+        if(chukasaBrowserDetector.isNativeSupported(userAgent) || chukasaBrowserDetector.isAlternativeSupported(userAgent)){
             isSupported = true;
         }
         log.info("{} : {}", isSupported, userAgent);

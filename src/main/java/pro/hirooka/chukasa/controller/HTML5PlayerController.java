@@ -14,6 +14,7 @@ import pro.hirooka.chukasa.ChukasaConstant;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.HLSConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.detector.IChukasaBrowserDetector;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaSettings;
 import pro.hirooka.chukasa.domain.chukasa.HTML5PlayerModel;
@@ -72,6 +73,8 @@ public class HTML5PlayerController {
     IChukasaTaskService chukasaTaskService;
     @Autowired
     ISystemService systemService;
+    @Autowired
+    IChukasaBrowserDetector chukasaBrowserDetector;
 
     @RequestMapping(method = RequestMethod.POST)
     String play(Model model, @Validated ChukasaSettings chukasaSettings, BindingResult bindingResult){
@@ -98,16 +101,6 @@ public class HTML5PlayerController {
         }else {
 
             log.info("ChukasaSettings -> {}", chukasaSettings.toString());
-
-            boolean isNativeHlsSupported = false;
-            String userAgent = httpServletRequest.getHeader("user-agent");
-            if((userAgent.contains("Mac OS X 10_11") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("9")))
-                    || (userAgent.contains("iPhone OS 10") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("10")))
-                    || (userAgent.contains("iPad; CPU OS 10") && (userAgent.contains("Version") && userAgent.split("Version/")[1].split(" ")[0].contains("10")))
-                    || (userAgent.contains("Windows") && userAgent.contains("Edge/"))){
-                isNativeHlsSupported = true;
-            }
-            log.info("{} : {}", isNativeHlsSupported, userAgent);
 
             ChukasaModel chukasaModel = new ChukasaModel();
 
@@ -186,11 +179,19 @@ public class HTML5PlayerController {
             html5PlayerModel.setPlaylistURI(playlistURI);
             model.addAttribute("html5PlayerModel", html5PlayerModel);
 
-            if(isNativeHlsSupported){
+            String userAgent = httpServletRequest.getHeader("user-agent");
+            log.info("userAgent: {}", userAgent);
+            if(chukasaBrowserDetector.isNativeSupported(userAgent)){
                 return "player";
-            }else{
+            }else if(chukasaBrowserDetector.isAlternativeSupported(userAgent)){
                 return ALTERNATIVE_HLS_PLAYER + "-player";
             }
+
+//            if(isNativeHlsSupported){
+//                return "player";
+//            }else{
+//                return ALTERNATIVE_HLS_PLAYER + "-player";
+//            }
 
         }
 

@@ -6,6 +6,5 @@ public enum BrowserType {
     EDGE,
     IE,
     FIREFOX,
-    OPERA,
-    OTHER
+    UNKNOWN
 }
