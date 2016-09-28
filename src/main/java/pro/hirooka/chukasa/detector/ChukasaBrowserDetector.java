@@ -10,7 +10,7 @@ public class ChukasaBrowserDetector implements IChukasaBrowserDetector {
     final String CHROME = "Chrome/";
     final String CHROMIUM = "Chromium/";
     final String EDGE = "Edge/";
-    final String IE = "MSIE";
+    final String IE = "Trident/7";
     final String FIREFOX = "Firefox/";
     final String SEAMONKEY = "Seamonkey/";
 
@@ -57,7 +57,7 @@ public class ChukasaBrowserDetector implements IChukasaBrowserDetector {
     @Override
     public boolean isIE(String userAgent) {
         if(userAgent.contains(IE)){
-            return true; // TODO: 11
+            return true;
         }
         return false;
     }
