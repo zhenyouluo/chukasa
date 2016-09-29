@@ -3,20 +3,18 @@ package pro.hirooka.chukasa.api.v1;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pro.hirooka.chukasa.ChukasaConstant;
+import pro.hirooka.chukasa.api.v1.exception.ChukasaBadRequestException;
+import pro.hirooka.chukasa.api.v1.exception.ChukasaInternalServerErrorException;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.HLSConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
-import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
-import pro.hirooka.chukasa.domain.chukasa.ChukasaSettings;
-import pro.hirooka.chukasa.domain.chukasa.ChukasaStatus;
-import pro.hirooka.chukasa.domain.chukasa.HLSPlaylist;
+import pro.hirooka.chukasa.domain.chukasa.*;
 import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
 import pro.hirooka.chukasa.domain.chukasa.type.VideoCodecType;
 import pro.hirooka.chukasa.handler.ChukasaRemover;
@@ -24,6 +22,7 @@ import pro.hirooka.chukasa.handler.ChukasaRemoverRunner;
 import pro.hirooka.chukasa.handler.ChukasaStopper;
 import pro.hirooka.chukasa.operator.IDirectoryCreator;
 import pro.hirooka.chukasa.operator.ITimerTaskParameterCalculator;
+import pro.hirooka.chukasa.service.chukasa.ChukasaModelManagementComponent;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
 import pro.hirooka.chukasa.service.chukasa.IChukasaTaskService;
 import pro.hirooka.chukasa.service.system.ISystemService;
@@ -70,13 +69,9 @@ public class  HLSPlayerRESTController {
     ISystemService systemService;
 
     @RequestMapping(value = "/start", method = RequestMethod.POST)
-    HLSPlaylist play(@RequestBody @Validated ChukasaSettings chukasaSettings, BindingResult bindingResult){
+    HLSPlaylist play(@RequestBody @Validated ChukasaSettings chukasaSettings) throws ChukasaBadRequestException, ChukasaInternalServerErrorException {
 
         HLSPlaylist hlsPlaylist = new HLSPlaylist();
-
-        if(bindingResult.hasErrors()){
-            return hlsPlaylist;
-        }
 
         // 再生前に FFmpeg, タイマー，ストリームをまっさらに．
         for(ChukasaModel chukasaModel : chukasaModelManagementComponent.get()){
@@ -94,12 +89,13 @@ public class  HLSPlayerRESTController {
         if(chukasaModelManagementComponent.get().size() > 0){
 
             log.warn("cannot start streaming bacause previous one is not finished.");
+            throw new ChukasaInternalServerErrorException("Cannot start streaming bacause previous one is not finished.");
 
         }else{
 
             String userAgent = httpServletRequest.getHeader("user-agent");
             if(!userAgent.contains("chukasa-ios")){
-                return hlsPlaylist;
+                throw new ChukasaBadRequestException("User-Agent is invalid");
             }
 
             log.info("ChukasaSettings -> {}", chukasaSettings.toString());
@@ -113,6 +109,7 @@ public class  HLSPlayerRESTController {
             if(videoCodecType.equals(VideoCodecType.UNKNOWN)){
                 // TODO: error
                 log.equals("VideoCodecType.UNKNOWN");
+                throw new ChukasaInternalServerErrorException("FFmpeg configuration is not suitable for this application.");
             }
             chukasaModel.setVideoCodecType(videoCodecType);
 
@@ -179,34 +176,29 @@ public class  HLSPlayerRESTController {
             hlsPlaylist.setUri(playlistURI);
             return hlsPlaylist;
         }
-        return hlsPlaylist;
     }
 
     @RequestMapping(value = "/stop", method = RequestMethod.GET)
-    ChukasaStatus stop(){
+    ChukasaResponseModel stop() throws ChukasaInternalServerErrorException {
         chukasaStopper.stop();
-        //return "redirect:/api/v1/hls/remove";
-        if(chukasaModelManagementComponent.get().size() > 0){
-            log.warn("cannot remove files bacause streaming is not finished.");
-        }else {
-            String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + STREAM_ROOT_PATH_NAME;
-            if(Files.exists(new File(streamRootPath).toPath())) {
-                chukasaRemover.setStreamRootPath(streamRootPath);
-                chukasaRemover.remove();
-            }else {
-                log.warn("cannot remove files bacause streamRootPath: {} does not exist.", streamRootPath);
-            }
-        }
-        ChukasaStatus chukasaStatus = new ChukasaStatus();
-        chukasaStatus.setStatus("pass");
-        return chukasaStatus;
+        removeStreamingFiles();
+        ChukasaResponseModel chukasaResponseModel = new ChukasaResponseModel();
+        chukasaResponseModel.setMessage("Streaming stopped successfully.");
+        return chukasaResponseModel;
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.GET)
-    ChukasaStatus remove(){
-        ChukasaStatus chukasaStatus = new ChukasaStatus();
+    ChukasaResponseModel remove() throws ChukasaInternalServerErrorException {
+        removeStreamingFiles();
+        ChukasaResponseModel chukasaResponseModel = new ChukasaResponseModel();
+        chukasaResponseModel.setMessage("Streaming stopped successfully.");
+        return chukasaResponseModel;
+    }
+
+    private void removeStreamingFiles() throws ChukasaInternalServerErrorException {
         if(chukasaModelManagementComponent.get().size() > 0){
             log.warn("cannot remove files bacause streaming is not finished.");
+            throw new ChukasaInternalServerErrorException("cannot remove files bacause streaming is not finished.");
         }else {
             String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + STREAM_ROOT_PATH_NAME;
             if(Files.exists(new File(streamRootPath).toPath())) {
@@ -214,10 +206,8 @@ public class  HLSPlayerRESTController {
                 chukasaRemover.remove();
             }else {
                 log.warn("cannot remove files bacause streamRootPath: {} does not exist.", streamRootPath);
+                throw new ChukasaInternalServerErrorException("Cannot remove files bacause streamRootPath does not exist.");
             }
         }
-        //return "redirect:/";
-        chukasaStatus.setStatus("pass");
-        return chukasaStatus;
     }
 }
