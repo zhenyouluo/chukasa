@@ -31,12 +31,19 @@ public class FFmpegHLSStreamDetectorRunner implements Runnable {
             ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
             if(chukasaModel == null || chukasaModel.isFlagTimerSegmenter()){
                 detectorTimer.cancel();
+                detectorTimer = null;
                 log.info("{} is completed.", this.getClass().getName());
                 break;
             }
         }
         if(!isRunning){
-            detectorTimer.cancel();
+            if(detectorTimer != null) {
+                detectorTimer.cancel();
+            }
         }
+    }
+
+    public void stop(){
+        isRunning = false;
     }
 }

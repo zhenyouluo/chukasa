@@ -40,7 +40,13 @@ public class FFmpegHLSEncrypterRunner implements Runnable {
             }
         }
         if(!isRunning){
-            segmenterTimer.cancel();
+            if(segmenterTimer != null) {
+                segmenterTimer.cancel();
+            }
         }
+    }
+
+    public void stop(){
+        isRunning = false;
     }
 }

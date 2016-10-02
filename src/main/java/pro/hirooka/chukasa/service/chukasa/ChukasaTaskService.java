@@ -29,6 +29,10 @@ public class ChukasaTaskService implements IChukasaTaskService {
 
         if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEB_CAMERA) || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.FILE)) {
 
+            PlaylisterRunner playlisterRunner = new PlaylisterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+            taskExecutor.execute(playlisterRunner);
+            chukasaModel.setPlaylisterRunner(playlisterRunner);
+
             FFmpegRunner ffmpegRunner = new FFmpegRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
             taskExecutor.execute(ffmpegRunner);
 
@@ -42,13 +46,13 @@ public class ChukasaTaskService implements IChukasaTaskService {
                 chukasaModel.setFfmpegHLSStreamDetectorRunner(ffmpegHLSStreamDetectorRunner);
             }
 
-            PlaylisterRunner playlisterRunner = new PlaylisterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
-            taskExecutor.execute(playlisterRunner);
-
-            chukasaModel.setPlaylisterRunner(playlisterRunner);
             chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
         }else if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.CAPTURE)){
+
+            PlaylisterRunner playlisterRunner = new PlaylisterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+            taskExecutor.execute(playlisterRunner);
+            chukasaModel.setPlaylisterRunner(playlisterRunner);
 
             CaptureRunner captureRunner = new CaptureRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
             taskExecutor.execute(captureRunner);
@@ -63,24 +67,19 @@ public class ChukasaTaskService implements IChukasaTaskService {
                 chukasaModel.setFfmpegHLSStreamDetectorRunner(ffmpegHLSStreamDetectorRunner);
             }
 
-            PlaylisterRunner playlisterRunner = new PlaylisterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
-            taskExecutor.execute(playlisterRunner);
-
-            chukasaModel.setPlaylisterRunner(playlisterRunner);
             chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
         }else if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.OKKAKE)){
 
-            SegmenterRunner segmenterRunner = new SegmenterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
-            taskExecutor.execute(segmenterRunner);
-            chukasaModel.setSegmenterRunner(segmenterRunner);
-            chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-
             PlaylisterRunner playlisterRunner = new PlaylisterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
             taskExecutor.execute(playlisterRunner);
             chukasaModel.setPlaylisterRunner(playlisterRunner);
-            chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
+            SegmenterRunner segmenterRunner = new SegmenterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
+            taskExecutor.execute(segmenterRunner);
+            chukasaModel.setSegmenterRunner(segmenterRunner);
+
+            chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
         }
     }
 }

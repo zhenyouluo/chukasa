@@ -39,7 +39,9 @@ public class SegmenterRunner implements Runnable {
             }
         }
         if(!isRunning){
-            segmenterTimer.cancel();
+            if(segmenterTimer != null) {
+                segmenterTimer.cancel();
+            }
         }
     }
 

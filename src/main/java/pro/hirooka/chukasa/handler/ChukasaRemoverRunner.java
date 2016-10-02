@@ -9,11 +9,10 @@ import java.io.IOException;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
+import static pro.hirooka.chukasa.ChukasaConstant.FILE_SEPARATOR;
 
 @Slf4j
 public class ChukasaRemoverRunner implements Runnable {
-
-    static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
     private String streamRootPath;
 

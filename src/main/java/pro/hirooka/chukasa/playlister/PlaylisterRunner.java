@@ -39,13 +39,15 @@ public class PlaylisterRunner implements Runnable {
             }
         }
         if(!isRunning){
-            playlisterTimer.cancel();
+            if(playlisterTimer != null) {
+                playlisterTimer.cancel();
+            }
         }
 
-        if(isRunning) {
-            chukasaModelManagementComponent.deleteAll();
-            log.info("all ChukasaModels have been deleted because streming was finished.");
-        }
+//        if(isRunning) {
+//            chukasaModelManagementComponent.deleteAll();
+//            log.info("all ChukasaModels have been deleted because streming was finished.");
+//        }
     }
 
     public void stop(){

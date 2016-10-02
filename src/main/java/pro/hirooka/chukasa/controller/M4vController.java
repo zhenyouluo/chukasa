@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.recorder.M4vFile;
 
+import static pro.hirooka.chukasa.ChukasaConstant.FILE_SEPARATOR;
+
 @Slf4j
 @RestController
 @RequestMapping("api/1/m4v")
 public class M4vController {
-
-    static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
     @Autowired
     SystemConfiguration systemConfiguration;

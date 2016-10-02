@@ -28,11 +28,11 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static pro.hirooka.chukasa.ChukasaConstant.FILE_SEPARATOR;
+
 @Slf4j
 @Controller
 public class IndexController {
-
-    static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
     @Autowired
     SystemConfiguration systemConfiguration;

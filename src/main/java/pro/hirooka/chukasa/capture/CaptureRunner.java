@@ -1,7 +1,6 @@
 package pro.hirooka.chukasa.capture;
 
 import lombok.extern.slf4j.Slf4j;
-import pro.hirooka.chukasa.ChukasaConstant;
 import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.chukasa.type.VideoCodecType;
 import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
@@ -10,16 +9,10 @@ import java.io.*;
 import java.lang.reflect.Field;
 
 import static java.util.Objects.requireNonNull;
+import static pro.hirooka.chukasa.ChukasaConstant.*;
 
 @Slf4j
 public class CaptureRunner implements Runnable {
-
-    static final String FILE_SEPARATOR = System.getProperty("file.separator");
-
-    final String STREAM_FILE_NAME_PREFIX = ChukasaConstant.STREAM_FILE_NAME_PREFIX;
-    final String STREAM_FILE_EXTENSION = ChukasaConstant.STREAM_FILE_EXTENSION;
-    final String FFMPEG_HLS_M3U8_FILE_NAME = ChukasaConstant.FFMPEG_HLS_M3U8_FILE_NAME;
-    final String M3U8_FILE_EXTENSION = ChukasaConstant.M3U8_FILE_EXTENSION;
 
     private int adaptiveBitrateStreaming;
 
