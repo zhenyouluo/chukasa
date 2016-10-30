@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.epgdump.EpgdumpStatus;
 import pro.hirooka.chukasa.domain.epgdump.LastEpgdumpExecuted;
 import pro.hirooka.chukasa.epgdump.EPGDumpRunner;
 import pro.hirooka.chukasa.epgdump.IEpgdumpParser;
@@ -45,6 +45,8 @@ public class EpgdumpService implements IEpgdumpService {
     ILastEpgdumpExecutedService lastEPGDumpExecutedService;
     @Autowired
     ISystemService systemService;
+    @Autowired
+    EpgdumpAsyncConfigurer epgdumpAsyncConfigurer;
 
     @PostConstruct
     public void init(){
@@ -99,9 +101,8 @@ public class EpgdumpService implements IEpgdumpService {
             Map<String, String> epgdumpChannelMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
             log.info(epgdumpChannelMap.toString());
 
-            SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
             EPGDumpRunner epgDumpRunner = new EPGDumpRunner(systemConfiguration, epgdumpConfiguration, epgDumpParser, lastEPGDumpExecutedService, epgdumpChannelMap);
-            simpleAsyncTaskExecutor.execute(epgDumpRunner);
+            epgdumpAsyncConfigurer.getAsyncExecutor().execute(epgDumpRunner);
 
         } catch (IOException e) {
             log.error("invalid epgdump_channel_map.json: {} {}", e.getMessage(), e);
@@ -129,5 +130,16 @@ public class EpgdumpService implements IEpgdumpService {
             log.error("{} {}", e.getMessage(), e);
         }
         return false;
+    }
+
+    @Override
+    public EpgdumpStatus getStatus() {
+        int acvitve = epgdumpAsyncConfigurer.threadPoolTaskExecutor().getActiveCount();
+        if(acvitve == 1){
+            return EpgdumpStatus.RUNNING;
+        }else if(acvitve == 0){
+            return EpgdumpStatus.STOPPED;
+        }
+        return EpgdumpStatus.STOPPED; // TODO:
     }
 }

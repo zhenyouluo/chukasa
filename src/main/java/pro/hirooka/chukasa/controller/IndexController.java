@@ -13,10 +13,12 @@ import pro.hirooka.chukasa.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.detector.IChukasaBrowserDetector;
 import pro.hirooka.chukasa.domain.chukasa.VideoFileModel;
+import pro.hirooka.chukasa.domain.epgdump.EpgdumpStatus;
 import pro.hirooka.chukasa.domain.recorder.Program;
 import pro.hirooka.chukasa.domain.recorder.RecordingProgramModel;
 import pro.hirooka.chukasa.domain.recorder.ReservedProgram;
 import pro.hirooka.chukasa.service.chukasa.IRecordingProgramManagementComponent;
+import pro.hirooka.chukasa.service.epgdump.IEpgdumpService;
 import pro.hirooka.chukasa.service.recorder.IProgramTableService;
 import pro.hirooka.chukasa.service.epgdump.ILastEpgdumpExecutedService;
 import pro.hirooka.chukasa.service.recorder.IRecorderService;
@@ -54,9 +56,16 @@ public class IndexController {
     IRecorderService recorderService;
     @Autowired
     IChukasaBrowserDetector chukasaBrowserDetector;
+    @Autowired
+    IEpgdumpService epgdumpService;
 
     @RequestMapping("/")
     String index(Model model){
+
+        if(epgdumpService.getStatus().equals(EpgdumpStatus.RUNNING)){
+            log.info("EpgdumpService is running.");
+            // TODO:
+        }
 
         boolean isSupported = false;
         String userAgent = httpServletRequest.getHeader("user-agent");

@@ -1,4 +1,7 @@
 package pro.hirooka.chukasa.service.epgdump;
 
-interface IEpgdumpService {
+import pro.hirooka.chukasa.domain.epgdump.EpgdumpStatus;
+
+public interface IEpgdumpService {
+    EpgdumpStatus getStatus();
 }
