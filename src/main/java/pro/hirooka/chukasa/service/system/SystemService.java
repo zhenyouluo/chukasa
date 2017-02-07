@@ -140,7 +140,7 @@ public class SystemService implements ISystemService {
     @Override
     public VideoCodecType getVideoCodecType() {
         final String H264_QSV = "--enable-libmfx";
-        final String H264 = "--enable-x264";
+        final String H264 = "--enable-libx264";
         final String H264_OMX = "--enable-omx-rpi";
         String ffmpeg = systemConfiguration.getFfmpegPath();
         String[] command = {ffmpeg, "-version"};
