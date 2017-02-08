@@ -146,17 +146,18 @@ cd /tmp && \
     sudo ldconfig
 
 #*******************************************************************************************************************
-# MongoDB 3.2
+# MongoDB 3.4
 #*******************************************************************************************************************
-sudo setenforce 0
-sudo sed -i -e "s/SELINUX=enforcing/SELINUX=disabled/g" /etc/selinux/config
-sudo touch /etc/yum.repos.d/mongodb-org-3.2.repo
-sudo sh -c "echo '[mongodb-org-3.2]' >> /etc/yum.repos.d/mongodb-org-3.2.repo"
-sudo sh -c "echo 'name=MongoDB Repository' >> /etc/yum.repos.d/mongodb-org-3.2.repo"
-sudo sh -c "echo 'baseurl=https://repo.mongodb.org/yum/redhat/\$releasever/mongodb-org/3.2/x86_64/' >> /etc/yum.repos.d/mongodb-org-3.2.repo"
-sudo sh -c "echo 'gpgcheck=1' >> /etc/yum.repos.d/mongodb-org-3.2.repo"
-sudo sh -c "echo 'enabled=1' >> /etc/yum.repos.d/mongodb-org-3.2.repo"
-sudo sh -c "echo 'gpgkey=https://www.mongodb.org/static/pgp/server-3.2.asc' >> /etc/yum.repos.d/mongodb-org-3.2.repo"
+#sudo setenforce 0
+#sudo sed -i -e "s/SELINUX=enforcing/SELINUX=disabled/g" /etc/selinux/config
+sudo semanage port -a -t mongod_port_t -p tcp 27017
+sudo touch /etc/yum.repos.d/mongodb-org-3.4.repo
+sudo sh -c "echo '[mongodb-org-3.4]' >> /etc/yum.repos.d/mongodb-org-3.4.repo"
+sudo sh -c "echo 'name=MongoDB Repository' >> /etc/yum.repos.d/mongodb-org-3.4.repo"
+sudo sh -c "echo 'baseurl=https://repo.mongodb.org/yum/redhat/\$releasever/mongodb-org/3.4/x86_64/' >> /etc/yum.repos.d/mongodb-org-3.4.repo"
+sudo sh -c "echo 'gpgcheck=1' >> /etc/yum.repos.d/mongodb-org-3.4.repo"
+sudo sh -c "echo 'enabled=1' >> /etc/yum.repos.d/mongodb-org-3.4.repo"
+sudo sh -c "echo 'gpgkey=https://www.mongodb.org/static/pgp/server-3.4.asc' >> /etc/yum.repos.d/mongodb-org-3.4.repo"
 sudo yum -y install mongodb-org
 
 #*******************************************************************************************************************
@@ -164,9 +165,9 @@ sudo yum -y install mongodb-org
 #*******************************************************************************************************************
 cd /tmp && \
     sudo yum -y install pcre-devel openssl-devel && \
-    wget http://nginx.org/download/nginx-1.11.3.tar.gz && \
-    tar zxvf nginx-1.11.3.tar.gz && \
-    cd nginx-1.11.3 && \
+    wget http://nginx.org/download/nginx-1.11.9.tar.gz && \
+    tar zxvf nginx-1.11.9.tar.gz && \
+    cd nginx-1.11.9 && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
     make -j8 && \
     sudo make install
@@ -175,8 +176,8 @@ cd /tmp && \
 # Java 8
 #*******************************************************************************************************************
 cd /tmp
-wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u102-b14/jdk-8u102-linux-x64.rpm"
-sudo yum -y install jdk-8u102-linux-x64.rpm
+wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/jdk-8u121-linux-x64.rpm"
+sudo yum -y install jdk-8u121-linux-x64.rpm
 sudo sh -c "echo 'export JAVA_HOME=/usr/java/default' >> /etc/profile.d/jdk.sh"
 sudo sh -c "echo 'export PATH=\$JAVA_HOME/bin:\$PATH' >> /etc/profile.d/jdk.sh"
 source /etc/profile.d/jdk.sh

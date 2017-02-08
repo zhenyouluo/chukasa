@@ -1,12 +1,12 @@
 # chukasa 
 
-HTTP Live Streaming (HLS) server to deliver PT3, web camera and video file for OS X and iOS
+HTTP Live Streaming (HLS) server to deliver PT3, PX-S1UD, web camera and video file to cross-platform
 
 [![Build Status](https://travis-ci.org/hirooka/chukasa.svg?branch=master)](https://travis-ci.org/hirooka/chukasa) [![Build Status](https://circleci.com/gh/hirooka/chukasa.png?style=shield)](https://circleci.com/gh/hirooka/chukasa)
 
 # Description
 
-PT3 の出力，Web カメラの映像とそのマイクの音声，任意のビデオファイルをリアルタイムにトランスコードしながら HLS で配信するウェブアプリケーションです．ストリーミングされたビデオは，Safari (OS X, iOS) や iOS App で再生することができます．
+PT3, PX-S1UD の出力，Web カメラの映像とそのマイクの音声，任意のビデオファイルをリアルタイムにトランスコードしながら HLS で配信するウェブアプリケーションです．ストリーミングされたビデオは，Safari (OS X, iOS) や iOS App で再生することができます．
 
 # Demo
 
