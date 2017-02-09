@@ -1,17 +1,21 @@
 # CentOS 7.2 (1511) with QSV
 
 #*******************************************************************************************************************
-# Intel Media Server Studio 2017 for Linux - Community Edition
+# Intel Media Server Studio 2017 R2 for Linux - Community Edition
 #*******************************************************************************************************************
 # Download MediaServerStudioEssentials2017.tar.gz via Intel Developer Zone (https://software.intel.com/en-us/intel-media-server-studio)
 sudo usermod -a -G video $USER
-tar zxvf MediaServerStudioEssentials2017.tar.gz
-cd MediaServerStudioEssentials2017
-tar zxvf SDK2017Production16.5.tar.gz
-cd SDK2017Production16.5
+tar zxvf MediaServerStudioEssentials2017R2.tar.gz
+cd MediaServerStudioEssentials2017R2
+tar zxvf SDK2017Production16.5.1.tar.gz
+cd SDK2017Production16.5.1
 cd CentOS
-tar zxvf install_scripts_centos_16.5-55964.tar.gz
+tar zxvf install_scripts_centos_16.5.1-59511.tar.gz
+sudo sh -c "sed -i -e 's/mirrorlist=/#mirrorlist=/g' /etc/yum.repos.d/CentOS-Base.repo"
+sudo sh -c "sed -i -e 's/#baseurl=http:\/\/mirror.centos.org\/centos/baseurl=http:\/\/vault.centos.org/g' /etc/yum.repos.d/CentOS-Base.repo"
 sudo ./install_sdk_CentOS.sh
+sudo sh -c "sed -i -e 's/#mirrorlist=/mirrorlist=/g' /etc/yum.repos.d/CentOS-Base.repo"
+sudo sh -c "sed -i -e 's/baseurl=http:\/\/vault.centos.org/#baseurl=http:\/\/mirror.centos.org\/centos/g' /etc/yum.repos.d/CentOS-Base.repo"
 sudo reboot
 
 #*******************************************************************************************************************
@@ -64,7 +68,7 @@ sudo sh -c "echo 'includedir=\${prefix}/include' >> /usr/lib64/pkgconfig/libmfx.
 sudo sh -c "echo '' >> /usr/lib64/pkgconfig/libmfx.pc"
 sudo sh -c "echo 'Name: libmfx' >> /usr/lib64/pkgconfig/libmfx.pc"
 sudo sh -c "echo 'Description: Intel Media SDK' >> /usr/lib64/pkgconfig/libmfx.pc"
-sudo sh -c "echo 'Version: 16.5' >> /usr/lib64/pkgconfig/libmfx.pc"
+sudo sh -c "echo 'Version: 16.5.1' >> /usr/lib64/pkgconfig/libmfx.pc"
 sudo sh -c "echo 'Libs: -L\${libdir} -lmfx -lva -lstdc++ -ldl -lva-drm -ldrm' >> /usr/lib64/pkgconfig/libmfx.pc"
 sudo sh -c "echo 'Cflags: -I\${includedir} -I/usr/include/libdrm' >> /usr/lib64/pkgconfig/libmfx.pc"
 # use "centos/usr/lib64/pkgconfig/libmfx.pc"
@@ -86,9 +90,9 @@ cd /tmp && \
 # FFmpeg
 #*******************************************************************************************************************
 cd /tmp && \
-    wget wget https://ffmpeg.org/releases/ffmpeg-3.2.2.tar.bz2 && \
-    tar jxvf ffmpeg-snapshot.tar.bz2 && \
-    cd ffmpeg && \
+    wget https://ffmpeg.org/releases/ffmpeg-3.2.3.tar.bz2 && \
+    tar jxvf ffmpeg-3.2.3.tar.bz2 && \
+    cd ffmpeg-3.2.3 && \
     ./configure --enable-libmfx && \
     make -j8 && \
     sudo make install && \
@@ -99,7 +103,7 @@ cd /tmp && \
 #*******************************************************************************************************************
 sudo unlink /lib/modules/3.10.0-327.el7.x86_64/source
 sudo unlink /lib/modules/3.10.0-327.el7.x86_64/build
-sudo ln -s /usr/src/kernels/3.10.0-327.28.3.el7.x86_64 /lib/modules/3.10.0-327.el7.x86_64/build
+sudo ln -s /usr/src/kernels/3.10.0-327.36.3.el7.x86_64 /lib/modules/3.10.0-327.el7.x86_64/build
 sudo ln -s /lib/modules/3.10.0-327.el7.x86_64/build /lib/modules/3.10.0-327.el7.x86_64/source
 
 #*******************************************************************************************************************
@@ -148,8 +152,6 @@ cd /tmp && \
 #*******************************************************************************************************************
 # MongoDB 3.4
 #*******************************************************************************************************************
-#sudo setenforce 0
-#sudo sed -i -e "s/SELINUX=enforcing/SELINUX=disabled/g" /etc/selinux/config
 sudo semanage port -a -t mongod_port_t -p tcp 27017
 sudo touch /etc/yum.repos.d/mongodb-org-3.4.repo
 sudo sh -c "echo '[mongodb-org-3.4]' >> /etc/yum.repos.d/mongodb-org-3.4.repo"
