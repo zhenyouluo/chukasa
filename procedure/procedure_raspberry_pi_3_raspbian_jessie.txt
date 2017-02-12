@@ -1,9 +1,42 @@
 # procedure_raspberry_pi_3_raspbian_jessie.txt
 
-# Raspbian Jessie 2016-05-27
-# Linux raspberrypi 4.4.11-v7+ #888 SMP Mon May 23 20:10:33 BST 2016 armv7l GNU/Linux
+# Raspberry Pi 3 Model B, PX-S1UD V2.0, PX-BCUD
+# Raspbian Jessie 2017-01-11
+# Linux raspberrypi 4.4.34-v7+ #930 SMP Wed Nov 23 15:20:41 GMT 2016 armv7l GNU/Linux
+
 # -> apt-get dist-upgrade
-# -> Linux raspberrypi 4.4.13-v7+ #894 SMP Mon Jun 13 13:13:27 BST 2016 armv7l GNU/Linux
+#   -> Linux raspberrypi 4.4.38-v7+ #938 SMP Thu Dec 15 15:22:21 GMT 2016 armv7l GNU/Linux
+
+# -> sudo BRANCH=next rpi-update
+#   -> Linux raspberrypi 4.9.9-v7+ #963 SMP Fri Feb 10 18:14:48 GMT 2017 armv7l GNU/Linux
+
+# sudo adduser hirooka
+# sudo gpasswd -a hirooka sudo
+
+/*******************************************************
+cat /etc/os-release
+PRETTY_NAME="Raspbian GNU/Linux 8 (jessie)"
+NAME="Raspbian GNU/Linux"
+VERSION_ID="8"
+VERSION="8 (jessie)"
+ID=raspbian
+ID_LIKE=debian
+HOME_URL="http://www.raspbian.org/"
+SUPPORT_URL="http://www.raspbian.org/RaspbianForums"
+BUG_REPORT_URL="http://www.raspbian.org/RaspbianBugs"
+
+df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        30G  3.6G   25G  13% /
+devtmpfs        459M     0  459M   0% /dev
+tmpfs           463M     0  463M   0% /dev/shm
+tmpfs           463M  6.3M  457M   2% /run
+tmpfs           5.0M  4.0K  5.0M   1% /run/lock
+tmpfs           463M     0  463M   0% /sys/fs/cgroup
+/dev/mmcblk0p1   63M   21M   42M  33% /boot
+tmpfs            93M     0   93M   0% /run/user/1001
+*******************************************************/
+
 
 #*******************************************************************************************************************
 # Lib
@@ -94,9 +127,9 @@ cd /tmp && \
 #*******************************************************************************************************************
 cd /tmp && \
     sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.11.3.tar.gz && \
-    tar zxvf nginx-1.11.3.tar.gz && \
-    cd nginx-1.11.3 && \
+    wget http://nginx.org/download/nginx-1.11.9.tar.gz && \
+    tar zxvf nginx-*.tar.gz && \
+    cd nginx-* && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
     make -j4 && \
     sudo make install
@@ -124,6 +157,7 @@ sed -i -e "s/system.openmax-enabled=false/system.openmax-enabled=true/g" src/mai
 ./gradlew build
 cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
 
+sed -i -e "s/User=hirooka/User=$USER/g" ubuntu/systemd/chukasa.service
 sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/
 sudo systemctl enable chukasa
 sudo systemctl start chukasa
