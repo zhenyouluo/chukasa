@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:16.10
 
 MAINTAINER hirooka
 
@@ -11,7 +11,7 @@ RUN apt-get -y install build-essential git wget libasound2-dev autoconf libtool 
 RUN touch /etc/ld.so.conf.d/local.conf
 RUN echo '/usr/local/lib' >> /etc/ld.so.conf.d/local.conf
 
-# Yasm 1.3.0
+# Yasm
 RUN cd /tmp && \
     wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz && \
     tar zxvf yasm-1.3.0.tar.gz && \
@@ -83,10 +83,10 @@ RUN apt-get -y update
 RUN apt-get -y install oracle-java8-installer
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
-# nginx 1.11.4
+# nginx
 RUN cd /tmp && \
     apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.11.4.tar.gz && \
+    wget http://nginx.org/download/nginx-1.11.10.tar.gz && \
     tar zxvf nginx-*.tar.gz && \
     cd nginx-* && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
