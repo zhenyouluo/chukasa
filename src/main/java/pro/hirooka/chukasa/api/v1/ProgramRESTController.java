@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import pro.hirooka.chukasa.domain.recorder.M4vTranscodingStatus;
 import pro.hirooka.chukasa.domain.recorder.Program;
 import pro.hirooka.chukasa.domain.recorder.RecordingStatus;
@@ -18,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("api/v1/programs")
 public class ProgramRESTController {
 
