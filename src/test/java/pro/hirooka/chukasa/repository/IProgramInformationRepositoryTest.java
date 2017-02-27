@@ -15,7 +15,8 @@ import pro.hirooka.chukasa.Application;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
-import pro.hirooka.chukasa.domain.recorder.Program;
+import pro.hirooka.chukasa.domain.model.recorder.Program;
+import pro.hirooka.chukasa.domain.repository.epgdump.IProgramRepository;
 
 import java.io.IOException;
 import java.text.ParseException;

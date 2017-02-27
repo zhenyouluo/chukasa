@@ -9,12 +9,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import pro.hirooka.chukasa.domain.recorder.M4vTranscodingStatus;
-import pro.hirooka.chukasa.domain.recorder.Program;
-import pro.hirooka.chukasa.domain.recorder.RecordingStatus;
-import pro.hirooka.chukasa.domain.recorder.ReservedProgram;
-import pro.hirooka.chukasa.service.recorder.IProgramTableService;
-import pro.hirooka.chukasa.service.recorder.IRecorderService;
+import pro.hirooka.chukasa.domain.model.recorder.M4vTranscodingStatus;
+import pro.hirooka.chukasa.domain.model.recorder.Program;
+import pro.hirooka.chukasa.domain.model.recorder.RecordingStatus;
+import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
+import pro.hirooka.chukasa.domain.service.recorder.IProgramTableService;
+import pro.hirooka.chukasa.domain.service.recorder.IRecorderService;
 
 import java.util.Date;
 import java.util.List;

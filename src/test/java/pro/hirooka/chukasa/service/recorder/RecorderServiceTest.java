@@ -9,9 +9,8 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pro.hirooka.chukasa.Application;
-import pro.hirooka.chukasa.domain.recorder.ReservedProgram;
-
-import javax.annotation.PostConstruct;
+import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
+import pro.hirooka.chukasa.domain.service.recorder.IRecorderService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(Application.class)

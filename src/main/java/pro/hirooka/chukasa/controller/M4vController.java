@@ -6,9 +6,9 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
-import pro.hirooka.chukasa.domain.recorder.M4vFile;
+import pro.hirooka.chukasa.domain.model.recorder.M4vFile;
 
-import static pro.hirooka.chukasa.ChukasaConstant.FILE_SEPARATOR;
+import static pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant.FILE_SEPARATOR;
 
 @Slf4j
 @RestController

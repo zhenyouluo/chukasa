@@ -8,7 +8,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pro.hirooka.chukasa.Application;
-import pro.hirooka.chukasa.epgdump.EpgdumpParser;
+import pro.hirooka.chukasa.domain.service.epgdump.parser.EpgdumpParser;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(Application.class)

@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
-import pro.hirooka.chukasa.detector.IChukasaBrowserDetector;
-import pro.hirooka.chukasa.domain.chukasa.VideoFileModel;
-import pro.hirooka.chukasa.domain.epgdump.EpgdumpStatus;
-import pro.hirooka.chukasa.domain.recorder.Program;
-import pro.hirooka.chukasa.domain.recorder.RecordingProgramModel;
-import pro.hirooka.chukasa.domain.recorder.ReservedProgram;
-import pro.hirooka.chukasa.service.chukasa.IRecordingProgramManagementComponent;
-import pro.hirooka.chukasa.service.epgdump.IEpgdumpService;
-import pro.hirooka.chukasa.service.recorder.IProgramTableService;
-import pro.hirooka.chukasa.service.epgdump.ILastEpgdumpExecutedService;
-import pro.hirooka.chukasa.service.recorder.IRecorderService;
-import pro.hirooka.chukasa.service.system.ISystemService;
+import pro.hirooka.chukasa.api.v1.helper.IChukasaBrowserDetector;
+import pro.hirooka.chukasa.domain.model.chukasa.VideoFileModel;
+import pro.hirooka.chukasa.domain.model.epgdump.enums.EpgdumpStatus;
+import pro.hirooka.chukasa.domain.model.recorder.Program;
+import pro.hirooka.chukasa.domain.model.recorder.RecordingProgramModel;
+import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
+import pro.hirooka.chukasa.domain.service.chukasa.IRecordingProgramManagementComponent;
+import pro.hirooka.chukasa.domain.service.epgdump.IEpgdumpService;
+import pro.hirooka.chukasa.domain.service.recorder.IProgramTableService;
+import pro.hirooka.chukasa.domain.service.epgdump.ILastEpgdumpExecutedService;
+import pro.hirooka.chukasa.domain.service.recorder.IRecorderService;
+import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static pro.hirooka.chukasa.ChukasaConstant.FILE_SEPARATOR;
+import static pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant.FILE_SEPARATOR;
 
 @Slf4j
 @Controller

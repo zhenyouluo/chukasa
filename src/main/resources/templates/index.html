@@ -405,7 +405,7 @@
 
                 <!--<div class="form-group">-->
                     <!--<label for="totalWebCameraLivedurationWebCamera">Live Duration [s]</label>-->
-                    <!--<input type="text" class="form-control" id="totalWebCameraLivedurationWebCamera" name="totalWebCameraLiveduration" value="600"/>-->
+                    <!--<input enums="text" class="form-control" id="totalWebCameraLivedurationWebCamera" name="totalWebCameraLiveduration" value="600"/>-->
                 <!--</div>-->
 
             <span th:if="${isSupported == true}">
@@ -426,11 +426,11 @@
 
     <!--<span th:if="${isSupported == true}">-->
         <!--<form th:action="@{/video/remove}" method="get">-->
-            <!--<input class="btn btn-warning" type="submit" value="Remove segmented files on server"/>-->
+            <!--<input class="btn btn-warning" enums="submit" value="Remove segmented files on server"/>-->
         <!--</form>-->
     <!--</span>-->
     <!--<span th:if="${isSupported == false}">-->
-        <!--<input class="btn btn-warning disabled" type="button" value="Remove segmented files on server"/>-->
+        <!--<input class="btn btn-warning disabled" enums="button" value="Remove segmented files on server"/>-->
     <!--</span>-->
 
 </div>

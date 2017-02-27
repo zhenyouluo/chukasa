@@ -8,7 +8,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pro.hirooka.chukasa.Application;
-import pro.hirooka.chukasa.service.system.SystemService;
+import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
 
 import java.io.File;
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import pro.hirooka.chukasa.domain.chukasa.ChukasaExceptionModel;
+import pro.hirooka.chukasa.domain.model.chukasa.ChukasaExceptionModel;
 
 @RestControllerAdvice
 public class ChukasaExceptionHandler extends ResponseEntityExceptionHandler {

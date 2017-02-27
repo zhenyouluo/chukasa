@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.configuration.HLSConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
-import pro.hirooka.chukasa.detector.IChukasaBrowserDetector;
-import pro.hirooka.chukasa.domain.chukasa.ChukasaModel;
-import pro.hirooka.chukasa.domain.chukasa.ChukasaSettings;
-import pro.hirooka.chukasa.domain.chukasa.HTML5PlayerModel;
-import pro.hirooka.chukasa.domain.chukasa.type.StreamingType;
-import pro.hirooka.chukasa.domain.chukasa.type.VideoCodecType;
-import pro.hirooka.chukasa.handler.ChukasaRemover;
-import pro.hirooka.chukasa.handler.ChukasaStopper;
-import pro.hirooka.chukasa.service.chukasa.IChukasaModelManagementComponent;
-import pro.hirooka.chukasa.service.chukasa.IChukasaTaskService;
-import pro.hirooka.chukasa.service.system.ISystemService;
-import pro.hirooka.chukasa.utility.ChukasaUtility;
+import pro.hirooka.chukasa.api.v1.helper.IChukasaBrowserDetector;
+import pro.hirooka.chukasa.domain.model.chukasa.ChukasaModel;
+import pro.hirooka.chukasa.domain.model.chukasa.ChukasaSettings;
+import pro.hirooka.chukasa.domain.model.chukasa.HTML5PlayerModel;
+import pro.hirooka.chukasa.domain.model.chukasa.enums.StreamingType;
+import pro.hirooka.chukasa.domain.model.chukasa.enums.VideoCodecType;
+import pro.hirooka.chukasa.domain.service.chukasa.eraser.ChukasaRemover;
+import pro.hirooka.chukasa.domain.service.chukasa.stopper.ChukasaStopper;
+import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.domain.service.chukasa.IChukasaTaskService;
+import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
+import pro.hirooka.chukasa.api.v1.helper.ChukasaUtility;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,7 +31,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.UUID;
 
-import static pro.hirooka.chukasa.ChukasaConstant.*;
+import static pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant.*;
 
 @Slf4j
 @Controller
