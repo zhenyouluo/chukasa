@@ -1,9 +1,16 @@
 package pro.hirooka.chukasa.domain.service.recorder;
 
+import com.mongodb.MongoClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import pro.hirooka.chukasa.configuration.MongoDBConfiguration;
 import pro.hirooka.chukasa.domain.model.recorder.Program;
 import pro.hirooka.chukasa.domain.repository.epgdump.IProgramRepository;
 import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
@@ -26,6 +33,9 @@ public class ProgramTableService implements IProgramTableService {
 
     @Autowired
     private IProgramRepository programRepository;
+
+    @Autowired
+    private MongoDBConfiguration mongoDBConfiguration;
 
     @PostConstruct
     public void init(){
@@ -59,7 +69,10 @@ public class ProgramTableService implements IProgramTableService {
 
     @Override
     public List<Program> readByNow(long now)  {
-        return programRepository.findAllByNowLike(now);
+        //return programRepository.findAllByNowLike(now); // spring-data-mongodb:1.9.x.RELEASE から spring-data-mongodb:1.10.0.RELEASE にすると機能せず
+        MongoTemplate mongoTemplate = new MongoTemplate(new SimpleMongoDbFactory(new MongoClient(mongoDBConfiguration.getHost(), mongoDBConfiguration.getPort()), mongoDBConfiguration.getDatabase()));
+        Query query = new Query(Criteria.where("start").lte(now).and("end").gte(now)).with(new Sort(Sort.Direction.ASC, "physicalChannel"));
+        return mongoTemplate.find(query, Program.class);
     }
 
     @Override

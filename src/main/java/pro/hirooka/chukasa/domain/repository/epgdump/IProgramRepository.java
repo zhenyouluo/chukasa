@@ -16,6 +16,7 @@ public interface IProgramRepository extends MongoRepository<Program, String> {
     @Query("{$and:[{'physicalChannel':{$eq:?0}},{'start':{$lte:?1}},{'end':{$gte:?1}}]}")
     Program findOneByPhysicalChannelAndNowLike(String physicalChannel, long now);
 
+    // spring-data-mongodb:1.9.x.RELEASE から spring-data-mongodb:1.10.0.RELEASE にすると機能せず
     @Query("{$and:[{'start':{$lte:?0}},{'end':{$gte:?0}},{'physicalChannel':{$ne:0}}]}")
     List<Program> findAllByNowLike(long now);
 
