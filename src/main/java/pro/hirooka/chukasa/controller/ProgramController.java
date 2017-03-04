@@ -46,16 +46,16 @@ public class ProgramController {
         return "programs/list";
     }
 
-    @RequestMapping(value = "{physicalChannel}", method = RequestMethod.GET)
-    String read(@PathVariable int physicalChannel, Model model){
-        List<Program> programList = programTableService.read(physicalChannel);
+    @RequestMapping(value = "{physicalLogicalChannel}", method = RequestMethod.GET)
+    String read(@PathVariable int physicalLogicalChannel, Model model){
+        List<Program> programList = programTableService.read(physicalLogicalChannel);
         model.addAttribute("programList", programList);
         return "programs/list";
     }
 
-    @RequestMapping(value = "{physicalChannel}/{date}", method = RequestMethod.GET)
-    String read(@PathVariable int physicalChannel, @PathVariable String date, Model model){
-        List<Program> programList = programTableService.read(physicalChannel, date);
+    @RequestMapping(value = "{physicalLogicalChannel}/{date}", method = RequestMethod.GET)
+    String read(@PathVariable int physicalLogicalChannel, @PathVariable String date, Model model){
+        List<Program> programList = programTableService.read(physicalLogicalChannel, date);
         model.addAttribute("programList", programList);
         return "programs/list";
     }

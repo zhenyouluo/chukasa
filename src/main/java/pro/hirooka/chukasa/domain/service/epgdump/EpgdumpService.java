@@ -1,10 +1,7 @@
 package pro.hirooka.chukasa.domain.service.epgdump;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
@@ -12,6 +9,8 @@ import pro.hirooka.chukasa.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.epgdump.enums.EpgdumpStatus;
 import pro.hirooka.chukasa.domain.model.epgdump.LastEpgdumpExecuted;
+import pro.hirooka.chukasa.domain.model.recorder.ChannelPreferences;
+import pro.hirooka.chukasa.domain.service.common.ulitities.ICommonUtilityService;
 import pro.hirooka.chukasa.domain.service.epgdump.parser.EPGDumpRunner;
 import pro.hirooka.chukasa.domain.service.epgdump.parser.IEpgdumpParser;
 import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
@@ -26,8 +25,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -47,6 +45,8 @@ public class EpgdumpService implements IEpgdumpService {
     ISystemService systemService;
     @Autowired
     EpgdumpAsyncConfigurer epgdumpAsyncConfigurer;
+    @Autowired
+    ICommonUtilityService commonUtilityService;
 
     @PostConstruct
     public void init(){
@@ -95,18 +95,20 @@ public class EpgdumpService implements IEpgdumpService {
     void runEPGDump(){
 
         log.info("run runEPGDump()");
-        Resource resource = new ClassPathResource(epgdumpConfiguration.getPhysicalChannelMap());
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            Map<String, String> epgdumpChannelMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
-            log.info(epgdumpChannelMap.toString());
+        List<ChannelPreferences> channelPreferencesList = commonUtilityService.getChannelPreferencesList();
+//        Resource resource = new ClassPathResource(epgdumpConfiguration.getPhysicalChannelMap());
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        try {
+//            Map<String, String> epgdumpChannelMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
+//            log.info(epgdumpChannelMap.toString());
 
-            EPGDumpRunner epgDumpRunner = new EPGDumpRunner(systemConfiguration, epgdumpConfiguration, epgDumpParser, lastEPGDumpExecutedService, epgdumpChannelMap);
+//            EPGDumpRunner epgDumpRunner = new EPGDumpRunner(systemConfiguration, epgdumpConfiguration, epgDumpParser, lastEPGDumpExecutedService, epgdumpChannelMap);
+            EPGDumpRunner epgDumpRunner = new EPGDumpRunner(systemConfiguration, epgdumpConfiguration, epgDumpParser, lastEPGDumpExecutedService, channelPreferencesList);
             epgdumpAsyncConfigurer.getAsyncExecutor().execute(epgDumpRunner);
 
-        } catch (IOException e) {
-            log.error("invalid epgdump_channel_map.json: {} {}", e.getMessage(), e);
-        }
+//        } catch (IOException e) {
+//            log.error("invalid epgdump_channel_map.json: {} {}", e.getMessage(), e);
+//        }
     }
 
     boolean isEpgdumpExecuted(){

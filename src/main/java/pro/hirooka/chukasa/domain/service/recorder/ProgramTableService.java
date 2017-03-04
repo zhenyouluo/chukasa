@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,8 +54,9 @@ public class ProgramTableService implements IProgramTableService {
     }
 
     @Override
-    public List<Program> read(int physicalChannel) {
-        return programRepository.findAllByPhysicalChannel(physicalChannel);
+    public List<Program> read(int physicalLogicalChannel) {
+//        return programRepository.findAllByPhysicalChannel(physicalChannel);
+        return programRepository.findAllByPhysicalLogicalChannel(physicalLogicalChannel);
     }
 
     @Override
@@ -71,7 +73,7 @@ public class ProgramTableService implements IProgramTableService {
     public List<Program> readByNow(long now)  {
         //return programRepository.findAllByNowLike(now); // spring-data-mongodb:1.9.x.RELEASE から spring-data-mongodb:1.10.0.RELEASE にすると機能せず
         MongoTemplate mongoTemplate = new MongoTemplate(new SimpleMongoDbFactory(new MongoClient(mongoDBConfiguration.getHost(), mongoDBConfiguration.getPort()), mongoDBConfiguration.getDatabase()));
-        Query query = new Query(Criteria.where("start").lte(now).and("end").gte(now)).with(new Sort(Sort.Direction.ASC, "physicalChannel"));
+        Query query = new Query(Criteria.where("start").lte(now).and("end").gte(now)).with(new Sort(Sort.Direction.ASC, "remoteControllerChannel"));
         return mongoTemplate.find(query, Program.class);
     }
 
@@ -87,7 +89,10 @@ public class ProgramTableService implements IProgramTableService {
         log.info("nowZonedDateTime = {}, {}", nowZonedDateTimeString, nowZonedDateTime.toEpochSecond());
         log.info("tomorrowZonedDateTime = {}, {}", tomorrowZonedDateTimeString, tomorrowZonedDateTime.toEpochSecond());
 
-        return programRepository.findAllByBeginAndEndLike(now, tomorrowZonedDateTime.toEpochSecond() * 1000);
+        //return programRepository.findAllByBeginAndEndLike(now, tomorrowZonedDateTime.toEpochSecond() * 1000);
+        MongoTemplate mongoTemplate = new MongoTemplate(new SimpleMongoDbFactory(new MongoClient(mongoDBConfiguration.getHost(), mongoDBConfiguration.getPort()), mongoDBConfiguration.getDatabase()));
+        Query query = new Query(Criteria.where("begin").lte(now).and("end").lte(tomorrowZonedDateTime.toEpochSecond() * 1000)).with(new Sort(Sort.Direction.ASC, "remoteControllerChannel"));
+        return mongoTemplate.find(query, Program.class);
     }
 
     @Override
@@ -116,7 +121,7 @@ public class ProgramTableService implements IProgramTableService {
     }
 
     @Override
-    public int getNumberOfPhysicalChannels() {
+    public int getNumberOfPhysicalLogicalChannels() {
         return programRepository.findAll().stream().map(Program::getChannel).collect(Collectors.toSet()).size();
     }
 

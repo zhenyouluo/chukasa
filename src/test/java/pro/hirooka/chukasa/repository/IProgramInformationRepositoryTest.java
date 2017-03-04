@@ -63,34 +63,34 @@ public class IProgramInformationRepositoryTest {
     @Ignore
     @Test
     public void findAllByChannel() throws IOException {
-        Resource resource = new ClassPathResource(epgdumpConfiguration.getPhysicalChannelMap());
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, String> epgdumpChannelMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
-        log.info(epgdumpChannelMap.toString());
-        for(Map.Entry<String, String> entry : epgdumpChannelMap.entrySet()) {
-            log.info("key = {}, value = {}", entry.getKey(), entry.getValue());
-            List<Program> programList =
-                    programRepository.findAllByChannel(entry.getKey());
-            log.info("{}", programList.toString());
-            log.info("size of list = {}", programList.size());
-        }
+//        Resource resource = new ClassPathResource(epgdumpConfiguration.getPhysicalChannelMap());
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        Map<String, String> epgdumpChannelMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
+//        log.info(epgdumpChannelMap.toString());
+//        for(Map.Entry<String, String> entry : epgdumpChannelMap.entrySet()) {
+//            log.info("key = {}, value = {}", entry.getKey(), entry.getValue());
+//            List<Program> programList =
+//                    programRepository.findAllByChannel(entry.getKey());
+//            log.info("{}", programList.toString());
+//            log.info("size of list = {}", programList.size());
+//        }
     }
 
     @Ignore
     @Test
     public void findOneByChannelAndNowLike() throws IOException {
-        Resource resource = new ClassPathResource(epgdumpConfiguration.getPhysicalChannelMap());
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, String> epgdumpChannelMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
-        log.info(epgdumpChannelMap.toString());
-
-        long now = new Date().getTime();
-        for(Map.Entry<String, String> entry : epgdumpChannelMap.entrySet()) {
-            log.info("key = {}, value = {}", entry.getKey(), entry.getValue());
-            Program program =
-                    programRepository.findOneByPhysicalChannelAndNowLike(entry.getKey(), now);
-            log.info("{}", program.toString());
-        }
+//        Resource resource = new ClassPathResource(epgdumpConfiguration.getPhysicalChannelMap());
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        Map<String, String> epgdumpChannelMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
+//        log.info(epgdumpChannelMap.toString());
+//
+//        long now = new Date().getTime();
+//        for(Map.Entry<String, String> entry : epgdumpChannelMap.entrySet()) {
+//            log.info("key = {}, value = {}", entry.getKey(), entry.getValue());
+//            Program program =
+//                    programRepository.findOneByPhysicalChannelAndNowLike(entry.getKey(), now);
+//            log.info("{}", program.toString());
+//        }
     }
 
     @Ignore

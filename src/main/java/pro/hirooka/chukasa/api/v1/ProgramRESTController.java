@@ -41,15 +41,15 @@ public class ProgramRESTController {
         return programList;
     }
 
-    @RequestMapping(value = "{physicalChannel}", method = RequestMethod.GET)
-    List<Program> read(@PathVariable int physicalChannel){
-        List<Program> programList = programTableService.read(physicalChannel);
+    @RequestMapping(value = "{physicalLogicalChannel}", method = RequestMethod.GET)
+    List<Program> read(@PathVariable int physicalLogicalChannel){
+        List<Program> programList = programTableService.read(physicalLogicalChannel);
         return programList;
     }
 
-    @RequestMapping(value = "{physicalChannel}/{date}", method = RequestMethod.GET)
-    List<Program> read(@PathVariable int physicalChannel, @PathVariable String date){
-        List<Program> programList = programTableService.read(physicalChannel, date);
+    @RequestMapping(value = "{physicalLogicalChannel}/{date}", method = RequestMethod.GET)
+    List<Program> read(@PathVariable int physicalLogicalChannel, @PathVariable String date){
+        List<Program> programList = programTableService.read(physicalLogicalChannel, date);
         return programList;
     }
 

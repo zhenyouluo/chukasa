@@ -7,7 +7,7 @@ import java.util.List;
 public interface IProgramTableService {
     Program create(Program program);
     List<Program> read();
-    List<Program> read(int ch);
+    List<Program> read(int physicalLogicalChannel);
     List<Program> readByBeginDate(String beginDate);
     List<Program> read(int ch, String beginDate);
     List<Program> readByNow(long now);
@@ -17,5 +17,5 @@ public interface IProgramTableService {
     Program update(Program Program);
     void delete(String id);
     void deleteAll();
-    int getNumberOfPhysicalChannels();
+    int getNumberOfPhysicalLogicalChannels();
 }

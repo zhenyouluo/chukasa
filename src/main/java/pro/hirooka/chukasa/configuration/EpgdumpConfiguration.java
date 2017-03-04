@@ -10,6 +10,5 @@ import org.springframework.context.annotation.Configuration;
 public class EpgdumpConfiguration {
     String path;
     String temporaryPath;
-    String physicalChannelMap;
     int recordingDuration;
 }

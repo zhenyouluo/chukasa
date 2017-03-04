@@ -24,8 +24,10 @@ public class Program {
 //    private int eventID;
 
     private long begin;
-    private int physicalChannel;
+    //private int physicalChannel;
     private String channelName;
     private String beginDate;
     private String endDate;
+    private int physicalLogicalChannel;
+    private int remoteControllerChannel;
 }

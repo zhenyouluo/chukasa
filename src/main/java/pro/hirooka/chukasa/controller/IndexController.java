@@ -1,10 +1,7 @@
 package pro.hirooka.chukasa.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,10 +11,9 @@ import pro.hirooka.chukasa.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.api.v1.helper.IChukasaBrowserDetector;
 import pro.hirooka.chukasa.domain.model.chukasa.VideoFileModel;
 import pro.hirooka.chukasa.domain.model.epgdump.enums.EpgdumpStatus;
-import pro.hirooka.chukasa.domain.model.recorder.Program;
-import pro.hirooka.chukasa.domain.model.recorder.RecordingProgramModel;
-import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
+import pro.hirooka.chukasa.domain.model.recorder.*;
 import pro.hirooka.chukasa.domain.service.chukasa.IRecordingProgramManagementComponent;
+import pro.hirooka.chukasa.domain.service.common.ulitities.ICommonUtilityService;
 import pro.hirooka.chukasa.domain.service.epgdump.IEpgdumpService;
 import pro.hirooka.chukasa.domain.service.recorder.IProgramTableService;
 import pro.hirooka.chukasa.domain.service.epgdump.ILastEpgdumpExecutedService;
@@ -26,7 +22,6 @@ import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -58,6 +53,8 @@ public class IndexController {
     IChukasaBrowserDetector chukasaBrowserDetector;
     @Autowired
     IEpgdumpService epgdumpService;
+    @Autowired
+    ICommonUtilityService commonUtilityService;
 
     @RequestMapping("/")
     String index(Model model){
@@ -84,19 +81,23 @@ public class IndexController {
         // PTx
         List<Program> programList = new ArrayList<>();
         boolean isLastEpgdumpExecuted = false;
-        Map<String, String> epgdumpChannelMap = new HashMap<>();
-        Resource resource = new ClassPathResource(epgdumpConfiguration.getPhysicalChannelMap());
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            epgdumpChannelMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
-            log.info(epgdumpChannelMap.toString());
-        } catch (IOException e) {
-            log.error("invalid epgdump_channel_map.json: {} {}", e.getMessage(), e);
-        }
+
+        List<ChannelPreferences> channelPreferencesList = commonUtilityService.getChannelPreferencesList();
+
+//        Map<String, String> epgdumpChannelMap = new HashMap<>();
+//        Resource resource = new ClassPathResource(epgdumpConfiguration.getPhysicalChannelMap());
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        try {
+//            epgdumpChannelMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
+//            log.info(epgdumpChannelMap.toString());
+//        } catch (IOException e) {
+//            log.error("invalid epgdump_channel_map.json: {} {}", e.getMessage(), e);
+//        }
         if(isMongoDB && isEpgdump){
             programList = programTableService.readByNow(new Date().getTime());
-            programList = programList.stream().sorted(Comparator.comparing(Program::getPhysicalChannel)).collect(Collectors.toList());
-            if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalChannels() >= epgdumpChannelMap.size()){
+            programList = programList.stream().sorted(Comparator.comparing(Program::getPhysicalLogicalChannel)).collect(Collectors.toList());
+//            if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalChannels() >= epgdumpChannelMap.size()){
+            if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalLogicalChannels() >= channelPreferencesList.size()){
                 isLastEpgdumpExecuted = true;
             }
         }
@@ -110,16 +111,25 @@ public class IndexController {
         if(isFFmpeg && isPTx && isRecpt1 && !isLastEpgdumpExecuted){
             programList = new ArrayList<>();
             isPTxByChannel = true;
-            //if(epgDumpProgramInformationList.size() == 0) {
-                for (Map.Entry<String, String> entry : epgdumpChannelMap.entrySet()) {
-                    try {
-                        Program program = new Program();
-                        program.setPhysicalChannel(Integer.parseInt(entry.getKey()));
-                        programList.add(program);
-                    }catch (NumberFormatException e){
-                        log.error("invalid value {} {}", e.getMessage(), e);
-                    }
+            for(ChannelPreferences channelPreferences : channelPreferencesList){
+                try {
+                    Program program = new Program();
+                    program.setPhysicalLogicalChannel(channelPreferences.getPhysicalLogicalChannel());
+                    programList.add(program);
+                }catch (NumberFormatException e){
+                    log.error("invalid value {} {}", e.getMessage(), e);
                 }
+            }
+            //if(epgDumpProgramInformationList.size() == 0) {
+//                for (Map.Entry<String, String> entry : epgdumpChannelMap.entrySet()) {
+//                    try {
+//                        Program program = new Program();
+//                        program.setPhysicalChannel(Integer.parseInt(entry.getKey()));
+//                        programList.add(program);
+//                    }catch (NumberFormatException e){
+//                        log.error("invalid value {} {}", e.getMessage(), e);
+//                    }
+//                }
             //}
         }
 
