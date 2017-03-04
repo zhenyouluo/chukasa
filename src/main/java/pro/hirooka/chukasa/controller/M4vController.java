@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
-import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.recorder.M4vFile;
 
 import static pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant.FILE_SEPARATOR;

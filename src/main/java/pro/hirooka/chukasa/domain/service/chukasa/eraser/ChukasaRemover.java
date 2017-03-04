@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 
 import java.io.File;
 import java.io.IOException;

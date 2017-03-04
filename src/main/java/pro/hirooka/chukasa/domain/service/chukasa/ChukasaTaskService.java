@@ -27,7 +27,7 @@ public class ChukasaTaskService implements IChukasaTaskService {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
 
-        if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEB_CAMERA) || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.FILE)) {
+        if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEBCAM) || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.FILE)) {
 
             PlaylisterRunner playlisterRunner = new PlaylisterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
             taskExecutor.execute(playlisterRunner);
@@ -48,7 +48,7 @@ public class ChukasaTaskService implements IChukasaTaskService {
 
             chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
-        }else if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.CAPTURE)){
+        }else if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.TUNER)){
 
             PlaylisterRunner playlisterRunner = new PlaylisterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
             taskExecutor.execute(playlisterRunner);

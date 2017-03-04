@@ -9,15 +9,15 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
-import pro.hirooka.chukasa.configuration.HLSConfiguration;
-import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.configuration.ChukasaConfiguration;
+import pro.hirooka.chukasa.domain.configuration.HLSConfiguration;
+import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.api.v1.helper.IChukasaBrowserDetector;
 import pro.hirooka.chukasa.domain.model.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.model.chukasa.ChukasaSettings;
-import pro.hirooka.chukasa.domain.model.chukasa.HTML5PlayerModel;
+import pro.hirooka.chukasa.domain.model.chukasa.HTML5Player;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.StreamingType;
-import pro.hirooka.chukasa.domain.model.chukasa.enums.VideoCodecType;
+import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.domain.service.chukasa.eraser.ChukasaRemover;
 import pro.hirooka.chukasa.domain.service.chukasa.stopper.ChukasaStopper;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
@@ -66,8 +66,8 @@ public class HTML5PlayerController {
             return "index";
         }
 
-        VideoCodecType videoCodecType = systemService.getVideoCodecType();
-        if(videoCodecType.equals(VideoCodecType.UNKNOWN)){
+        HardwareAccelerationType videoCodecType = systemService.getVideoCodecType();
+        if(videoCodecType.equals(HardwareAccelerationType.UNKNOWN)){
             return "index";
         }
 
@@ -107,7 +107,7 @@ public class HTML5PlayerController {
 
         chukasaTaskService.execute(0);
 
-        HTML5PlayerModel html5PlayerModel = new HTML5PlayerModel();
+        HTML5Player html5PlayerModel = new HTML5Player();
         html5PlayerModel.setPlaylistURI(playlistURI);
         model.addAttribute("html5PlayerModel", html5PlayerModel);
 

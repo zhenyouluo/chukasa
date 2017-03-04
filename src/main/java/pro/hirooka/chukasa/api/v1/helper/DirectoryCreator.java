@@ -60,13 +60,13 @@ public class DirectoryCreator implements IDirectoryCreator{
         String temporaryEncryptedStreamPath = "";
         String tempEncPath = "";
         String tempPath = chukasaModel.getSystemConfiguration().getTemporaryPath();
-        if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.CAPTURE) || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEB_CAMERA)){
+        if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.TUNER) || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEBCAM)){
             basementStreamPath = chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName() + FILE_SEPARATOR + LIVE_PATH_NAME;
             streamPath = streamRootPath + FILE_SEPARATOR + basementStreamPath;
             chukasaModel.setStreamPath(streamPath);
             temporaryEncryptedStreamPath = temporaryPath + FILE_SEPARATOR + basementStreamPath;
             chukasaModel.setTempEncPath(temporaryEncryptedStreamPath);
-        }else if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEB_CAMERA) {
+        }else if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEBCAM) {
             streamPath = streamRootPath + FILE_SEPARATOR + LIVE_PATH_NAME;
             chukasaModel.setStreamPath(streamPath);
             tempEncPath = tempPath + FILE_SEPARATOR + LIVE_PATH_NAME;

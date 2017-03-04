@@ -3,10 +3,10 @@ package pro.hirooka.chukasa.api.v1.helper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.StreamingType;
-import pro.hirooka.chukasa.domain.model.chukasa.enums.VideoCodecType;
+import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
 import pro.hirooka.chukasa.domain.service.chukasa.transcoder.FFmpegInitializer;
 
@@ -86,13 +86,13 @@ public class ChukasaUtility {
         String basementStreamPath = "";
         String streamPath = "";
         String temporaryEncryptedStreamPath = "";
-        if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.CAPTURE) || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEB_CAMERA)){
+        if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.TUNER) || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEBCAM)){
             basementStreamPath = chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName() + FILE_SEPARATOR + LIVE_PATH_NAME;
             streamPath = streamRootPath + FILE_SEPARATOR + basementStreamPath;
             chukasaModel.setStreamPath(streamPath);
             temporaryEncryptedStreamPath = temporaryPath + FILE_SEPARATOR + basementStreamPath;
             chukasaModel.setTempEncPath(temporaryEncryptedStreamPath);
-        }else if (chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEB_CAMERA)) {
+        }else if (chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEBCAM)) {
             streamPath = streamRootPath + FILE_SEPARATOR + LIVE_PATH_NAME;
             chukasaModel.setStreamPath(streamPath);
             temporaryEncryptedStreamPath = temporaryPath + FILE_SEPARATOR + LIVE_PATH_NAME;
@@ -150,11 +150,11 @@ public class ChukasaUtility {
         long timerSegmenterDelay = (long) (duration * 1000 * (uriInPlaylist - 1));
         StreamingType streamingType = chukasaModel.getChukasaSettings().getStreamingType();
         if (streamingType.equals(StreamingType.FILE)
-                || streamingType.equals(StreamingType.CAPTURE)
-                || streamingType.equals(StreamingType.WEB_CAMERA)) {
+                || streamingType.equals(StreamingType.TUNER)
+                || streamingType.equals(StreamingType.WEBCAM)) {
             timerSegmenterDelay = (long) (duration * 1000);
         }
-        if(chukasaModel.getVideoCodecType().equals(VideoCodecType.H264_OMX)){
+        if(chukasaModel.getVideoCodecType().equals(HardwareAccelerationType.H264_OMX)){
             timerSegmenterDelay = timerSegmenterDelay + 3000; // todo
         }
         long timerSegmenterPeriod = (long) (duration * 1000);
@@ -174,8 +174,8 @@ public class ChukasaUtility {
 
     public static String buildM3u8URI(ChukasaModel chukasaModel){
         String m3u8URI = "/";
-        if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEB_CAMERA)
-                || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.CAPTURE)){
+        if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEBCAM)
+                || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.TUNER)){
             m3u8URI = "/"
                     + STREAM_ROOT_PATH_NAME
                     + FILE_SEPARATOR

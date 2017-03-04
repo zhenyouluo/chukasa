@@ -1,4 +1,4 @@
-package pro.hirooka.chukasa.configuration;
+package pro.hirooka.chukasa.domain.configuration;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

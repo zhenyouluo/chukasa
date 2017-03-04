@@ -1,9 +1,9 @@
 package pro.hirooka.chukasa.api.v1.helper;
 
-import pro.hirooka.chukasa.domain.model.chukasa.enums.BrowserType;
+import pro.hirooka.chukasa.domain.model.chukasa.enums.WebBrowserType;
 
 public interface IChukasaBrowserDetector {
-    BrowserType getBrowserType(String userAgent);
+    WebBrowserType getBrowserType(String userAgent);
     boolean isSafari(String userAgent);
     boolean isChrome(String userAgent);
     boolean isEdge(String userAgent);

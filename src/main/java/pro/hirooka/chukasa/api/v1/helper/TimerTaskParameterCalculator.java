@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.domain.model.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.StreamingType;
-import pro.hirooka.chukasa.domain.model.chukasa.enums.VideoCodecType;
+import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
 
 @Slf4j
@@ -36,14 +36,14 @@ public class TimerTaskParameterCalculator implements ITimerTaskParameterCalculat
             timerSegmenterDelay = (long) (duration * 1000);
         }
 
-        if (chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.CAPTURE)
-                || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEB_CAMERA)) {
+        if (chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.TUNER)
+                || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEBCAM)) {
             timerSegmenterDelay = (long) (duration * 1000 * (uriInPlaylist)) + 1000;
             timerSegmenterDelay = (long) (duration * 1000);
             // timerSegmenterDelay = 0;
         }
 
-        if(chukasaModel.getVideoCodecType().equals(VideoCodecType.H264_OMX)){
+        if(chukasaModel.getVideoCodecType().equals(HardwareAccelerationType.H264_OMX)){
             timerSegmenterDelay = timerSegmenterDelay + 3000; // todo
         }
         long timerSegmenterPeriod = (long) (duration * 1000);

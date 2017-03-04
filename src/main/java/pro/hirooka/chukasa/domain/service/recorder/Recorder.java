@@ -7,7 +7,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.stereotype.Component;
-import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
 
 import java.util.Date;

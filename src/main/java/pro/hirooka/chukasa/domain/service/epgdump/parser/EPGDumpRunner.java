@@ -2,8 +2,8 @@ package pro.hirooka.chukasa.domain.service.epgdump.parser;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import pro.hirooka.chukasa.configuration.EpgdumpConfiguration;
-import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.configuration.EpgdumpConfiguration;
+import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.epgdump.LastEpgdumpExecuted;
 import pro.hirooka.chukasa.domain.model.recorder.ChannelPreferences;
 import pro.hirooka.chukasa.domain.model.recorder.enums.ChannelType;

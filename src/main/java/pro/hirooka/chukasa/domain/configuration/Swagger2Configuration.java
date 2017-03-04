@@ -1,4 +1,4 @@
-package pro.hirooka.chukasa.configuration;
+package pro.hirooka.chukasa.domain.configuration;
 
 import com.google.common.base.Predicates;
 import org.springframework.context.annotation.Bean;

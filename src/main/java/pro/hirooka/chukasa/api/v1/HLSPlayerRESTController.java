@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pro.hirooka.chukasa.api.v1.exception.ChukasaBadRequestException;
 import pro.hirooka.chukasa.api.v1.exception.ChukasaInternalServerErrorException;
-import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
-import pro.hirooka.chukasa.configuration.HLSConfiguration;
-import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.configuration.ChukasaConfiguration;
+import pro.hirooka.chukasa.domain.configuration.HLSConfiguration;
+import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.chukasa.ChukasaModel;
-import pro.hirooka.chukasa.domain.model.chukasa.ChukasaResponseModel;
+import pro.hirooka.chukasa.domain.model.chukasa.ChukasaResponse;
 import pro.hirooka.chukasa.domain.model.chukasa.ChukasaSettings;
 import pro.hirooka.chukasa.domain.model.chukasa.HLSPlaylist;
-import pro.hirooka.chukasa.domain.model.chukasa.enums.VideoCodecType;
+import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.domain.service.chukasa.eraser.ChukasaRemover;
 import pro.hirooka.chukasa.domain.service.chukasa.stopper.ChukasaStopper;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
@@ -58,8 +58,8 @@ public class  HLSPlayerRESTController {
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     HLSPlaylist play(@RequestBody @Validated ChukasaSettings chukasaSettings) throws ChukasaBadRequestException, ChukasaInternalServerErrorException {
 
-        VideoCodecType videoCodecType = systemService.getVideoCodecType();
-        if(videoCodecType.equals(VideoCodecType.UNKNOWN)){
+        HardwareAccelerationType videoCodecType = systemService.getVideoCodecType();
+        if(videoCodecType.equals(HardwareAccelerationType.UNKNOWN)){
             throw new ChukasaInternalServerErrorException("FFmpeg configuration is not suitable for this application.");
         }
 
@@ -87,7 +87,7 @@ public class  HLSPlayerRESTController {
 
         chukasaModel = ChukasaUtility.operateEncodingSettings(chukasaModel);
         if(chukasaModel == null){
-            throw new ChukasaBadRequestException("EncodingSettingsType is invalid");
+            throw new ChukasaBadRequestException("EncodingTranscodingPreferencesType is invalid");
         }
 
         String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + STREAM_ROOT_PATH_NAME;
@@ -110,15 +110,15 @@ public class  HLSPlayerRESTController {
     }
 
     @RequestMapping(value = "/stop", method = RequestMethod.GET)
-    ChukasaResponseModel stop() throws ChukasaInternalServerErrorException {
+    ChukasaResponse stop() throws ChukasaInternalServerErrorException {
         chukasaStopper.stop();
         return remove();
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.GET)
-    ChukasaResponseModel remove() throws ChukasaInternalServerErrorException {
+    ChukasaResponse remove() throws ChukasaInternalServerErrorException {
         removeStreamingFiles();
-        ChukasaResponseModel chukasaResponseModel = new ChukasaResponseModel();
+        ChukasaResponse chukasaResponseModel = new ChukasaResponse();
         chukasaResponseModel.setMessage("Streaming stopped successfully.");
         return chukasaResponseModel;
     }

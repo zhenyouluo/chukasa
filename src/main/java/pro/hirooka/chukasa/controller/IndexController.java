@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
-import pro.hirooka.chukasa.configuration.EpgdumpConfiguration;
-import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.configuration.ChukasaConfiguration;
+import pro.hirooka.chukasa.domain.configuration.EpgdumpConfiguration;
+import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.api.v1.helper.IChukasaBrowserDetector;
-import pro.hirooka.chukasa.domain.model.chukasa.VideoFileModel;
+import pro.hirooka.chukasa.domain.model.chukasa.VideoFile;
 import pro.hirooka.chukasa.domain.model.epgdump.enums.EpgdumpStatus;
 import pro.hirooka.chukasa.domain.model.recorder.*;
 import pro.hirooka.chukasa.domain.service.chukasa.IRecordingProgramManagementComponent;
@@ -134,7 +134,7 @@ public class IndexController {
         }
 
         // FILE
-        List<VideoFileModel> videoFileModelList = new ArrayList<>();
+        List<VideoFile> videoFileModelList = new ArrayList<>();
         File fileDirectory = new File(systemConfiguration.getFilePath());
         File[] fileArray = fileDirectory.listFiles();
         if(fileArray != null) {
@@ -143,7 +143,7 @@ public class IndexController {
             for (File file : fileArray) {
                 for(String videoFileExtension : videoFileExtensionList){
                     if(file.getName().endsWith("." + videoFileExtension)){
-                        VideoFileModel videoFileModel = new VideoFileModel();
+                        VideoFile videoFileModel = new VideoFile();
                         videoFileModel.setName(file.getName());
                         videoFileModelList.add(videoFileModel);
                     }
@@ -154,14 +154,14 @@ public class IndexController {
         }
 
         // Okkake
-        List<VideoFileModel> okkakeVideoFileModelList = new ArrayList<>();
+        List<VideoFile> okkakeVideoFileModelList = new ArrayList<>();
         List<RecordingProgramModel> recordingProgramModelList = recordingProgramManagementComponent.get();
         for(RecordingProgramModel recordingProgramModel : recordingProgramModelList){
             Date now = new Date();
             if(recordingProgramModel.getStopRecording() > now.getTime() && now.getTime() > recordingProgramModel.getStartRecording()){
                 String file = systemConfiguration.getFilePath() + FILE_SEPARATOR + recordingProgramModel.getFileName();
                 if(new File(file).exists()){
-                    VideoFileModel videoFileModel = new VideoFileModel();
+                    VideoFile videoFileModel = new VideoFile();
                     videoFileModel.setName(recordingProgramModel.getFileName());
                     okkakeVideoFileModelList.add(videoFileModel);
                 }
@@ -181,7 +181,7 @@ public class IndexController {
                         }
                     }
                     if(!isDuplicated) {
-                        VideoFileModel videoFileModel = new VideoFileModel();
+                        VideoFile videoFileModel = new VideoFile();
                         videoFileModel.setName(reservedProgram.getFileName());
                         okkakeVideoFileModelList.add(videoFileModel);
                     }
@@ -194,7 +194,7 @@ public class IndexController {
 //        if(okkakeVideoFileArray != null) {
 //            for (File file : fileArray) {
 //                if(file.getName().endsWith(".ts")){
-//                    VideoFileModel okkakeVideoFileModel = new VideoFileModel();
+//                    VideoFile okkakeVideoFileModel = new VideoFile();
 //                    okkakeVideoFileModel.setName(file.getName());
 //                    okkakeVideoFileModelList.add(okkakeVideoFileModel);
 //                }

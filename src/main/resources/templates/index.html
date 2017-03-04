@@ -32,7 +32,7 @@
 
             <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
 
-                <input type = "hidden" id = "streamingTypeNow" name = "streamingType" value = "CAPTURE"/>
+                <input type = "hidden" id = "streamingTypeNow" name = "streamingType" value = "TUNER"/>
 
                 <div class="form-group">
                     <label for="chCapture">Program</label>
@@ -98,7 +98,7 @@
 
             <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
 
-                <input type = "hidden" id = "streamingTypeCapture" name = "streamingType" value = "CAPTURE"/>
+                <input type = "hidden" id = "streamingTypeCapture" name = "streamingType" value = "TUNER"/>
 
                 <div class="form-group">
                     <label for="chCapture">Physical Channel</label>
@@ -361,7 +361,7 @@
 
             <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
 
-                <input type = "hidden" id = "streamingTypeWebCamera" name = "streamingType" value = "WEB_CAMERA"/>
+                <input type = "hidden" id = "streamingTypeWebCamera" name = "streamingType" value = "WEBCAM"/>
 
                 <div class="form-group">
                     <label for="encodingSettingsTypeWebCamera">Encoding Settings</label>

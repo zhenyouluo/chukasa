@@ -3,10 +3,10 @@ package pro.hirooka.chukasa.domain.service.chukasa;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pro.hirooka.chukasa.configuration.EpgdumpConfiguration;
-import pro.hirooka.chukasa.configuration.MongoDBConfiguration;
-import pro.hirooka.chukasa.configuration.SystemConfiguration;
-import pro.hirooka.chukasa.domain.model.chukasa.enums.VideoCodecType;
+import pro.hirooka.chukasa.domain.configuration.EpgdumpConfiguration;
+import pro.hirooka.chukasa.domain.configuration.MongoDBConfiguration;
+import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 
 import java.io.*;
 
@@ -138,7 +138,7 @@ public class SystemService implements ISystemService {
     }
 
     @Override
-    public VideoCodecType getVideoCodecType() {
+    public HardwareAccelerationType getVideoCodecType() {
         final String H264_QSV = "--enable-libmfx";
         final String H264 = "--enable-libx264";
         final String H264_OMX = "--enable-omx-rpi";
@@ -154,17 +154,17 @@ public class SystemService implements ISystemService {
                 if(str.contains(H264_QSV)){
                     bufferedReader.close();
                     process.destroy();
-                    return VideoCodecType.H264_QSV;
+                    return HardwareAccelerationType.H264_QSV;
                 }
                 if(str.contains(H264_OMX)){
                     bufferedReader.close();
                     process.destroy();
-                    return VideoCodecType.H264_OMX;
+                    return HardwareAccelerationType.H264_OMX;
                 }
                 if(str.contains(H264)){
                     bufferedReader.close();
                     process.destroy();
-                    return VideoCodecType.H264;
+                    return HardwareAccelerationType.H264;
                 }
             }
             bufferedReader.close();
@@ -172,6 +172,6 @@ public class SystemService implements ISystemService {
         } catch (IOException e) {
             log.error("{} {}", e.getMessage(), e);
         }
-        return VideoCodecType.UNKNOWN;
+        return HardwareAccelerationType.UNKNOWN;
     }
 }

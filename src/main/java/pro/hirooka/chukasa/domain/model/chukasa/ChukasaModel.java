@@ -1,12 +1,12 @@
 package pro.hirooka.chukasa.domain.model.chukasa;
 
 import lombok.Data;
-import pro.hirooka.chukasa.configuration.ChukasaConfiguration;
-import pro.hirooka.chukasa.configuration.HLSConfiguration;
-import pro.hirooka.chukasa.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.configuration.ChukasaConfiguration;
+import pro.hirooka.chukasa.domain.configuration.HLSConfiguration;
+import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.service.chukasa.detector.FFmpegHLSStreamDetectorRunner;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.PlaylistType;
-import pro.hirooka.chukasa.domain.model.chukasa.enums.VideoCodecType;
+import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.domain.service.chukasa.encrypter.FFmpegHLSEncrypterRunner;
 import pro.hirooka.chukasa.domain.service.chukasa.playlister.PlaylisterRunner;
 import pro.hirooka.chukasa.domain.service.chukasa.segmenter.SegmenterRunner;
@@ -83,7 +83,7 @@ public class ChukasaModel {
     private PlaylisterRunner playlisterRunner;
     private UUID uuid;
 
-    private VideoCodecType videoCodecType;
+    private HardwareAccelerationType videoCodecType;
 
     public ChukasaModel(){
 
@@ -151,7 +151,7 @@ public class ChukasaModel {
         this.playlisterRunner = null;
         this.uuid = null;
 
-        this.videoCodecType = VideoCodecType.UNKNOWN;
+        this.videoCodecType = HardwareAccelerationType.UNKNOWN;
     }
 
 }

@@ -1,6 +1,6 @@
 package pro.hirooka.chukasa.domain.service.chukasa;
 
-import pro.hirooka.chukasa.domain.model.chukasa.enums.VideoCodecType;
+import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 
 public interface ISystemService {
     boolean isFFmpeg();
@@ -14,5 +14,5 @@ public interface ISystemService {
     boolean canFileStreaming();
     boolean canPTxStreaming();
     boolean canRecording();
-    VideoCodecType getVideoCodecType();
+    HardwareAccelerationType getVideoCodecType();
 }

@@ -1,7 +1,7 @@
 package pro.hirooka.chukasa.api.v1.helper;
 
 import org.springframework.stereotype.Component;
-import pro.hirooka.chukasa.domain.model.chukasa.enums.BrowserType;
+import pro.hirooka.chukasa.domain.model.chukasa.enums.WebBrowserType;
 
 @Component
 public class ChukasaBrowserDetector implements IChukasaBrowserDetector {
@@ -15,19 +15,19 @@ public class ChukasaBrowserDetector implements IChukasaBrowserDetector {
     final String SEAMONKEY = "Seamonkey/";
 
     @Override
-    public BrowserType getBrowserType(String userAgent) {
+    public WebBrowserType getBrowserType(String userAgent) {
         if(isSafari(userAgent)){
-            return BrowserType.SAFARI;
+            return WebBrowserType.SAFARI;
         }else if(isChrome(userAgent)){
-            return BrowserType.CHROME;
+            return WebBrowserType.CHROME;
         }else if(isEdge(userAgent)){
-            return BrowserType.EDGE;
+            return WebBrowserType.EDGE;
         }else if(isIE(userAgent)){
-            return BrowserType.IE;
+            return WebBrowserType.IE;
         }else if(isFirefox(userAgent)){
-            return BrowserType.FIREFOX;
+            return WebBrowserType.FIREFOX;
         }
-        return BrowserType.UNKNOWN;
+        return WebBrowserType.UNKNOWN;
     }
 
     @Override
