@@ -1,5 +1,8 @@
 package pro.hirooka.chukasa.domain.service.chukasa;
 
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.ServerAddress;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,7 +19,7 @@ public class SystemService implements ISystemService {
 
     private final String PT2_DEVICE = "/dev/pt1video0";
     private final String PT3_DEVICE = "/dev/pt3video0";
-    private final String MONGOD = "/bin/mongod";
+//    private final String MONGOD = "/bin/mongod";
 
     @Autowired
     SystemConfiguration systemConfiguration;
@@ -83,26 +86,40 @@ public class SystemService implements ISystemService {
         if(mongoDBConfiguration.getHost().equals("mongo")){
             return true;
         }
-        String[] command = {"/bin/sh", "-c", "ps aux | grep " + MONGOD};
-        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        ServerAddress serverAddress = new ServerAddress(mongoDBConfiguration.getHost(), mongoDBConfiguration.getPort());
+        MongoClientOptions mongoClientOptions = MongoClientOptions.builder().serverSelectionTimeout(mongoDBConfiguration.getServerSelectionTimeout()).build();
+        MongoClient mongoClient = new MongoClient(serverAddress, mongoClientOptions);
         try {
-            Process process = processBuilder.start();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String str = "";
-            while((str = bufferedReader.readLine()) != null){
-                log.info(str);
-                if(str.contains(MONGOD) && !str.contains("grep")){
-                    bufferedReader.close();
-                    process.destroy();
-                    return true;
-                }
-            }
-            bufferedReader.close();
-            process.destroy();
-        } catch (IOException e) {
-            log.error("{} {}", e.getMessage(), e);
+            mongoClient.getServerAddressList();
+            //mongoClient.getDatabase("admin").runCommand(new Document("ping", 1));
+            mongoClient.close();
+            log.info("MongoDB is running.");
+            return true;
+        } catch (Exception e) {
+            log.info("MongoDB is down or not installed.");
+            mongoClient.close();
+            return false;
         }
-        return false;
+//        String[] command = {"/bin/sh", "-c", "ps aux | grep " + MONGOD};
+//        ProcessBuilder processBuilder = new ProcessBuilder(command);
+//        try {
+//            Process process = processBuilder.start();
+//            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//            String str = "";
+//            while((str = bufferedReader.readLine()) != null){
+//                log.info(str);
+//                if(str.contains(MONGOD) && !str.contains("grep")){
+//                    bufferedReader.close();
+//                    process.destroy();
+//                    return true;
+//                }
+//            }
+//            bufferedReader.close();
+//            process.destroy();
+//        } catch (IOException e) {
+//            log.error("{} {}", e.getMessage(), e);
+//        }
+//        return false;
     }
 
     @Override
@@ -174,4 +191,6 @@ public class SystemService implements ISystemService {
         }
         return HardwareAccelerationType.UNKNOWN;
     }
+
+
 }

@@ -11,4 +11,5 @@ public class MongoDBConfiguration {
     String host;
     int port;
     String database;
+    int serverSelectionTimeout;
 }
