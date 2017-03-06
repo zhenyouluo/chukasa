@@ -1,6 +1,6 @@
 package pro.hirooka.chukasa.domain.model.chukasa.enums;
 
-public enum EncodingTranscodingPreferencesType {
+public enum TranscodingEncodingPreferencesType {
 
     CELLULAR_LOW("400x224-110-32"),
     CELLULAR_MID("400x224-200-32"),
@@ -16,7 +16,7 @@ public enum EncodingTranscodingPreferencesType {
 
     private final String name;
 
-    EncodingTranscodingPreferencesType(final String str){
+    TranscodingEncodingPreferencesType(final String str){
         name = str;
     }
 

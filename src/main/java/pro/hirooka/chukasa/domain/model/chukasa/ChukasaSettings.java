@@ -2,7 +2,7 @@ package pro.hirooka.chukasa.domain.model.chukasa;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-import pro.hirooka.chukasa.domain.model.chukasa.enums.EncodingTranscodingPreferencesType;
+import pro.hirooka.chukasa.domain.model.chukasa.enums.TranscodingEncodingPreferencesType;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.PlaylistType;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.StreamingType;
 
@@ -13,7 +13,7 @@ public class ChukasaSettings {
     private int adaptiveBitrateStreaming;
     private StreamingType streamingType;
     private PlaylistType playlistType;
-    private EncodingTranscodingPreferencesType encodingSettingsType;
+    private TranscodingEncodingPreferencesType encodingSettingsType;
     private boolean isEncrypted;
     private int ch;
     private String fileName;

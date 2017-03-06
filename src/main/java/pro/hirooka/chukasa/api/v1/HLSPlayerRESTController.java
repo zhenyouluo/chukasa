@@ -87,7 +87,7 @@ public class  HLSPlayerRESTController {
 
         chukasaModel = ChukasaUtility.operateEncodingSettings(chukasaModel);
         if(chukasaModel == null){
-            throw new ChukasaBadRequestException("EncodingTranscodingPreferencesType is invalid");
+            throw new ChukasaBadRequestException("TranscodingEncodingPreferencesType is invalid");
         }
 
         String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + STREAM_ROOT_PATH_NAME;
