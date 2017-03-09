@@ -72,7 +72,7 @@ public class FFmpegHLSStreamDetector extends TimerTask {
                 if(chukasaModel.getChukasaSettings().getPlaylistType().equals(PlaylistType.LIVE)) {
                     int sequencePlaylist = chukasaModel.getSeqPl();
                     int URI_IN_PLAYLIST = chukasaModel.getHlsConfiguration().getUriInPlaylist();
-                    for (int i = 0; i < sequencePlaylist - URI_IN_PLAYLIST; i++) {
+                    for (int i = 0; i < sequencePlaylist - URI_IN_PLAYLIST - URI_IN_PLAYLIST; i++) {
                         File oldTSFile = new File(streamPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + i + STREAM_FILE_EXTENSION);
                         if (oldTSFile.exists()) {
                             oldTSFile.delete();

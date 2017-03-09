@@ -3,7 +3,7 @@ version '0.0.1-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'spring-boot'
+apply plugin: 'org.springframework.boot'
 
 springBoot {
     executable = true
@@ -28,7 +28,10 @@ repositories {
 }
 
 dependencies {
-    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile ('org.springframework.boot:spring-boot-starter-web') {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
+    compile 'org.springframework.boot:spring-boot-starter-jetty'
     compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
     compile 'org.webjars:bootstrap:3.3.6'
     compile 'org.projectlombok:lombok:1.16.14'

@@ -93,7 +93,13 @@ public class HTML5PlayerController {
             return "index";
         }
 
-        String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + STREAM_ROOT_PATH_NAME;
+        String servletRealPath = httpServletRequest.getSession().getServletContext().getRealPath("");
+        String streamRootPath = "";
+        if(servletRealPath.substring(servletRealPath.length() - 1).equals(FILE_SEPARATOR)) {
+            streamRootPath = servletRealPath + STREAM_ROOT_PATH_NAME; // Tomcat
+        } else {
+            streamRootPath = servletRealPath + FILE_SEPARATOR + STREAM_ROOT_PATH_NAME; // Jetty
+        }
         chukasaModel.setStreamRootPath(streamRootPath);
         chukasaModel = ChukasaUtility.createChukasaDerectory(chukasaModel);
         chukasaModel = ChukasaUtility.calculateTimerTaskParameter(chukasaModel);
