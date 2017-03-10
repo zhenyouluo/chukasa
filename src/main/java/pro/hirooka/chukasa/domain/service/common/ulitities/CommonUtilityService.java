@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant.FILE_SEPARATOR;
+import static pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant.STREAM_ROOT_PATH_NAME;
+
 @Slf4j
 @Component
 public class CommonUtilityService implements ICommonUtilityService {
@@ -33,5 +36,14 @@ public class CommonUtilityService implements ICommonUtilityService {
             log.error("invalid channel_preferences.json: {} {}", e.getMessage(), e);
         }
         return channelPreferencesList;
+    }
+
+    @Override
+    public String getStreamRootPath(String servletRealPath) {
+        if(servletRealPath.substring(servletRealPath.length() - 1).equals(FILE_SEPARATOR)) {
+            return servletRealPath + STREAM_ROOT_PATH_NAME; // e.g. Tomcat
+        } else {
+            return servletRealPath + FILE_SEPARATOR + STREAM_ROOT_PATH_NAME; // e.g. Jetty
+        }
     }
 }

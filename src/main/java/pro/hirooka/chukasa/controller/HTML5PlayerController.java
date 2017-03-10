@@ -24,6 +24,7 @@ import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementCompone
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaTaskService;
 import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
 import pro.hirooka.chukasa.api.v1.helper.ChukasaUtility;
+import pro.hirooka.chukasa.domain.service.common.ulitities.ICommonUtilityService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -58,6 +59,8 @@ public class HTML5PlayerController {
     ISystemService systemService;
     @Autowired
     IChukasaBrowserDetector chukasaBrowserDetector;
+    @Autowired
+    ICommonUtilityService commonUtilityService;
 
     @RequestMapping(method = RequestMethod.POST)
     String play(Model model, @Validated ChukasaSettings chukasaSettings, BindingResult bindingResult){
@@ -94,12 +97,7 @@ public class HTML5PlayerController {
         }
 
         String servletRealPath = httpServletRequest.getSession().getServletContext().getRealPath("");
-        String streamRootPath = "";
-        if(servletRealPath.substring(servletRealPath.length() - 1).equals(FILE_SEPARATOR)) {
-            streamRootPath = servletRealPath + STREAM_ROOT_PATH_NAME; // Tomcat
-        } else {
-            streamRootPath = servletRealPath + FILE_SEPARATOR + STREAM_ROOT_PATH_NAME; // Jetty
-        }
+        String streamRootPath = commonUtilityService.getStreamRootPath(servletRealPath);
         chukasaModel.setStreamRootPath(streamRootPath);
         chukasaModel = ChukasaUtility.createChukasaDerectory(chukasaModel);
         chukasaModel = ChukasaUtility.calculateTimerTaskParameter(chukasaModel);
@@ -159,7 +157,7 @@ public class HTML5PlayerController {
 
     @RequestMapping(value = "/remove", method = RequestMethod.GET)
     String remove(){
-        String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + STREAM_ROOT_PATH_NAME;
+        String streamRootPath = commonUtilityService.getStreamRootPath(httpServletRequest.getSession().getServletContext().getRealPath(""));
         if(Files.exists(new File(streamRootPath).toPath())) {
             chukasaRemover.setStreamRootPath(streamRootPath);
             chukasaRemover.remove();

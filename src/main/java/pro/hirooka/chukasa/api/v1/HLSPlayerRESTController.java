@@ -23,6 +23,8 @@ import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementCompone
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaTaskService;
 import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
 import pro.hirooka.chukasa.api.v1.helper.ChukasaUtility;
+import pro.hirooka.chukasa.domain.service.common.ulitities.CommonUtilityService;
+import pro.hirooka.chukasa.domain.service.common.ulitities.ICommonUtilityService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -54,6 +56,8 @@ public class  HLSPlayerRESTController {
     IChukasaTaskService chukasaTaskService;
     @Autowired
     ISystemService systemService;
+    @Autowired
+    ICommonUtilityService commonUtilityService;
 
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     HLSPlaylist play(@RequestBody @Validated ChukasaSettings chukasaSettings) throws ChukasaBadRequestException, ChukasaInternalServerErrorException {
@@ -91,12 +95,8 @@ public class  HLSPlayerRESTController {
         }
 
         String servletRealPath = httpServletRequest.getSession().getServletContext().getRealPath("");
-        String streamRootPath = "";
-        if(servletRealPath.substring(servletRealPath.length() - 1).equals(FILE_SEPARATOR)) {
-            streamRootPath = servletRealPath + STREAM_ROOT_PATH_NAME; // Tomcat
-        } else {
-            streamRootPath = servletRealPath + FILE_SEPARATOR + STREAM_ROOT_PATH_NAME; // Jetty
-        }        chukasaModel.setStreamRootPath(streamRootPath);
+        String streamRootPath = commonUtilityService.getStreamRootPath(servletRealPath);
+        chukasaModel.setStreamRootPath(streamRootPath);
         chukasaModel = ChukasaUtility.createChukasaDerectory(chukasaModel);
         chukasaModel = ChukasaUtility.calculateTimerTaskParameter(chukasaModel);
 
@@ -129,7 +129,7 @@ public class  HLSPlayerRESTController {
     }
 
     private void removeStreamingFiles() throws ChukasaInternalServerErrorException {
-        String streamRootPath = httpServletRequest.getSession().getServletContext().getRealPath("") + STREAM_ROOT_PATH_NAME;
+        String streamRootPath = commonUtilityService.getStreamRootPath(httpServletRequest.getSession().getServletContext().getRealPath(""));
         if(Files.exists(new File(streamRootPath).toPath())) {
             chukasaRemover.setStreamRootPath(streamRootPath);
             chukasaRemover.remove();

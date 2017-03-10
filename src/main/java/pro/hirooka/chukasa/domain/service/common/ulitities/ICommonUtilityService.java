@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface ICommonUtilityService {
     List<ChannelPreferences> getChannelPreferencesList();
+    String getStreamRootPath(String servletRealPath);
 }
