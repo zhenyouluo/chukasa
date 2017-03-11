@@ -5,7 +5,7 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.ServerAddress;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.domain.configuration.MongoDBConfiguration;
 import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
@@ -14,12 +14,10 @@ import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 import java.io.*;
 
 @Slf4j
-@Component
+@Service
 public class SystemService implements ISystemService {
 
-    private final String PT2_DEVICE = "/dev/pt1video0";
     private final String PT3_DEVICE = "/dev/pt3video0";
-//    private final String MONGOD = "/bin/mongod";
 
     @Autowired
     SystemConfiguration systemConfiguration;
@@ -39,21 +37,20 @@ public class SystemService implements ISystemService {
 
     @Override
     public boolean isWebCamera() {
-        String webCameraDeviceName = systemConfiguration.getWebCameraDeviceName();
+        String webCameraDeviceName = systemConfiguration.getWebcamDeviceName();
         File file = new File(webCameraDeviceName);
         return file.exists();
     }
 
     @Override
     public String getWebCameraDeviceName() {
-        return systemConfiguration.getWebCameraDeviceName();
+        return systemConfiguration.getWebcamDeviceName();
     }
 
     @Override
     public boolean isPTx() {
-        File pt2 = new File(PT2_DEVICE);
         File pt3 = new File(PT3_DEVICE);
-        if(pt2.exists() || pt3.exists()){
+        if(pt3.exists()){
             return true;
         }
         // for PX-S1UD V2.0 (temporary)
@@ -100,26 +97,6 @@ public class SystemService implements ISystemService {
             mongoClient.close();
             return false;
         }
-//        String[] command = {"/bin/sh", "-c", "ps aux | grep " + MONGOD};
-//        ProcessBuilder processBuilder = new ProcessBuilder(command);
-//        try {
-//            Process process = processBuilder.start();
-//            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-//            String str = "";
-//            while((str = bufferedReader.readLine()) != null){
-//                log.info(str);
-//                if(str.contains(MONGOD) && !str.contains("grep")){
-//                    bufferedReader.close();
-//                    process.destroy();
-//                    return true;
-//                }
-//            }
-//            bufferedReader.close();
-//            process.destroy();
-//        } catch (IOException e) {
-//            log.error("{} {}", e.getMessage(), e);
-//        }
-//        return false;
     }
 
     @Override
