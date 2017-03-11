@@ -62,7 +62,7 @@ public class ChukasaUtility {
     }
 
     public static ChukasaModel operateEncodingSettings(ChukasaModel chukasaModel){
-        String encodingSettings = chukasaModel.getChukasaSettings().getEncodingSettingsType().getName();
+        String encodingSettings = chukasaModel.getChukasaSettings().getTranscodingEncodingPreferencesType().getName();
         try {
             String videoResolution = encodingSettings.split("-")[0];
             int videoBitrate = Integer.parseInt(encodingSettings.split("-")[1]);
@@ -87,7 +87,7 @@ public class ChukasaUtility {
         String streamPath = "";
         String temporaryEncryptedStreamPath = "";
         if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.TUNER) || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEBCAM)){
-            basementStreamPath = chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName() + FILE_SEPARATOR + LIVE_PATH_NAME;
+            basementStreamPath = chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getTranscodingEncodingPreferencesType().getName() + FILE_SEPARATOR + LIVE_PATH_NAME;
             streamPath = streamRootPath + FILE_SEPARATOR + basementStreamPath;
             chukasaModel.setStreamPath(streamPath);
             temporaryEncryptedStreamPath = temporaryPath + FILE_SEPARATOR + basementStreamPath;
@@ -98,7 +98,7 @@ public class ChukasaUtility {
             temporaryEncryptedStreamPath = temporaryPath + FILE_SEPARATOR + LIVE_PATH_NAME;
             chukasaModel.setTempEncPath(temporaryEncryptedStreamPath);
         } else {
-            basementStreamPath = chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName();
+            basementStreamPath = chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getTranscodingEncodingPreferencesType().getName() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName();
             streamPath = streamRootPath + FILE_SEPARATOR + basementStreamPath;
             chukasaModel.setStreamPath(streamPath);
             temporaryEncryptedStreamPath = temporaryPath + FILE_SEPARATOR + basementStreamPath;
@@ -183,7 +183,7 @@ public class ChukasaUtility {
                     + FILE_SEPARATOR
                     + chukasaModel.getAdaptiveBitrateStreaming()
                     + FILE_SEPARATOR
-                    + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName()
+                    + chukasaModel.getChukasaSettings().getTranscodingEncodingPreferencesType().getName()
                     + FILE_SEPARATOR
                     + LIVE_PATH_NAME
                     + FILE_SEPARATOR
@@ -197,7 +197,7 @@ public class ChukasaUtility {
                     + FILE_SEPARATOR
                     + chukasaModel.getAdaptiveBitrateStreaming()
                     + FILE_SEPARATOR
-                    + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName()
+                    + chukasaModel.getChukasaSettings().getTranscodingEncodingPreferencesType().getName()
                     + FILE_SEPARATOR
                     + chukasaModel.getChukasaSettings().getFileName()
                     + FILE_SEPARATOR

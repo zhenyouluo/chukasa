@@ -33,7 +33,7 @@ public class CaptureRunner implements Runnable {
 //        boolean isOpenMAX = chukasaModel.getSystemConfiguration().isOpenmaxEnabled();
         HardwareAccelerationType videoCodecType = chukasaModel.getVideoCodecType();
 
-        boolean isEncrypted = chukasaModel.getChukasaSettings().isEncrypted();
+        boolean isEncrypted = chukasaModel.getChukasaSettings().isCanEncrypt();
         String ffmpegOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
         String m3u8OutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + FFMPEG_HLS_M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
         if(isEncrypted){
@@ -47,7 +47,7 @@ public class CaptureRunner implements Runnable {
             String[] commandArrayTemporary =  {
                     chukasaModel.getSystemConfiguration().getRecpt1Path(),
                     "--b25", "--strip",
-                    Integer.toString(chukasaModel.getChukasaSettings().getCh()),
+                    Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",
                     "|",
                     chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -76,7 +76,7 @@ public class CaptureRunner implements Runnable {
             String[] commandArrayTemporary =  {
                     chukasaModel.getSystemConfiguration().getRecpt1Path(),
                     "--b25", "--strip",
-                    Integer.toString(chukasaModel.getChukasaSettings().getCh()),
+                    Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",
                     "|",
                     chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -103,7 +103,7 @@ public class CaptureRunner implements Runnable {
             String[] commandArrayTemporary = {
                     chukasaModel.getSystemConfiguration().getRecpt1Path(),
                     "--b25", "--strip",
-                    Integer.toString(chukasaModel.getChukasaSettings().getCh()),
+                    Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",
                     "|",
                     chukasaModel.getSystemConfiguration().getFfmpegPath(),

@@ -68,7 +68,7 @@ public class Playlister extends TimerTask {
                 sequencePlaylist++;
 
                 // 暗号化ストリームか否か
-                if (chukasaModel.getChukasaSettings().isEncrypted()) {
+                if (chukasaModel.getChukasaSettings().isCanEncrypt()) {
 
                     try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(PLAYLIST_FILE_PATH)))) {
 

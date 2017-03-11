@@ -13,11 +13,10 @@ public class ChukasaSettings {
     private int adaptiveBitrateStreaming;
     private StreamingType streamingType;
     private PlaylistType playlistType;
-    private TranscodingEncodingPreferencesType encodingSettingsType;
-    private boolean isEncrypted;
-    private int ch;
+    private TranscodingEncodingPreferencesType transcodingEncodingPreferencesType;
+    private boolean canEncrypt;
+    private int physicalLogicalChannel;
     private String fileName;
-    private int totalWebCameraLiveduration;
 
     private String videoResolution;
     private int videoBitrate;

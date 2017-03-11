@@ -44,7 +44,7 @@ public class FFmpegRunner implements Runnable {
 //        boolean isOpenMAX = chukasaModel.getSystemConfiguration().isOpenmaxEnabled();
         HardwareAccelerationType videoCodecType = chukasaModel.getVideoCodecType();
 
-        boolean isEncrypted = chukasaModel.getChukasaSettings().isEncrypted();
+        boolean isEncrypted = chukasaModel.getChukasaSettings().isCanEncrypt();
         String ffmpegOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
         String m3u8OutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + FFMPEG_HLS_M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
         if(isEncrypted){
@@ -215,7 +215,7 @@ public class FFmpegRunner implements Runnable {
 
         }else if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
 
-            if(chukasaModel.getChukasaSettings().isEncrypted()){
+            if(chukasaModel.getChukasaSettings().isCanEncrypt()){
 
                 if(videoCodecType.equals(HardwareAccelerationType.H264_QSV)){
                     String[] cmdArrayTemporary = {
@@ -368,7 +368,7 @@ public class FFmpegRunner implements Runnable {
             log.info("{} is completed.", this.getClass().getName());
 
             if(chukasaModel != null && chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.OKKAKE)){
-                if(chukasaModel.getChukasaSettings().isEncrypted()){
+                if(chukasaModel.getChukasaSettings().isCanEncrypt()){
                     seqCapturedTimeShifted = seqCapturedTimeShifted + 1;
                     chukasaModel.setSeqTsOkkake(seqCapturedTimeShifted);
                     chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);

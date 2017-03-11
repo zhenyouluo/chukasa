@@ -36,7 +36,7 @@ public class ChukasaTaskService implements IChukasaTaskService {
             FFmpegRunner ffmpegRunner = new FFmpegRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
             taskExecutor.execute(ffmpegRunner);
 
-            if(chukasaModel.getChukasaSettings().isEncrypted()) {
+            if(chukasaModel.getChukasaSettings().isCanEncrypt()) {
                 FFmpegHLSEncrypterRunner ffmpegHLSEncrypterRunner = new FFmpegHLSEncrypterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
                 taskExecutor.execute(ffmpegHLSEncrypterRunner);
                 chukasaModel.setFfmpegHLSEncrypterRunner(ffmpegHLSEncrypterRunner);
@@ -57,7 +57,7 @@ public class ChukasaTaskService implements IChukasaTaskService {
             CaptureRunner captureRunner = new CaptureRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
             taskExecutor.execute(captureRunner);
 
-            if(chukasaModel.getChukasaSettings().isEncrypted()) {
+            if(chukasaModel.getChukasaSettings().isCanEncrypt()) {
                 FFmpegHLSEncrypterRunner ffmpegHLSEncrypterRunner = new FFmpegHLSEncrypterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
                 taskExecutor.execute(ffmpegHLSEncrypterRunner);
                 chukasaModel.setFfmpegHLSEncrypterRunner(ffmpegHLSEncrypterRunner);

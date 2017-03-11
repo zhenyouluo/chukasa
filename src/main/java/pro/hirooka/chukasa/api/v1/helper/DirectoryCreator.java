@@ -61,7 +61,7 @@ public class DirectoryCreator implements IDirectoryCreator{
         String tempEncPath = "";
         String tempPath = chukasaModel.getSystemConfiguration().getTemporaryPath();
         if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.TUNER) || chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.WEBCAM)){
-            basementStreamPath = chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName() + FILE_SEPARATOR + LIVE_PATH_NAME;
+            basementStreamPath = chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getTranscodingEncodingPreferencesType().getName() + FILE_SEPARATOR + LIVE_PATH_NAME;
             streamPath = streamRootPath + FILE_SEPARATOR + basementStreamPath;
             chukasaModel.setStreamPath(streamPath);
             temporaryEncryptedStreamPath = temporaryPath + FILE_SEPARATOR + basementStreamPath;
@@ -72,7 +72,7 @@ public class DirectoryCreator implements IDirectoryCreator{
             tempEncPath = tempPath + FILE_SEPARATOR + LIVE_PATH_NAME;
             chukasaModel.setTempEncPath(tempEncPath);
         } else {
-            basementStreamPath = chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName();
+            basementStreamPath = chukasaModel.getUuid().toString() + FILE_SEPARATOR + chukasaModel.getAdaptiveBitrateStreaming() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getTranscodingEncodingPreferencesType().getName() + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getFileName();
             streamPath = streamRootPath + FILE_SEPARATOR + basementStreamPath;
             chukasaModel.setStreamPath(streamPath);
             temporaryEncryptedStreamPath = temporaryPath + FILE_SEPARATOR + basementStreamPath;
@@ -109,7 +109,7 @@ public class DirectoryCreator implements IDirectoryCreator{
             }
         }
 
-        tempEncPath = tempEncPath + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getEncodingSettingsType().getName();
+        tempEncPath = tempEncPath + FILE_SEPARATOR + chukasaModel.getChukasaSettings().getTranscodingEncodingPreferencesType().getName();
         if(Files.exists(new File(temporaryEncryptedStreamPath).toPath())){
             try {
                 FileUtils.cleanDirectory(new File(temporaryEncryptedStreamPath));

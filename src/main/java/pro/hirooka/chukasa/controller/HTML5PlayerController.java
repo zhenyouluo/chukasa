@@ -137,12 +137,12 @@ public class HTML5PlayerController {
         ChukasaSettings chukasaSettings = new ChukasaSettings();
         chukasaSettings.setAdaptiveBitrateStreaming(0);
         chukasaSettings.setStreamingType(streamingtype);
-        chukasaSettings.setCh(ch);
+        chukasaSettings.setPhysicalLogicalChannel(ch);
         chukasaSettings.setVideoBitrate(videobitrate);
         //chukasaSettings.setVideoResolutionType(VideoResolutionType.HD);
         //chukasaSettings.setCaptureResolutionType(VideoResolutionType.HD);
         chukasaSettings.setAudioBitrate(128);
-        chukasaSettings.setEncrypted(encrypted);
+        chukasaSettings.setCanEncrypt(encrypted);
 
         log.info("ChukasaSettings -> {}", chukasaSettings.toString());
 

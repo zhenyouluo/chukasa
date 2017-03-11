@@ -114,7 +114,7 @@ public class Segmenter extends TimerTask {
 
                     if(chukasaModel.getChukasaSettings().getStreamingType() != StreamingType.OKKAKE) {
 
-                        if (chukasaModel.getChukasaSettings().isEncrypted()) {
+                        if (chukasaModel.getChukasaSettings().isCanEncrypt()) {
 
                             File tempSegDir = new File(chukasaModel.getTempEncPath());
                             tempSegDir.mkdirs();
@@ -134,7 +134,7 @@ public class Segmenter extends TimerTask {
 
                     }else{
 
-                        if (chukasaModel.getChukasaSettings().isEncrypted()) {
+                        if (chukasaModel.getChukasaSettings().isCanEncrypt()) {
 
                             File tempSegDir = new File(chukasaModel.getTempEncPath());
                             tempSegDir.mkdirs();
@@ -199,7 +199,7 @@ public class Segmenter extends TimerTask {
 
                     if(chukasaModel.getChukasaSettings().getStreamingType() != StreamingType.OKKAKE) {
                         // process after spliting MPEG2-TS
-                        if (chukasaModel.getChukasaSettings().isEncrypted()) {
+                        if (chukasaModel.getChukasaSettings().isCanEncrypt()) {
                             Encrypter encrypter = new Encrypter(adaptiveBitrateStreaming, chukasaModelManagementComponent);
                             Thread thread = new Thread(encrypter);
                             thread.start();
@@ -607,7 +607,7 @@ public class Segmenter extends TimerTask {
                 chukasaModel.setSeqTsLast(seqTs);
 
                 if(chukasaModel.getChukasaSettings().getStreamingType() != StreamingType.OKKAKE) {
-                    if (chukasaModel.getChukasaSettings().isEncrypted()) {
+                    if (chukasaModel.getChukasaSettings().isCanEncrypt()) {
                         Encrypter encrypter = new Encrypter(adaptiveBitrateStreaming, chukasaModelManagementComponent);
                         Thread thread = new Thread(encrypter);
                         thread.start();
@@ -689,7 +689,7 @@ public class Segmenter extends TimerTask {
 
                     if(!chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.OKKAKE)) {
 
-                        if (chukasaModel.getChukasaSettings().isEncrypted()) {
+                        if (chukasaModel.getChukasaSettings().isCanEncrypt()) {
 
                             File tempSegDir = new File(chukasaModel.getTempEncPath());
                             tempSegDir.mkdirs();
@@ -771,7 +771,7 @@ public class Segmenter extends TimerTask {
 
                     if(!chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.OKKAKE)) {
                         // process after spliting MPEG2-TS
-                        if (chukasaModel.getChukasaSettings().isEncrypted()) {
+                        if (chukasaModel.getChukasaSettings().isCanEncrypt()) {
                             Encrypter encrypter = new Encrypter(adaptiveBitrateStreaming, chukasaModelManagementComponent);
                             Thread thread = new Thread(encrypter);
                             thread.start();
@@ -939,7 +939,7 @@ public class Segmenter extends TimerTask {
                 chukasaModel.setSeqTsLast(seqTs);
 
                 if(!chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.OKKAKE)) {
-                    if (chukasaModel.getChukasaSettings().isEncrypted()) {
+                    if (chukasaModel.getChukasaSettings().isCanEncrypt()) {
                         Encrypter encrypter = new Encrypter(adaptiveBitrateStreaming, chukasaModelManagementComponent);
                         Thread thread = new Thread(encrypter);
                         thread.start();
