@@ -85,6 +85,10 @@ public class ChukasaModel {
 
     private HardwareAccelerationType videoCodecType;
 
+    private int sequenceMediaSegment;
+    private int sequenceLastMediaSegment;
+    private int sequencePlaylist;
+
     public ChukasaModel(){
 
         adaptiveBitrateStreaming = 0;
@@ -152,6 +156,10 @@ public class ChukasaModel {
         this.uuid = null;
 
         this.videoCodecType = HardwareAccelerationType.UNKNOWN;
+
+        this.sequenceMediaSegment = -1;
+        this.sequenceLastMediaSegment = -1;
+        this.sequencePlaylist = -1;
     }
 
 }

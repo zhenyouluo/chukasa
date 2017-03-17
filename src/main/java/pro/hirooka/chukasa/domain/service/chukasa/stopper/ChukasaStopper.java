@@ -10,6 +10,7 @@ import pro.hirooka.chukasa.domain.service.chukasa.transcoder.FFmpegStopper;
 
 import java.util.List;
 
+@Deprecated
 @Slf4j
 @Component
 public class ChukasaStopper {

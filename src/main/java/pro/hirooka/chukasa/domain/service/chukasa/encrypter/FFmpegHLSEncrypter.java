@@ -19,6 +19,7 @@ import java.util.TimerTask;
 
 import static java.util.Objects.requireNonNull;
 
+@Deprecated
 @Slf4j
 public class FFmpegHLSEncrypter extends TimerTask {
 

@@ -20,7 +20,7 @@ import static pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant
 public class ChukasaUtility {
 
     public static void initializeRunner(IChukasaModelManagementComponent chukasaModelManagementComponent, SystemConfiguration systemConfiguration){
-
+/*
         for(ChukasaModel chukasaModel : chukasaModelManagementComponent.get()){
 
             if(chukasaModel.getSegmenterRunner() != null){
@@ -57,7 +57,7 @@ public class ChukasaUtility {
             } catch (IOException e) {
                 log.error("{} {}", e.getMessage(), e);
             }
-        }
+        }*/
         chukasaModelManagementComponent.deleteAll();
     }
 

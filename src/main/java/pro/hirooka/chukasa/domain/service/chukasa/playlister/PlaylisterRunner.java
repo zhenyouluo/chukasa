@@ -8,6 +8,7 @@ import java.util.Timer;
 
 import static java.util.Objects.requireNonNull;
 
+@Deprecated
 @Slf4j
 public class PlaylisterRunner implements Runnable {
 

@@ -13,6 +13,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@Deprecated
 @Slf4j
 public class FFmpegStopper implements Runnable {
 

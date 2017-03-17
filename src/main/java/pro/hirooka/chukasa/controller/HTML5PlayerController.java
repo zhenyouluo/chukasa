@@ -19,11 +19,13 @@ import pro.hirooka.chukasa.domain.model.chukasa.HTML5Player;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.StreamingType;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.domain.service.chukasa.eraser.ChukasaRemover;
+import pro.hirooka.chukasa.domain.service.chukasa.remover.IChukasaHLSFileRemoverService;
 import pro.hirooka.chukasa.domain.service.chukasa.stopper.ChukasaStopper;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaTaskService;
 import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
 import pro.hirooka.chukasa.api.v1.helper.ChukasaUtility;
+import pro.hirooka.chukasa.domain.service.chukasa.task.ITaskCoordinatorService;
 import pro.hirooka.chukasa.domain.service.common.ulitities.ICommonUtilityService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,6 +63,9 @@ public class HTML5PlayerController {
     IChukasaBrowserDetector chukasaBrowserDetector;
     @Autowired
     ICommonUtilityService commonUtilityService;
+
+    @Autowired
+    ITaskCoordinatorService taskCoordinatorService;
 
     @RequestMapping(method = RequestMethod.POST)
     String play(Model model, @Validated ChukasaSettings chukasaSettings, BindingResult bindingResult){
@@ -109,7 +114,8 @@ public class HTML5PlayerController {
 
         chukasaModelManagementComponent.create(0, chukasaModel);
 
-        chukasaTaskService.execute(0);
+        //chukasaTaskService.execute(0);
+        taskCoordinatorService.execute();
 
         HTML5Player html5PlayerModel = new HTML5Player();
         html5PlayerModel.setPlaylistURI(playlistURI);
@@ -151,19 +157,20 @@ public class HTML5PlayerController {
 
     @RequestMapping(value = "/stop", method = RequestMethod.GET)
     String stop(){
-        chukasaStopper.stop();
+        //chukasaStopper.stop();
         return "redirect:/video/remove";
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.GET)
     String remove(){
-        String streamRootPath = commonUtilityService.getStreamRootPath(httpServletRequest.getSession().getServletContext().getRealPath(""));
-        if(Files.exists(new File(streamRootPath).toPath())) {
-            chukasaRemover.setStreamRootPath(streamRootPath);
-            chukasaRemover.remove();
-        }else {
-            log.warn("cannot remove files bacause streamRootPath: {} does not exist.", streamRootPath);
-        }
+        taskCoordinatorService.cancel();
+//        String streamRootPath = commonUtilityService.getStreamRootPath(httpServletRequest.getSession().getServletContext().getRealPath(""));
+//        if(Files.exists(new File(streamRootPath).toPath())) {
+//            chukasaRemover.setStreamRootPath(streamRootPath);
+//            chukasaRemover.remove();
+//        }else {
+//            log.warn("cannot remove files bacause streamRootPath: {} does not exist.", streamRootPath);
+//        }
         return "redirect:/";
     }
 }

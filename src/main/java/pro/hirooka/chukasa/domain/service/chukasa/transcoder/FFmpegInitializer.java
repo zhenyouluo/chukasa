@@ -3,6 +3,7 @@ package pro.hirooka.chukasa.domain.service.chukasa.transcoder;
 import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 
+@Deprecated
 @Slf4j
 public class FFmpegInitializer implements Runnable {
 

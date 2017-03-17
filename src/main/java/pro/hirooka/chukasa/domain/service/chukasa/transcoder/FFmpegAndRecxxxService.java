@@ -1,51 +1,53 @@
 package pro.hirooka.chukasa.domain.service.chukasa.transcoder;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.model.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.util.concurrent.Future;
 
-import static java.util.Objects.requireNonNull;
 import static pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant.*;
+import static pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant.FILE_SEPARATOR;
 
-@Deprecated
 @Slf4j
-public class CaptureRunner implements Runnable {
+@Service
+public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
 
-    private int adaptiveBitrateStreaming;
+    private final IChukasaModelManagementComponent chukasaModelManagementComponent;
 
-    private IChukasaModelManagementComponent chukasaModelManagementComponent;
-
-    public CaptureRunner(int adaptiveBitrateStreaming, IChukasaModelManagementComponent chukasaModelManagementComponent) {
-        this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;
-        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
+    @Autowired
+    public FFmpegAndRecxxxService(IChukasaModelManagementComponent chukasaModelManagementComponent){
+        this.chukasaModelManagementComponent = chukasaModelManagementComponent;
     }
 
+    @Async
     @Override
-    public void run() {
+    public Future<Integer> submit(int adaptiveBitrateStreaming) {
 
+        // TODO: final
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
         log.debug("StreamPath: {}", chukasaModel.getStreamPath());
 
-//        boolean isQSV = chukasaModel.getSystemConfiguration().isQuickSyncVideoEnabled();
-//        boolean isOpenMAX = chukasaModel.getSystemConfiguration().isOpenmaxEnabled();
-        HardwareAccelerationType videoCodecType = chukasaModel.getVideoCodecType();
+        final HardwareAccelerationType hardwareAccelerationType = chukasaModel.getVideoCodecType();
 
-        boolean isEncrypted = chukasaModel.getChukasaSettings().isCanEncrypt();
-        String ffmpegOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
-        String m3u8OutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + FFMPEG_HLS_M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
-        if(isEncrypted){
+        final boolean canEncrypt = chukasaModel.getChukasaSettings().isCanEncrypt();
+        final String ffmpegOutputPath;
+        if(canEncrypt){
             ffmpegOutputPath = chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
-            m3u8OutputPath = chukasaModel.getTempEncPath() + FILE_SEPARATOR + FFMPEG_HLS_M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
+        } else {
+            ffmpegOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
         }
 
-        String[] commandArray = {""};
+        final String[] commandArray;
 
-        if(videoCodecType.equals(HardwareAccelerationType.H264_OMX)){
-            String[] commandArrayTemporary =  {
+        if(hardwareAccelerationType == HardwareAccelerationType.H264_OMX){
+            commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecpt1Path(),
                     "--b25", "--strip",
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
@@ -72,9 +74,8 @@ public class CaptureRunner implements Runnable {
 //                    "-segment_list", m3u8OutputPath,
                     ffmpegOutputPath
             };
-            commandArray = commandArrayTemporary;
-        } else if(videoCodecType.equals(HardwareAccelerationType.H264_QSV)){
-            String[] commandArrayTemporary =  {
+        } else if(hardwareAccelerationType == HardwareAccelerationType.H264_QSV){
+            commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecpt1Path(),
                     "--b25", "--strip",
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
@@ -99,9 +100,8 @@ public class CaptureRunner implements Runnable {
 //                    "-segment_list", m3u8OutputPath,
                     ffmpegOutputPath
             };
-            commandArray = commandArrayTemporary;
-        }else if(videoCodecType.equals(HardwareAccelerationType.H264)){
-            String[] commandArrayTemporary = {
+        }else if(hardwareAccelerationType == HardwareAccelerationType.H264){
+            commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecpt1Path(),
                     "--b25", "--strip",
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
@@ -127,16 +127,17 @@ public class CaptureRunner implements Runnable {
                     "-x264opts", "keyint=10:min-keyint=10",
                     ffmpegOutputPath
             };
-            commandArray = commandArrayTemporary;
+        } else {
+            commandArray = new String[]{};
         }
 
         String command = "";
         for(int i = 0; i < commandArray.length; i++){
             command += commandArray[i] + " ";
         }
-        log.info("command = {}", command);
+        log.info("{}", command);
 
-        String captureShell = chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + "capture.sh";
+        final String captureShell = chukasaModel.getSystemConfiguration().getTemporaryPath() + FILE_SEPARATOR + "capture.sh";
         File file = new File(captureShell);
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
             bufferedWriter.write("#!/bin/bash");
@@ -148,15 +149,18 @@ public class CaptureRunner implements Runnable {
 
         // chmod 755 capture.sh
         if(true){
-            String[] chmodCommandArray = {"chmod", "755", captureShell};
-            ProcessBuilder processBuilder = new ProcessBuilder(chmodCommandArray);
+            final String[] chmodCommandArray = {"chmod", "755", captureShell};
+            final ProcessBuilder processBuilder = new ProcessBuilder(chmodCommandArray);
             try {
-                Process process = processBuilder.start();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                final Process process = processBuilder.start();
+                final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
                 String str = "";
                 while((str = bufferedReader.readLine()) != null){
                     log.debug("{}", str);
                 }
+                process.getInputStream().close();
+                process.getErrorStream().close();
+                process.getOutputStream().close();
                 bufferedReader.close();
                 process.destroy();
             } catch (IOException e) {
@@ -166,16 +170,16 @@ public class CaptureRunner implements Runnable {
 
         // run capture.sh
         if(true){
-            String[] capureCommandArray = {captureShell};
-            ProcessBuilder processBuilder = new ProcessBuilder(capureCommandArray);
+            final String[] capureCommandArray = {captureShell};
+            final ProcessBuilder processBuilder = new ProcessBuilder(capureCommandArray);
             try {
-                Process process = processBuilder.start();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                final Process process = processBuilder.start();
+                final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
                 long pid = -1;
                 try {
                     if (process.getClass().getName().equals("java.lang.UNIXProcess")) {
-                        Field field = process.getClass().getDeclaredField("pid");
+                        final Field field = process.getClass().getDeclaredField("pid");
                         field.setAccessible(true);
                         pid = field.getLong(process);
                         chukasaModel.setFfmpegPID(pid);
@@ -188,7 +192,6 @@ public class CaptureRunner implements Runnable {
 
                 String str = "";
                 boolean isTranscoding = false;
-                boolean isSegmenterStarted = false;
                 while((str = bufferedReader.readLine()) != null){
                     log.debug("{}", str);
                     if(str.startsWith("frame=")){
@@ -196,25 +199,31 @@ public class CaptureRunner implements Runnable {
                             isTranscoding = true;
                             chukasaModel.setTrascoding(isTranscoding);
                             chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-//                            if(!isSegmenterStarted) {
-//                                isSegmenterStarted = true;
-//                                SegmenterRunner segmenterRunner = new SegmenterRunner(adaptiveBitrateStreaming, chukasaModelManagementComponent);
-//                                Thread sThread = new Thread(segmenterRunner, "__SegmenterRunner__");
-//                                sThread.start();
-//                                chukasaModel.setSegmenterRunner(segmenterRunner);
-//                                chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-//                            }
                         }
                     }
                 }
                 isTranscoding = false;
                 chukasaModel.setTrascoding(isTranscoding);
                 chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
+                process.getInputStream().close();
+                process.getErrorStream().close();
+                process.getOutputStream().close();
                 bufferedReader.close();
                 process.destroy();
             } catch (IOException e) {
                 log.error("{} {}", e.getMessage(), e);
             }
         }
+        return null;
+    }
+
+    @Override
+    public void execute(int adaptiveBitrateStreaming) {
+
+    }
+
+    @Override
+    public void cancel(int adaptiveBitrateStreaming) {
+
     }
 }

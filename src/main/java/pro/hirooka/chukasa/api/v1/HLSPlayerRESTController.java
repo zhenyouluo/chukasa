@@ -23,6 +23,7 @@ import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementCompone
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaTaskService;
 import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
 import pro.hirooka.chukasa.api.v1.helper.ChukasaUtility;
+import pro.hirooka.chukasa.domain.service.chukasa.task.ITaskCoordinatorService;
 import pro.hirooka.chukasa.domain.service.common.ulitities.CommonUtilityService;
 import pro.hirooka.chukasa.domain.service.common.ulitities.ICommonUtilityService;
 
@@ -58,6 +59,9 @@ public class  HLSPlayerRESTController {
     ISystemService systemService;
     @Autowired
     ICommonUtilityService commonUtilityService;
+
+    @Autowired
+    ITaskCoordinatorService taskCoordinatorService;
 
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     HLSPlaylist play(@RequestBody @Validated ChukasaSettings chukasaSettings) throws ChukasaBadRequestException, ChukasaInternalServerErrorException {
@@ -107,7 +111,8 @@ public class  HLSPlayerRESTController {
 
         chukasaModelManagementComponent.create(0, chukasaModel);
 
-        chukasaTaskService.execute(0);
+        //chukasaTaskService.execute(0);
+        taskCoordinatorService.execute();
 
         HLSPlaylist hlsPlaylist = new HLSPlaylist();
         hlsPlaylist.setUri(playlistURI);
@@ -116,7 +121,7 @@ public class  HLSPlayerRESTController {
 
     @RequestMapping(value = "/stop", method = RequestMethod.GET)
     ChukasaResponse stop() throws ChukasaInternalServerErrorException {
-        chukasaStopper.stop();
+        //chukasaStopper.stop();
         return remove();
     }
 
@@ -128,14 +133,18 @@ public class  HLSPlayerRESTController {
         return chukasaResponseModel;
     }
 
-    private void removeStreamingFiles() throws ChukasaInternalServerErrorException {
-        String streamRootPath = commonUtilityService.getStreamRootPath(httpServletRequest.getSession().getServletContext().getRealPath(""));
-        if(Files.exists(new File(streamRootPath).toPath())) {
-            chukasaRemover.setStreamRootPath(streamRootPath);
-            chukasaRemover.remove();
-        }else {
-            log.warn("cannot remove files bacause streamRootPath: {} does not exist.", streamRootPath);
-            throw new ChukasaInternalServerErrorException("Cannot remove files bacause streamRootPath does not exist.");
-        }
+    private void removeStreamingFiles(){
+        taskCoordinatorService.cancel();
     }
+
+//    private void removeStreamingFiles() throws ChukasaInternalServerErrorException {
+//        String streamRootPath = commonUtilityService.getStreamRootPath(httpServletRequest.getSession().getServletContext().getRealPath(""));
+//        if(Files.exists(new File(streamRootPath).toPath())) {
+//            chukasaRemover.setStreamRootPath(streamRootPath);
+//            chukasaRemover.remove();
+//        }else {
+//            log.warn("cannot remove files bacause streamRootPath: {} does not exist.", streamRootPath);
+//            throw new ChukasaInternalServerErrorException("Cannot remove files bacause streamRootPath does not exist.");
+//        }
+//    }
 }

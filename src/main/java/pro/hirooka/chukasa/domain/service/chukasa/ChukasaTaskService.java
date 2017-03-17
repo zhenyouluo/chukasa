@@ -13,6 +13,7 @@ import pro.hirooka.chukasa.domain.service.chukasa.playlister.PlaylisterRunner;
 import pro.hirooka.chukasa.domain.service.chukasa.segmenter.SegmenterRunner;
 import pro.hirooka.chukasa.domain.service.chukasa.transcoder.FFmpegRunner;
 
+@Deprecated
 @Slf4j
 @Service
 public class ChukasaTaskService implements IChukasaTaskService {
