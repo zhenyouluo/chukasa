@@ -9,6 +9,8 @@ import pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.StreamingType;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.domain.service.chukasa.encrypter.IChukasaHLSEncrypter;
+import pro.hirooka.chukasa.domain.service.chukasa.playlister.IPlaylistBuilder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,6 +32,11 @@ public class FFmpegService implements IFFmpegService {
     private final IChukasaModelManagementComponent chukasaModelManagementComponent;
 
     @Autowired
+    IChukasaHLSEncrypter chukasaHLSEncrypter;
+    @Autowired
+    IPlaylistBuilder playlistBuilder;
+
+    @Autowired
     public FFmpegService(IChukasaModelManagementComponent chukasaModelManagementComponent) {
         this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
     }
@@ -48,7 +55,8 @@ public class FFmpegService implements IFFmpegService {
             ffmpegOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
         }
 
-        final int seqCapturedTimeShifted = chukasaModel.getSeqTsOkkake();
+        //final int seqCapturedTimeShifted = chukasaModel.getSeqTsOkkake();
+        final int sequenceMediaSegment = chukasaModel.getSequenceMediaSegment();
 
         // TODO: custom command from properties
         final String[] commandArray;
@@ -216,7 +224,7 @@ public class FFmpegService implements IFFmpegService {
                     commandArray = new String[]{
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
-                            "-i", chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqCapturedTimeShifted + STREAM_FILE_EXTENSION,
+                            "-i", chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + sequenceMediaSegment + STREAM_FILE_EXTENSION,
                             "-acodec", "aac",
                             "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
                             "-ac", "2",
@@ -228,13 +236,13 @@ public class FFmpegService implements IFFmpegService {
                             "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
                             "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                             "-f", "mpegts",
-                            "-y", chukasaModel.getTempEncPath() + FILE_SEPARATOR + "fileSequenceEncoded" + seqCapturedTimeShifted + STREAM_FILE_EXTENSION // TODO
+                            "-y", chukasaModel.getTempEncPath() + FILE_SEPARATOR + "fileSequenceEncoded" + sequenceMediaSegment + STREAM_FILE_EXTENSION // TODO
                     };
                 } else if (hardwareAccelerationType == HardwareAccelerationType.H264) {
                     commandArray = new String[]{
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
-                            "-i", chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqCapturedTimeShifted + STREAM_FILE_EXTENSION,
+                            "-i", chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + sequenceMediaSegment + STREAM_FILE_EXTENSION,
                             "-acodec", "aac",
                             "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
                             "-ac", "2",
@@ -248,7 +256,7 @@ public class FFmpegService implements IFFmpegService {
                             "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                             "-f", "mpegts",
                             "-x264opts", "keyint=10:min-keyint=10",
-                            "-y", chukasaModel.getTempEncPath() + FILE_SEPARATOR + "fileSequenceEncoded" + seqCapturedTimeShifted + STREAM_FILE_EXTENSION // TODO
+                            "-y", chukasaModel.getTempEncPath() + FILE_SEPARATOR + "fileSequenceEncoded" + sequenceMediaSegment + STREAM_FILE_EXTENSION // TODO
                     };
                 } else {
                     commandArray = new String[]{};
@@ -260,7 +268,7 @@ public class FFmpegService implements IFFmpegService {
                     commandArray = new String[]{
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
-                            "-i", chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqCapturedTimeShifted + STREAM_FILE_EXTENSION,
+                            "-i", chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + sequenceMediaSegment + STREAM_FILE_EXTENSION,
                             "-acodec", "aac",
                             "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
                             "-ac", "2",
@@ -272,13 +280,13 @@ public class FFmpegService implements IFFmpegService {
                             "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
                             "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                             "-f", "mpegts",
-                            "-y", chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqCapturedTimeShifted + STREAM_FILE_EXTENSION
+                            "-y", chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + sequenceMediaSegment + STREAM_FILE_EXTENSION
                     };
                 } else if (hardwareAccelerationType == HardwareAccelerationType.H264) {
                     commandArray = new String[]{
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
-                            "-i", chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqCapturedTimeShifted + STREAM_FILE_EXTENSION,
+                            "-i", chukasaModel.getTempEncPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + sequenceMediaSegment + STREAM_FILE_EXTENSION,
                             "-acodec", "aac",
                             "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
                             "-ac", "2",
@@ -292,7 +300,7 @@ public class FFmpegService implements IFFmpegService {
                             "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
                             "-f", "mpegts",
                             "-x264opts", "keyint=10:min-keyint=10",
-                            "-y", chukasaModel.getTempEncPath() + FILE_SEPARATOR + "fileSequenceEncoded" + seqCapturedTimeShifted + STREAM_FILE_EXTENSION // TODO
+                            "-y", chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + sequenceMediaSegment + STREAM_FILE_EXTENSION
                     };
                 } else {
                     commandArray = new String[]{};
@@ -328,7 +336,7 @@ public class FFmpegService implements IFFmpegService {
             String str;
             boolean isTranscoding = false;
             while ((str = bufferedReader.readLine()) != null) {
-                log.info(str);
+                log.debug(str);
                 // TODO Input/output error (in use...)
                 if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.WEBCAM || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
                     if (str.startsWith("frame=")) {
@@ -350,6 +358,14 @@ public class FFmpegService implements IFFmpegService {
             process.getOutputStream().close();
             bufferedReader.close();
             process.destroy();
+
+            if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+                if(chukasaModel.getChukasaSettings().isCanEncrypt()){
+                    chukasaHLSEncrypter.encrypt();
+                }else{
+                    playlistBuilder.build();
+                }
+            }
 
             if (chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
                 int sequenceLastMediaSegment = -1;
@@ -386,6 +402,7 @@ public class FFmpegService implements IFFmpegService {
                 chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
                 return new AsyncResult<>(sequenceLastMediaSegment);
             }
+
         } catch (IOException | IllegalAccessException | NoSuchFieldException e) {
             log.error("{}", e.getMessage());
         }

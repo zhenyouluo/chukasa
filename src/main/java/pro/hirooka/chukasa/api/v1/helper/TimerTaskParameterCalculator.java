@@ -8,6 +8,7 @@ import pro.hirooka.chukasa.domain.model.chukasa.enums.StreamingType;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
 
+@Deprecated
 @Slf4j
 @Component
 public class TimerTaskParameterCalculator implements ITimerTaskParameterCalculator {

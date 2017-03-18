@@ -30,7 +30,7 @@ public class FFmpegStopperService implements IFFmpegStopperService {
             final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String str;
             while((str = bufferedReader.readLine()) != null){
-                log.info("{}", str);
+                log.debug("{}", str);
                 final String trimmedString = str.trim();
                 if ((trimmedString.matches(".*libx264.*") && trimmedString.matches(".*mpegts.*")) || (trimmedString.matches(".*h264_qsv.*") && trimmedString.matches(".*mpegts.*")) || (trimmedString.matches(".*h264_omx.*") && trimmedString.matches(".*mpegts.*"))) {
                     final String[] trimmedStringArray = trimmedString.split(" ");
@@ -51,7 +51,7 @@ public class FFmpegStopperService implements IFFmpegStopperService {
             process.getOutputStream().close();
             process.destroy();
         } catch (IOException e) {
-
+            // TODO:
         }
         chukasaModelManagementComponent.deleteAll();
         log.info("all ChukasaModels have been deleted.");

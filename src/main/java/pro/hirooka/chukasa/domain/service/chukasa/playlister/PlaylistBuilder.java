@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.domain.model.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.PlaylistType;
-import pro.hirooka.chukasa.domain.model.chukasa.enums.StreamingType;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
 
 import java.io.*;
@@ -52,12 +51,9 @@ public class PlaylistBuilder implements IPlaylistBuilder{
             final int sequencePlaylist = chukasaModel.getSequencePlaylist();
             log.info("sequenceMediaSegment = {}, sequencePlaylist = {}", sequenceMediaSegment, sequencePlaylist);
 
-            final boolean isOkkake;
-            isOkkake = chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE;
-
             // イニシャルストリームのみか否か。
             // sequenceMediaSegment が 0 以上にならない限りイニシャルストリームを流し続ける。
-            if((!isOkkake && sequenceMediaSegment >= 0) || (isOkkake && sequenceMediaSegment >= URI_IN_PLAYLIST - 1)) {
+            if(sequenceMediaSegment >= 0){
 
                 try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(playlistPath)))) {
 

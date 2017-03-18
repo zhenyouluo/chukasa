@@ -1,11 +1,15 @@
 package pro.hirooka.chukasa.domain.service.chukasa.encrypter;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.model.chukasa.ChukasaModel;
+import pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.StreamingType;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
+import pro.hirooka.chukasa.domain.service.chukasa.playlister.IPlaylistBuilder;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
@@ -14,29 +18,26 @@ import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.security.*;
 
-import static java.util.Objects.requireNonNull;
-
-@Deprecated
 @Slf4j
-public class Encrypter implements Runnable {
+@Service
+public class ChukasaHLSEncrypter implements IChukasaHLSEncrypter {
 
-    static final String FILE_SEPARATOR = System.getProperty("file.separator");
-
+    static final String FILE_SEPARATOR = ChukasaConstant.FILE_SEPARATOR;
     final String STREAM_FILE_NAME_PREFIX = ChukasaConstant.STREAM_FILE_NAME_PREFIX;
     final String STREAM_FILE_EXTENSION = ChukasaConstant.STREAM_FILE_EXTENSION;
     final int MPEG2_TS_PACKET_LENGTH = ChukasaConstant.MPEG2_TS_PACKET_LENGTH;
 
+    @Setter
     private int adaptiveBitrateStreaming;
 
-    private IChukasaModelManagementComponent chukasaModelManagementComponent;
+    @Autowired
+    IChukasaModelManagementComponent chukasaModelManagementComponent;
 
-    public Encrypter(int adaptiveBitrateStreaming, IChukasaModelManagementComponent chukasaModelManagementComponent){
-        this.adaptiveBitrateStreaming = adaptiveBitrateStreaming;
-        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
-    }
+    @Autowired
+    IPlaylistBuilder playlistBuilder;
 
     @Override
-    public void run() {
+    public void encrypt() {
 
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
         String streamPath = chukasaModel.getStreamPath();
@@ -46,6 +47,7 @@ public class Encrypter implements Runnable {
         seqTsEnc = chukasaModel.getSeqTsEnc();
         if(chukasaModel.getChukasaSettings().getStreamingType().equals(StreamingType.OKKAKE)){
             seqTsEnc = chukasaModel.getSeqTsOkkake() - 1;
+            seqTsEnc = chukasaModel.getSequenceMediaSegment();
         }
         if(chukasaModel.isFlagLastTs()) {
             seqTsEnc = chukasaModel.getSeqTsLast();
@@ -118,10 +120,13 @@ public class Encrypter implements Runnable {
             bis.close();
             fis.close();
 
+            if(chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.OKKAKE){
+                playlistBuilder.build();
+            }
+
         } catch (InvalidKeyException | NoSuchPaddingException | NoSuchAlgorithmException | NoSuchProviderException | IOException e) {
             log.error("{} {}", e.getMessage(), e);
         }
-
     }
 
     // Generate Random Key
@@ -135,4 +140,3 @@ public class Encrypter implements Runnable {
 
     } // makeKey
 }
-
