@@ -121,6 +121,8 @@ public class  HLSPlayerRESTController {
 
     @RequestMapping(value = "/stop", method = RequestMethod.GET)
     ChukasaResponse stop() throws ChukasaInternalServerErrorException {
+        taskCoordinatorService.cancel();
+        taskCoordinatorService.stop();
         //chukasaStopper.stop();
         return remove();
     }
@@ -134,7 +136,8 @@ public class  HLSPlayerRESTController {
     }
 
     private void removeStreamingFiles(){
-        taskCoordinatorService.cancel();
+        taskCoordinatorService.remove();
+        //taskCoordinatorService.cancel();
     }
 
 //    private void removeStreamingFiles() throws ChukasaInternalServerErrorException {

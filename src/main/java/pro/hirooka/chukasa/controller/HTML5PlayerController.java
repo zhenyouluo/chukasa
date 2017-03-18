@@ -157,13 +157,16 @@ public class HTML5PlayerController {
 
     @RequestMapping(value = "/stop", method = RequestMethod.GET)
     String stop(){
+        taskCoordinatorService.cancel();
+        taskCoordinatorService.stop();
         //chukasaStopper.stop();
         return "redirect:/video/remove";
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.GET)
     String remove(){
-        taskCoordinatorService.cancel();
+        taskCoordinatorService.remove();
+        //taskCoordinatorService.cancel();
 //        String streamRootPath = commonUtilityService.getStreamRootPath(httpServletRequest.getSession().getServletContext().getRealPath(""));
 //        if(Files.exists(new File(streamRootPath).toPath())) {
 //            chukasaRemover.setStreamRootPath(streamRootPath);

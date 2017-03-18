@@ -9,6 +9,7 @@ import pro.hirooka.chukasa.domain.service.chukasa.detector.IIntermediateFFmpegHL
 import pro.hirooka.chukasa.domain.service.chukasa.remover.IIntermediateChukasaHLSFileRemoverService;
 import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IIntermediateFFmpegAndRecxxxService;
 import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IIntermediateFFmpegService;
+import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IIntermediateFFmpegStopperService;
 import reactor.bus.EventBus;
 
 import java.util.Date;
@@ -24,6 +25,9 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
     private final IIntermediateFFmpegAndRecxxxService intermediateFFmpegAndRecxxxService;
     private final IIntermediateFFmpegHLSMediaSegmentDetectorService intermediateFFmpegHLSMediaSegmentDetectorService;
     private final IIntermediateChukasaHLSFileRemoverService intermediateChukasaHLSFileRemoverService;
+
+    @Autowired
+    private IIntermediateFFmpegStopperService intermediateFFmpegStopperService;
 
     @Autowired
     EventBus eventBus;
@@ -46,7 +50,7 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
             if(streamingType == StreamingType.WEBCAM
                     || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
                 intermediateFFmpegHLSMediaSegmentDetectorService.schedule(adaptiveBitrateStreaming, new Date(), 2000);
-                intermediateFFmpegService.execute(adaptiveBitrateStreaming);
+                intermediateFFmpegService.submit(adaptiveBitrateStreaming);
             } else if(streamingType == StreamingType.TUNER) {
                 intermediateFFmpegHLSMediaSegmentDetectorService.schedule(adaptiveBitrateStreaming, new Date(), 2000);
                 intermediateFFmpegAndRecxxxService.execute(adaptiveBitrateStreaming);
@@ -77,6 +81,20 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
             } else {
                 //
             }
+        });
+    }
+
+    @Override
+    public void stop() {
+        chukasaModelManagementComponent.get().forEach(chukasaModel -> {
+            final int adaptiveBitrateStreaming = chukasaModel.getAdaptiveBitrateStreaming();
+            intermediateFFmpegStopperService.submit(adaptiveBitrateStreaming);
+        });
+    }
+
+    @Override
+    public void remove() {
+        chukasaModelManagementComponent.get().forEach(chukasaModel -> {
             final String streamPath = chukasaModel.getStreamPath();
             intermediateChukasaHLSFileRemoverService.remove(streamPath);
         });

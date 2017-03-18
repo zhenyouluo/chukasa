@@ -25,9 +25,9 @@ public class IntermediateFFmpegService implements IIntermediateFFmpegService {
     @Async
     @Override
     public Future<Integer> submit(int adaptiveBitrateStreaming) {
-        if(future != null){
-            future.cancel(true);
-        }
+//        if(future != null){
+//            future.cancel(true);
+//        }
         future = ffmpegService.submit(adaptiveBitrateStreaming);
         try {
             int sequenceLastMediaSegment = future.get();
@@ -39,11 +39,13 @@ public class IntermediateFFmpegService implements IIntermediateFFmpegService {
         }
     }
 
+    @Async
     @Override
     public void execute(int adaptiveBitrateStreaming) {
-        ffmpegService.submit(adaptiveBitrateStreaming);
+        future = ffmpegService.submit(adaptiveBitrateStreaming);
     }
 
+    @Async
     @Override
     public void cancel(int adaptiveBitrateStreaming) {
         if(future != null){
