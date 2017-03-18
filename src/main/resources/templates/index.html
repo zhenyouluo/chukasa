@@ -36,7 +36,7 @@
 
                 <div class="form-group">
                     <label for="chCapture">Program</label>
-                    <select class="form-control" id="chNow" name="ch">
+                    <select class="form-control" id="chNow" name="physicalLogicalChannel">
                         <option th:value="${program.physicalLogicalChannel}" th:text="${program.channelName + ' (' + program.remoteControllerChannel + '): ' + program.title}" th:each="program : ${programList}">...</option>
                     </select>
                 </div>
@@ -102,7 +102,7 @@
 
                 <div class="form-group">
                     <label for="chCapture">Physical Channel</label>
-                    <select class="form-control" id="chCapture" name="ch">
+                    <select class="form-control" id="chCapture" name="physicalLogicalChannel">
                         <option th:value="${program.physicalLogicalChannel}" th:text="${program.remoteControllerChannel}" th:each="program : ${programList}">...</option>
                     </select>
                 </div>

@@ -50,7 +50,7 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
             if(streamingType == StreamingType.WEBCAM
                     || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
                 intermediateFFmpegHLSMediaSegmentDetectorService.schedule(adaptiveBitrateStreaming, new Date(), 2000);
-                intermediateFFmpegService.submit(adaptiveBitrateStreaming);
+                intermediateFFmpegService.execute(adaptiveBitrateStreaming);
             } else if(streamingType == StreamingType.TUNER) {
                 intermediateFFmpegHLSMediaSegmentDetectorService.schedule(adaptiveBitrateStreaming, new Date(), 2000);
                 intermediateFFmpegAndRecxxxService.execute(adaptiveBitrateStreaming);
