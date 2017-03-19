@@ -50,10 +50,10 @@ public class EpgdumpParser implements IEpgdumpParser {
                     epgDumpProgramTableService.create(program);
                 }else if(program.getChannel().startsWith("BS_")){
                     try {
-                        int physicalChannelBS = Integer.parseInt(program.getChannel().split("BS_")[1]);
-                        program.setId(physicalChannelBS + "_" + program.getStart());
-                        program.setPhysicalLogicalChannel(physicalChannelBS);
-                        program.setRemoteControllerChannel(remoteControllerChannel);
+                        int losicalChannelBS = Integer.parseInt(program.getChannel().split("BS_")[1]);
+                        program.setId(losicalChannelBS + "_" + program.getStart());
+                        program.setPhysicalLogicalChannel(losicalChannelBS);
+                        program.setRemoteControllerChannel(losicalChannelBS);
                         program.setChannelName(channel.getName());
                         long begin = program.getStart() / 10;
                         long end = program.getEnd() / 10;
