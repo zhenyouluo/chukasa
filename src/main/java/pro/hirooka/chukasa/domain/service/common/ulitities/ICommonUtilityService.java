@@ -1,10 +1,10 @@
 package pro.hirooka.chukasa.domain.service.common.ulitities;
 
-import pro.hirooka.chukasa.domain.model.recorder.ChannelPreferences;
+import pro.hirooka.chukasa.domain.model.recorder.ChannelSettings;
 
 import java.util.List;
 
 public interface ICommonUtilityService {
-    List<ChannelPreferences> getChannelPreferencesList();
+    List<ChannelSettings> getChannelSettingsList();
     String getStreamRootPath(String servletRealPath);
 }

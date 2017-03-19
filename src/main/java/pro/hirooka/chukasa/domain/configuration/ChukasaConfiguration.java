@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "chukasa")
 public class ChukasaConfiguration {
     String[] videoFileExtension;
-    String recorderChannelPreferences;
+    String recorderChannelSettings;
     long recorderStartMargin;
     long recorderStopMargin;
     String alternativeHlsPlayer;

@@ -1,9 +1,6 @@
 package pro.hirooka.chukasa.domain.service.epgdump.parser;
 
-import pro.hirooka.chukasa.domain.model.recorder.ChannelPreferences;
-
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 public interface IEpgdumpParser {

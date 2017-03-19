@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.domain.model.recorder.Channel;
-import pro.hirooka.chukasa.domain.model.recorder.ChannelPreferences;
 import pro.hirooka.chukasa.domain.service.recorder.IProgramTableService;
 
 import java.io.*;

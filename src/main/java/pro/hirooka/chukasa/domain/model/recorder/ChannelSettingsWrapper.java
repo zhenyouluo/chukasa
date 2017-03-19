@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ChannelPreferencesWrapper {
-    @JsonProperty("channelPreferences")
-    private List<ChannelPreferences> channelPreferencesList;
+public class ChannelSettingsWrapper {
+    @JsonProperty("channelSettings")
+    private List<ChannelSettings> channelSettingsList;
 }

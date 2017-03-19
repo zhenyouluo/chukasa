@@ -5,7 +5,7 @@ import org.apache.commons.io.FileUtils;
 import pro.hirooka.chukasa.domain.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.epgdump.LastEpgdumpExecuted;
-import pro.hirooka.chukasa.domain.model.recorder.ChannelPreferences;
+import pro.hirooka.chukasa.domain.model.recorder.ChannelSettings;
 import pro.hirooka.chukasa.domain.model.recorder.enums.ChannelType;
 import pro.hirooka.chukasa.domain.service.epgdump.ILastEpgdumpExecutedService;
 
@@ -25,21 +25,21 @@ public class EPGDumpRunner implements Runnable {
     private final IEpgdumpParser epgdumpParser;
     private final ILastEpgdumpExecutedService lastEpgdumpExecutedService;
   //  private final Map<String, String> epgDumpChannelMap;
-    private final List<ChannelPreferences> channelPreferencesList;
+    private final List<ChannelSettings> channelSettingsList;
 
     public EPGDumpRunner(
             SystemConfiguration systemConfiguration,
             EpgdumpConfiguration epgdumpConfiguration,
             IEpgdumpParser epgdumpParser,
             ILastEpgdumpExecutedService lastEpgdumpExecutedService,
-            List<ChannelPreferences> channelPreferencesList
+            List<ChannelSettings> channelSettingsList
 //            Map<String, String> epgDumpChannelMap
     ){
         this.systemConfiguration = requireNonNull(systemConfiguration, "systemConfiguration");
         this.epgdumpConfiguration = requireNonNull(epgdumpConfiguration, "epgdumpConfiguration");
         this.epgdumpParser = requireNonNull(epgdumpParser, "epgdumpParser");
         this.lastEpgdumpExecutedService = requireNonNull(lastEpgdumpExecutedService, "lastEpgdumpExecutedService");
-        this.channelPreferencesList = requireNonNull(channelPreferencesList, "channelPreferencesList");
+        this.channelSettingsList = requireNonNull(channelSettingsList, "channelSettingsList");
 //        this.epgDumpChannelMap = requireNonNull(epgDumpChannelMap, "epgDumpChannelMap");
     }
 
@@ -67,17 +67,17 @@ public class EPGDumpRunner implements Runnable {
             bufferedWriter.write("#!/bin/bash");
             bufferedWriter.newLine();
             boolean isBS = false;
-            for(ChannelPreferences channelPreferences : channelPreferencesList){
-                if(channelPreferences.getChannelType() == ChannelType.GR || !isBS) {
+            for(ChannelSettings channelSettings : channelSettingsList){
+                if(channelSettings.getChannelType() == ChannelType.GR || !isBS) {
                     try {
-                        int physicalChannel = channelPreferences.getPhysicalLogicalChannel();
+                        int physicalChannel = channelSettings.getPhysicalLogicalChannel();
                         String recpt1Command = systemConfiguration.getRecpt1Path() + " --b25 --strip " + physicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
                         String epgdumpCommand = epgdumpConfiguration.getPath() + " json " + epgdumpConfiguration.getTemporaryPath()+ FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".json";
                         bufferedWriter.write(recpt1Command);
                         bufferedWriter.newLine();
                         bufferedWriter.write(epgdumpCommand);
                         bufferedWriter.newLine();
-                        if(channelPreferences.getChannelType() == ChannelType.BS){
+                        if(channelSettings.getChannelType() == ChannelType.BS){
                             isBS = true;
                         }
                     } catch (NumberFormatException e) {
@@ -152,11 +152,11 @@ public class EPGDumpRunner implements Runnable {
             }
         }
 
-        for(ChannelPreferences channelPreferences : channelPreferencesList) {
-            String jsonStringPath = epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + channelPreferences.getPhysicalLogicalChannel() + ".json";
+        for(ChannelSettings channelSettings : channelSettingsList) {
+            String jsonStringPath = epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + channelSettings.getPhysicalLogicalChannel() + ".json";
             if(new File(jsonStringPath).exists()) {
                 try {
-                    epgdumpParser.parse(jsonStringPath, channelPreferences.getPhysicalLogicalChannel(), channelPreferences.getRemoteControllerChannel());
+                    epgdumpParser.parse(jsonStringPath, channelSettings.getPhysicalLogicalChannel(), channelSettings.getRemoteControllerChannel());
                 } catch (IOException e) {
                     log.error("{} {}", e.getMessage(), e);
                     return;

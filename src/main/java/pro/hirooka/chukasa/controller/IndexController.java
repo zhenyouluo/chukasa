@@ -82,7 +82,7 @@ public class IndexController {
         List<Program> programList = new ArrayList<>();
         boolean isLastEpgdumpExecuted = false;
 
-        List<ChannelPreferences> channelPreferencesList = commonUtilityService.getChannelPreferencesList();
+        List<ChannelSettings> channelSettingsList = commonUtilityService.getChannelSettingsList();
 
 //        Map<String, String> epgdumpChannelMap = new HashMap<>();
 //        Resource resource = new ClassPathResource(epgdumpConfiguration.getPhysicalChannelMap());
@@ -97,7 +97,7 @@ public class IndexController {
             programList = programTableService.readByNow(new Date().getTime());
             programList = programList.stream().sorted(Comparator.comparing(Program::getPhysicalLogicalChannel)).collect(Collectors.toList());
 //            if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalChannels() >= epgdumpChannelMap.size()){
-            if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalLogicalChannels() >= channelPreferencesList.size()){
+            if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalLogicalChannels() >= channelSettingsList.size()){
                 isLastEpgdumpExecuted = true;
             }
         }
@@ -111,10 +111,10 @@ public class IndexController {
         if(isFFmpeg && isPTx && isRecpt1 && !isLastEpgdumpExecuted){
             programList = new ArrayList<>();
             isPTxByChannel = true;
-            for(ChannelPreferences channelPreferences : channelPreferencesList){
+            for(ChannelSettings channelSettings : channelSettingsList){
                 try {
                     Program program = new Program();
-                    program.setPhysicalLogicalChannel(channelPreferences.getPhysicalLogicalChannel());
+                    program.setPhysicalLogicalChannel(channelSettings.getPhysicalLogicalChannel());
                     programList.add(program);
                 }catch (NumberFormatException e){
                     log.error("invalid value {} {}", e.getMessage(), e);
