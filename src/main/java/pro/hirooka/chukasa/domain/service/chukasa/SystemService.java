@@ -62,7 +62,7 @@ public class SystemService implements ISystemService {
 
     @Override
     public boolean isRecpt1() {
-        File recpt1 = new File(systemConfiguration.getRecpt1Path());
+        File recpt1 = new File(systemConfiguration.getRecxxxPath());
         if(recpt1.exists()){
             return true;
         }

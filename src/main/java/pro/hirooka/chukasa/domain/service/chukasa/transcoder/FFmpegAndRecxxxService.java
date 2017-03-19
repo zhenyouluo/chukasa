@@ -48,7 +48,7 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
 
         if(hardwareAccelerationType == HardwareAccelerationType.H264_OMX){
             commandArray = new String[]{
-                    chukasaModel.getSystemConfiguration().getRecpt1Path(),
+                    chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     "--b25", "--strip",
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",
@@ -76,7 +76,7 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
             };
         } else if(hardwareAccelerationType == HardwareAccelerationType.H264_QSV){
             commandArray = new String[]{
-                    chukasaModel.getSystemConfiguration().getRecpt1Path(),
+                    chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     "--b25", "--strip",
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",
@@ -102,7 +102,7 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
             };
         }else if(hardwareAccelerationType == HardwareAccelerationType.H264){
             commandArray = new String[]{
-                    chukasaModel.getSystemConfiguration().getRecpt1Path(),
+                    chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     "--b25", "--strip",
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",

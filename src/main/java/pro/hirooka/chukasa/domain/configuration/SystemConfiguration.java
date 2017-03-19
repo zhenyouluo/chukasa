@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "system")
 public class SystemConfiguration {
     String ffmpegPath;
-    String recpt1Path;
+    String recxxxPath;
     String webcamDeviceName;
     int webcamAudioChannel;
     String temporaryPath;

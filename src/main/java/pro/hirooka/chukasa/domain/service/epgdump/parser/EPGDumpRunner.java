@@ -71,7 +71,7 @@ public class EPGDumpRunner implements Runnable {
                 if(channelSettings.getChannelType() == ChannelType.GR || !isBS) {
                     try {
                         int physicalChannel = channelSettings.getPhysicalLogicalChannel();
-                        String recpt1Command = systemConfiguration.getRecpt1Path() + " --b25 --strip " + physicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
+                        String recpt1Command = systemConfiguration.getRecxxxPath() + " --b25 --strip " + physicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
                         String epgdumpCommand = epgdumpConfiguration.getPath() + " json " + epgdumpConfiguration.getTemporaryPath()+ FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".json";
                         bufferedWriter.write(recpt1Command);
                         bufferedWriter.newLine();

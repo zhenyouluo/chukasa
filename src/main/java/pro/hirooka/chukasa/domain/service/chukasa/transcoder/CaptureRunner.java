@@ -46,7 +46,7 @@ public class CaptureRunner implements Runnable {
 
         if(videoCodecType.equals(HardwareAccelerationType.H264_OMX)){
             String[] commandArrayTemporary =  {
-                    chukasaModel.getSystemConfiguration().getRecpt1Path(),
+                    chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     "--b25", "--strip",
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",
@@ -75,7 +75,7 @@ public class CaptureRunner implements Runnable {
             commandArray = commandArrayTemporary;
         } else if(videoCodecType.equals(HardwareAccelerationType.H264_QSV)){
             String[] commandArrayTemporary =  {
-                    chukasaModel.getSystemConfiguration().getRecpt1Path(),
+                    chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     "--b25", "--strip",
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",
@@ -102,7 +102,7 @@ public class CaptureRunner implements Runnable {
             commandArray = commandArrayTemporary;
         }else if(videoCodecType.equals(HardwareAccelerationType.H264)){
             String[] commandArrayTemporary = {
-                    chukasaModel.getSystemConfiguration().getRecpt1Path(),
+                    chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     "--b25", "--strip",
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",

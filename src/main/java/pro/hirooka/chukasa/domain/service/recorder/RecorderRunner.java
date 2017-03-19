@@ -51,7 +51,7 @@ public class RecorderRunner implements Runnable {
                 BufferedWriter bw = new BufferedWriter(new FileWriter(doRecordFile));
                 bw.write("#!/bin/bash");
                 bw.newLine();
-                bw.write(systemConfiguration.getRecpt1Path() + " --b25 --strip " + physicalCnannel + " " + duration + " \"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " >/dev/null");
+                bw.write(systemConfiguration.getRecxxxPath() + " --b25 --strip " + physicalCnannel + " " + duration + " \"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " >/dev/null");
                 bw.newLine();
                 bw.write(systemConfiguration.getFfmpegPath() +  " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -ss " + d + " -vframes 1 -f image2 " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".jpg\"" + " >/dev/null");
                 bw.newLine();
