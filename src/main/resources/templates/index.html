@@ -43,7 +43,7 @@
 
                 <div class="form-group">
                     <label for="encodingSettingsTypeNow">Encoding Settings</label>
-                    <select class="form-control" id="encodingSettingsTypeNow" name="transcodingEncodingPreferencesType" onchange="onChangeEncodingSettingsType(this);">
+                    <select class="form-control" id="encodingSettingsTypeNow" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
                         <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
                         <option value="CELLULAR_MID">CELLULAR_MID</option>
                         <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
@@ -109,7 +109,7 @@
 
                 <div class="form-group">
                     <label for="encodingSettingsTypeCapture">Encoding Settings</label>
-                    <select class="form-control" id="encodingSettingsTypeCapture" name="transcodingEncodingPreferencesType" onchange="onChangeEncodingSettingsType(this);">
+                    <select class="form-control" id="encodingSettingsTypeCapture" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
                         <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
                         <option value="CELLULAR_MID">CELLULAR_MID</option>
                         <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
@@ -175,7 +175,7 @@
 
                 <div class="form-group">
                     <label for="encodingSettingsTypeFile">Encoding Settings</label>
-                    <select class="form-control" id="encodingSettingsTypeFile" name="transcodingEncodingPreferencesType" onchange="onChangeEncodingSettingsType(this);">
+                    <select class="form-control" id="encodingSettingsTypeFile" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
                         <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
                         <option value="CELLULAR_MID">CELLULAR_MID</option>
                         <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
@@ -240,7 +240,7 @@
 
                 <div class="form-group">
                     <label for="encodingSettingsTypeFile">Encoding Settings</label>
-                    <select class="form-control" id="encodingSettingsTypeFile" name="transcodingEncodingPreferencesType" onchange="onChangeEncodingSettingsType(this);">
+                    <select class="form-control" id="encodingSettingsTypeFile" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
                         <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
                         <option value="CELLULAR_MID">CELLULAR_MID</option>
                         <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
@@ -306,7 +306,7 @@
 
                 <div class="form-group">
                     <label for="encodingSettingsTypeOkkake">Encoding Settings</label>
-                    <select class="form-control" id="encodingSettingsTypeOkkake" name="transcodingEncodingPreferencesType" onchange="onChangeEncodingSettingsType(this);">
+                    <select class="form-control" id="encodingSettingsTypeOkkake" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
                         <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
                         <option value="CELLULAR_MID">CELLULAR_MID</option>
                         <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
@@ -365,7 +365,7 @@
 
                 <div class="form-group">
                     <label for="encodingSettingsTypeWebCamera">Encoding Settings</label>
-                    <select class="form-control" id="encodingSettingsTypeWebCamera" name="transcodingEncodingPreferencesType" onchange="onChangeEncodingSettingsType(this);">
+                    <select class="form-control" id="encodingSettingsTypeWebCamera" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
                         <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
                         <option value="CELLULAR_MID">CELLULAR_MID</option>
                         <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
@@ -441,9 +441,9 @@
         th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
 
 <script>
-    function onChangeEncodingSettingsType(obj){
+    function onChangeTranscodingSettings(obj){
         var id = obj.id;
-        var type = id.split("transcodingEncodingPreferencesType")[1];
+        var type = id.split("transcodingSettings")[1];
         var index = obj.selectedIndex;
         var value = obj.options[index].value;
         var text = obj.options[index].text;
