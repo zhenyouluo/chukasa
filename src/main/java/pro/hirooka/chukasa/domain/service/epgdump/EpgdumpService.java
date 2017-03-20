@@ -9,11 +9,10 @@ import pro.hirooka.chukasa.domain.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.epgdump.enums.EpgdumpStatus;
 import pro.hirooka.chukasa.domain.model.epgdump.LastEpgdumpExecuted;
-import pro.hirooka.chukasa.domain.model.recorder.ChannelConfiguration;
 import pro.hirooka.chukasa.domain.service.common.ulitities.ICommonUtilityService;
-import pro.hirooka.chukasa.domain.service.epgdump.parser.EPGDumpRunner;
 import pro.hirooka.chukasa.domain.service.epgdump.parser.IEpgdumpParser;
 import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
+import pro.hirooka.chukasa.domain.service.epgdump.runner.IEpgdumpRunnerService;
 
 import javax.annotation.PostConstruct;
 
@@ -25,7 +24,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.List;
 
 @Slf4j
 @Component
@@ -43,10 +41,14 @@ public class EpgdumpService implements IEpgdumpService {
     ILastEpgdumpExecutedService lastEPGDumpExecutedService;
     @Autowired
     ISystemService systemService;
-    @Autowired
-    EpgdumpAsyncConfigurer epgdumpAsyncConfigurer;
+    //@Autowired
+    //EpgdumpAsyncConfigurer epgdumpAsyncConfigurer;
     @Autowired
     ICommonUtilityService commonUtilityService;
+    //@Autowired
+    //EPGDumpRunner epgdumpRunner;
+    @Autowired
+    private IEpgdumpRunnerService epgdumpRunnerService;
 
     @PostConstruct
     public void init(){
@@ -58,7 +60,8 @@ public class EpgdumpService implements IEpgdumpService {
             LastEpgdumpExecuted lastEpgdumpExecuted = lastEPGDumpExecutedService.read(1);
             if (lastEpgdumpExecuted == null) {
                 log.info("lastEpgdumpExecuted == null -> runEPGDump()");
-                runEPGDump();
+                //runEPGDump();
+                epgdumpRunnerService.submit(commonUtilityService.getChannelConfigurationList());
             } else {
                 Date date = new Date();
                 long now = date.getTime();
@@ -66,7 +69,8 @@ public class EpgdumpService implements IEpgdumpService {
                 long diff = last - now;
                 log.info("now = {}, last epgdump executed = {}, diff = {}", convertMilliToDate(now), convertMilliToDate(last), diff);
                 if (now - last > chukasaConfiguration.getEpgdumpExecuteOnBootIgnoreInterval()) {
-                    runEPGDump();
+                    //runEPGDump();
+                    epgdumpRunnerService.submit(commonUtilityService.getChannelConfigurationList());
                 }else{
                     log.info("chukasa.epgdump-execute-on-boot-ignore-interval > previous boot");
                 }
@@ -88,14 +92,15 @@ public class EpgdumpService implements IEpgdumpService {
 
         if(systemService.isEpgdump() && systemService.isMongoDB() ) {
             log.info("cheduled cron -> runEPGDump()");
-            runEPGDump();
+            //runEPGDump();
+            epgdumpRunnerService.submit(commonUtilityService.getChannelConfigurationList());
         }
     }
 
     void runEPGDump(){
 
         log.info("run runEPGDump()");
-        List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
+        //List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
 //        Resource resource = new ClassPathResource(epgdumpConfiguration.getPhysicalChannelMap());
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        try {
@@ -103,8 +108,9 @@ public class EpgdumpService implements IEpgdumpService {
 //            log.info(epgdumpChannelMap.toString());
 
 //            EPGDumpRunner epgDumpRunner = new EPGDumpRunner(systemConfiguration, epgdumpConfiguration, epgDumpParser, lastEPGDumpExecutedService, epgdumpChannelMap);
-            EPGDumpRunner epgDumpRunner = new EPGDumpRunner(systemConfiguration, epgdumpConfiguration, epgDumpParser, lastEPGDumpExecutedService, channelConfigurationList);
-            epgdumpAsyncConfigurer.getAsyncExecutor().execute(epgDumpRunner);
+            //EPGDumpRunner epgDumpRunner = new EPGDumpRunner(systemConfiguration, epgdumpConfiguration, epgDumpParser, lastEPGDumpExecutedService, channelConfigurationList);
+        //epgdumpRunner.setChannelConfigurationList(channelConfigurationList);
+        //epgdumpAsyncConfigurer.getAsyncExecutor().execute(epgdumpRunner);
 
 //        } catch (IOException e) {
 //            log.error("invalid epgdump_channel_map.json: {} {}", e.getMessage(), e);
@@ -136,12 +142,12 @@ public class EpgdumpService implements IEpgdumpService {
 
     @Override
     public EpgdumpStatus getStatus() {
-        int acvitve = epgdumpAsyncConfigurer.threadPoolTaskExecutor().getActiveCount();
-        if(acvitve == 1){
-            return EpgdumpStatus.RUNNING;
-        }else if(acvitve == 0){
-            return EpgdumpStatus.STOPPED;
-        }
+//        int acvitve = epgdumpAsyncConfigurer.threadPoolTaskExecutor().getActiveCount();
+//        if(acvitve == 1){
+//            return EpgdumpStatus.RUNNING;
+//        }else if(acvitve == 0){
+//            return EpgdumpStatus.STOPPED;
+//        }
         return EpgdumpStatus.STOPPED; // TODO:
     }
 }

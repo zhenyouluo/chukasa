@@ -35,7 +35,7 @@ public class IntermediateFFmpegHLSMediaSegmentDetectorService implements IInterm
         ffmpegHLSMediaSegmentDetector.setAdaptiveBitrateStreaming(adaptiveBitrateStreaming);
         threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
         threadPoolTaskScheduler.setThreadNamePrefix(Integer.toString(adaptiveBitrateStreaming));
-        threadPoolTaskScheduler.setPoolSize(3);
+        //threadPoolTaskScheduler.setPoolSize(3);
         threadPoolTaskScheduler.initialize();
         threadPoolTaskScheduler.scheduleAtFixedRate(ffmpegHLSMediaSegmentDetector, startTime, period);
     }
