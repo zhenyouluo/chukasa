@@ -7,8 +7,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.domain.configuration.ChukasaConfiguration;
-import pro.hirooka.chukasa.domain.model.recorder.ChannelSettings;
-import pro.hirooka.chukasa.domain.model.recorder.ChannelSettingsWrapper;
+import pro.hirooka.chukasa.domain.model.recorder.ChannelConfiguration;
+import pro.hirooka.chukasa.domain.model.recorder.ChannelConfigurationWrapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,17 +25,17 @@ public class CommonUtilityService implements ICommonUtilityService {
     private ChukasaConfiguration chukasaConfiguration;
 
     @Override
-    public List<ChannelSettings> getChannelSettingsList() {
-        List<ChannelSettings> channelSettingsList = new ArrayList<>();
+    public List<ChannelConfiguration> getChannelConfigurationList() {
+        List<ChannelConfiguration> channelConfigurationList = new ArrayList<>();
         try {
-            Resource resource = new ClassPathResource(chukasaConfiguration.getRecorderChannelSettings());
+            Resource resource = new ClassPathResource(chukasaConfiguration.getChannelConfiguration());
             ObjectMapper objectMapper = new ObjectMapper();
-            channelSettingsList = objectMapper.readValue(resource.getInputStream(), ChannelSettingsWrapper.class).getChannelSettingsList();
-            log.info(channelSettingsList.toString());
+            channelConfigurationList = objectMapper.readValue(resource.getInputStream(), ChannelConfigurationWrapper.class).getChannelConfigurationList();
+            log.info(channelConfigurationList.toString());
         } catch (IOException e) {
             log.error("invalid channel_settings.json: {} {}", e.getMessage(), e);
         }
-        return channelSettingsList;
+        return channelConfigurationList;
     }
 
     @Override

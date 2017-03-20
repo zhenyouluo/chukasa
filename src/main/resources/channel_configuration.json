@@ -1,5 +1,5 @@
 {
-  "channelSettings" : [
+  "channelConfiguration" : [
     {
       "channelType" : "GR",
       "remoteControllerChannel" : 9,

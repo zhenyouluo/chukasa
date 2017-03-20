@@ -9,7 +9,7 @@ import pro.hirooka.chukasa.domain.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.epgdump.enums.EpgdumpStatus;
 import pro.hirooka.chukasa.domain.model.epgdump.LastEpgdumpExecuted;
-import pro.hirooka.chukasa.domain.model.recorder.ChannelSettings;
+import pro.hirooka.chukasa.domain.model.recorder.ChannelConfiguration;
 import pro.hirooka.chukasa.domain.service.common.ulitities.ICommonUtilityService;
 import pro.hirooka.chukasa.domain.service.epgdump.parser.EPGDumpRunner;
 import pro.hirooka.chukasa.domain.service.epgdump.parser.IEpgdumpParser;
@@ -95,7 +95,7 @@ public class EpgdumpService implements IEpgdumpService {
     void runEPGDump(){
 
         log.info("run runEPGDump()");
-        List<ChannelSettings> channelSettingsList = commonUtilityService.getChannelSettingsList();
+        List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
 //        Resource resource = new ClassPathResource(epgdumpConfiguration.getPhysicalChannelMap());
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        try {
@@ -103,7 +103,7 @@ public class EpgdumpService implements IEpgdumpService {
 //            log.info(epgdumpChannelMap.toString());
 
 //            EPGDumpRunner epgDumpRunner = new EPGDumpRunner(systemConfiguration, epgdumpConfiguration, epgDumpParser, lastEPGDumpExecutedService, epgdumpChannelMap);
-            EPGDumpRunner epgDumpRunner = new EPGDumpRunner(systemConfiguration, epgdumpConfiguration, epgDumpParser, lastEPGDumpExecutedService, channelSettingsList);
+            EPGDumpRunner epgDumpRunner = new EPGDumpRunner(systemConfiguration, epgdumpConfiguration, epgDumpParser, lastEPGDumpExecutedService, channelConfigurationList);
             epgdumpAsyncConfigurer.getAsyncExecutor().execute(epgDumpRunner);
 
 //        } catch (IOException e) {

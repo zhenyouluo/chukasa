@@ -82,7 +82,7 @@ public class IndexController {
         List<Program> programList = new ArrayList<>();
         boolean isLastEpgdumpExecuted = false;
 
-        List<ChannelSettings> channelSettingsList = commonUtilityService.getChannelSettingsList();
+        List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
 
 //        Map<String, String> epgdumpChannelMap = new HashMap<>();
 //        Resource resource = new ClassPathResource(epgdumpConfiguration.getPhysicalChannelMap());
@@ -97,7 +97,7 @@ public class IndexController {
             programList = programTableService.readByNow(new Date().getTime());
             programList = programList.stream().sorted(Comparator.comparing(Program::getPhysicalLogicalChannel)).collect(Collectors.toList());
 //            if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalChannels() >= epgdumpChannelMap.size()){
-            if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalLogicalChannels() >= channelSettingsList.size()){
+            if(programList != null && lastEpgdumpExecutedService.read(1) != null && programTableService.getNumberOfPhysicalLogicalChannels() >= channelConfigurationList.size()){
                 isLastEpgdumpExecuted = true;
             }
         }
@@ -111,10 +111,11 @@ public class IndexController {
         if(isFFmpeg && isPTx && isRecpt1 && !isLastEpgdumpExecuted){
             programList = new ArrayList<>();
             isPTxByChannel = true;
-            for(ChannelSettings channelSettings : channelSettingsList){
+            for(ChannelConfiguration channelConfiguration : channelConfigurationList){
                 try {
                     Program program = new Program();
-                    program.setPhysicalLogicalChannel(channelSettings.getPhysicalLogicalChannel());
+                    program.setPhysicalLogicalChannel(channelConfiguration.getPhysicalLogicalChannel());
+                    program.setRemoteControllerChannel(channelConfiguration.getRemoteControllerChannel());
                     programList.add(program);
                 }catch (NumberFormatException e){
                     log.error("invalid value {} {}", e.getMessage(), e);
