@@ -161,8 +161,7 @@ mkdir /opt/chukasa/video
 cd /tmp
 git clone https://github.com/hirooka/chukasa.git
 cd chukasa
-sed -i -e "s/system.recpt1-path=\/usr\/local\/bin\/recpt1/system.recpt1-path=\/usr\/local\/bin\/recdvb/g" src/main/resources/application.properties
-sed -i -e "s/system.openmax-enabled=false/system.openmax-enabled=true/g" src/main/resources/application.properties
+sed -i -e "s/system.recxxx-path=\/usr\/local\/bin\/recpt1/system.recxxx-path=\/usr\/local\/bin\/recdvb/g" src/main/resources/application.properties
 
 # build chukasa application
 ./gradlew build
