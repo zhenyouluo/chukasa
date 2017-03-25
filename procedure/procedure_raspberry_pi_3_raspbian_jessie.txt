@@ -1,17 +1,24 @@
 # procedure_raspberry_pi_3_raspbian_jessie.txt
 
+# unzip 2017-03-02-raspbian-jessie.zip
+# sudo dd bs=4M if=2017-03-02-raspbian-jessie.img of=/dev/sdXXX
+#   1047+1 records in
+#   1047+1 records out
+#    4393533440 bytes (4.4 GB) copied, 183.196 s, 24.0 MB/s
+# sudo sync
+
 # Raspberry Pi 3 Model B, PX-S1UD V2.0, PX-BCUD
-# Raspbian Jessie 2017-01-11
-# Linux raspberrypi 4.4.34-v7+ #930 SMP Wed Nov 23 15:20:41 GMT 2016 armv7l GNU/Linux
+# Raspbian Jessie 2017-03-02
+# Linux raspberrypi 4.4.50-v7+ #970 SMP Mon Feb 20 19:18:29 GMT 2017 armv7l GNU/Linux
 
 # -> apt-get dist-upgrade
-#   -> Linux raspberrypi 4.4.38-v7+ #938 SMP Thu Dec 15 15:22:21 GMT 2016 armv7l GNU/Linux
+#   -> //
 
 # -> sudo BRANCH=next rpi-update
-#   -> Linux raspberrypi 4.9.9-v7+ #963 SMP Fri Feb 10 18:14:48 GMT 2017 armv7l GNU/Linux
+#   -> Linux raspberrypi 4.9.13-v7+ #974 SMP Wed Mar 1 20:09:48 GMT 2017 armv7l GNU/Linux
 
-# sudo adduser hirooka
-# sudo gpasswd -a hirooka sudo
+# sudo adduser XXX
+# sudo gpasswd -a XXX sudo
 
 /*******************************************************
 cat /etc/os-release
@@ -27,16 +34,16 @@ BUG_REPORT_URL="http://www.raspbian.org/RaspbianBugs"
 
 df -h
 Filesystem      Size  Used Avail Use% Mounted on
-/dev/root        30G  3.6G   25G  13% /
+/dev/root        30G  3.7G   25G  14% /
 devtmpfs        459M     0  459M   0% /dev
 tmpfs           463M     0  463M   0% /dev/shm
 tmpfs           463M  6.3M  457M   2% /run
 tmpfs           5.0M  4.0K  5.0M   1% /run/lock
 tmpfs           463M     0  463M   0% /sys/fs/cgroup
 /dev/mmcblk0p1   63M   21M   42M  33% /boot
+tmpfs            93M     0   93M   0% /run/user/1000
 tmpfs            93M     0   93M   0% /run/user/1001
 *******************************************************/
-
 
 #*******************************************************************************************************************
 # Lib
@@ -50,6 +57,10 @@ sudo sh -c "echo '/usr/local/lib' >> /etc/ld.so.conf.d/local.conf"
 sudo apt-get update
 sudo apt-get -y upgrade
 sudo apt-get -y dist-upgrade
+
+sudo reboot
+
+sudo BRANCH=next rpi-update
 
 sudo reboot
 
@@ -86,7 +97,7 @@ cd /tmp && \
     wget http://hg.honeyplanet.jp/pt1/archive/ec7c87854f2f.tar.bz2 && \
     tar xvlf ec7c87854f2f.tar.bz2 && \
     cd pt1-ec7c87854f2f/arib25 && \
-    make && \
+    make -j$(nproc) && \
     sudo make install && \
     sudo ldconfig
 
@@ -96,7 +107,7 @@ cd /tmp && \
     chmod a+x autogen.sh && \
     ./autogen.sh && \
     ./configure --enable-b25 && \
-    make && \
+    make -j$(nproc) && \
     sudo make install && \
     sudo ldconfig
 
@@ -107,18 +118,18 @@ cd /tmp && \
     git clone https://github.com/Piro77/epgdump.git && \
     cd epgdump && \
     ./autogen.sh && \
-    make && \
+    make -j$(nproc) && \
     sudo make install
 
 #*******************************************************************************************************************
 # FFmpeg
 #*******************************************************************************************************************
 cd /tmp && \
-    wget https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
-    tar jxvf ffmpeg-snapshot.tar.bz2 && \
-    cd ffmpeg && \
+    wget https://ffmpeg.org/releases/ffmpeg-3.2.4.tar.bz2 && \
+    tar jxvf ffmpeg-*.tar.bz2 && \
+    cd ffmpeg-* && \
     ./configure --enable-static --enable-omx-rpi --enable-mmal && \
-    make -j4 && \
+    make -j$(nproc) && \
     sudo make install && \
     sudo ldconfig
 
@@ -127,11 +138,11 @@ cd /tmp && \
 #*******************************************************************************************************************
 cd /tmp && \
     sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.11.9.tar.gz && \
+    wget http://nginx.org/download/nginx-1.11.12.tar.gz && \
     tar zxvf nginx-*.tar.gz && \
     cd nginx-* && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
-    make -j4 && \
+    make -j$(nproc) && \
     sudo make install
 
 #*******************************************************************************************************************
