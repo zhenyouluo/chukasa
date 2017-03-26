@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant;
+import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.domain.model.epgdump.LastEpgdumpExecuted;
 import pro.hirooka.chukasa.domain.model.recorder.ChannelConfiguration;
 import pro.hirooka.chukasa.domain.model.recorder.enums.ChannelType;
+import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
 import pro.hirooka.chukasa.domain.service.epgdump.ILastEpgdumpExecutedService;
 import pro.hirooka.chukasa.domain.service.epgdump.parser.IEpgdumpParser;
 import pro.hirooka.chukasa.domain.service.epgdump.runner.IEpgdumpRunnerService;
@@ -38,12 +40,17 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
     private IEpgdumpParser epgdumpParser;
     @Autowired
     private ILastEpgdumpExecutedService lastEpgdumpExecutedService;
+    @Autowired
+    private ISystemService systemService;
     @Setter
     private List<ChannelConfiguration> channelConfigurationList;
 
     @Async
     @Override
     public Future<Integer> submit(List<ChannelConfiguration> channelConfigurationList) {
+
+        // TODO: tsid
+        final boolean isOMX = systemService.getVideoCodecType() == HardwareAccelerationType.H264_OMX;
 
         File temporaryEpgdumpPathFile = new File(epgdumpConfiguration.getTemporaryPath());
         if(temporaryEpgdumpPathFile.mkdirs()){
@@ -63,7 +70,16 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
                 if(channelConfiguration.getChannelType() == ChannelType.GR || !isBS) {
                     try {
                         int physicalChannel = channelConfiguration.getPhysicalLogicalChannel();
-                        String recpt1Command = systemConfiguration.getRecxxxPath() + " --b25 --strip " + physicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
+                        final String recpt1Command;
+                        if(!isOMX) {
+                            recpt1Command = systemConfiguration.getRecxxxPath() + " --b25 --strip " + physicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
+                        }else{
+                            if(channelConfiguration.getChannelType() != ChannelType.BS) {
+                                recpt1Command = systemConfiguration.getRecxxxPath() + " --b25 --strip " + physicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
+                            }else{
+                                recpt1Command = systemConfiguration.getRecxxxPath() + " --dev 1 --b25 --strip --lch " + physicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
+                            }
+                        }
                         String epgdumpCommand = epgdumpConfiguration.getPath() + " json " + epgdumpConfiguration.getTemporaryPath()+ FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".json";
                         bufferedWriter.write(recpt1Command);
                         bufferedWriter.newLine();
