@@ -13,12 +13,14 @@ import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.domain.model.epgdump.LastEpgdumpExecuted;
+import pro.hirooka.chukasa.domain.model.epgdump.RecdvbBSModel;
 import pro.hirooka.chukasa.domain.model.recorder.ChannelConfiguration;
 import pro.hirooka.chukasa.domain.model.recorder.enums.ChannelType;
 import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
 import pro.hirooka.chukasa.domain.service.epgdump.ILastEpgdumpExecutedService;
 import pro.hirooka.chukasa.domain.service.epgdump.parser.IEpgdumpParser;
 import pro.hirooka.chukasa.domain.service.epgdump.runner.IEpgdumpRunnerService;
+import pro.hirooka.chukasa.domain.service.epgdump.runner.helper.IEpgdumpRecdvbHelper;
 
 import java.io.*;
 import java.util.Date;
@@ -42,6 +44,8 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
     private ILastEpgdumpExecutedService lastEpgdumpExecutedService;
     @Autowired
     private ISystemService systemService;
+    @Autowired
+    private IEpgdumpRecdvbHelper epgdumpRecdvbHelper;
     @Setter
     private List<ChannelConfiguration> channelConfigurationList;
 
@@ -77,7 +81,8 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
                             if(channelConfiguration.getChannelType() != ChannelType.BS) {
                                 recpt1Command = systemConfiguration.getRecxxxPath() + " --b25 --strip " + physicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
                             }else{
-                                recpt1Command = systemConfiguration.getRecxxxPath() + " --dev 1 --b25 --strip --lch " + physicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
+                                RecdvbBSModel recdvbBSModel = epgdumpRecdvbHelper.resovle(physicalChannel);
+                                recpt1Command = systemConfiguration.getRecxxxPath() + " --dev 1 --b25 --strip --tsid " + recdvbBSModel.getTsid() + " " + recdvbBSModel.getName() + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
                             }
                         }
                         String epgdumpCommand = epgdumpConfiguration.getPath() + " json " + epgdumpConfiguration.getTemporaryPath()+ FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".json";
