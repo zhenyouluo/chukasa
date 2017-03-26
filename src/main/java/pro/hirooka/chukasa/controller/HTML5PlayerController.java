@@ -74,8 +74,8 @@ public class HTML5PlayerController {
             return "index";
         }
 
-        HardwareAccelerationType videoCodecType = systemService.getVideoCodecType();
-        if(videoCodecType.equals(HardwareAccelerationType.UNKNOWN)){
+        HardwareAccelerationType hardwareAccelerationType = systemService.getHardwareAccelerationType();
+        if(hardwareAccelerationType == HardwareAccelerationType.UNKNOWN){
             return "index";
         }
 
@@ -94,7 +94,7 @@ public class HTML5PlayerController {
 
         chukasaModel.setUuid(UUID.randomUUID());
         chukasaModel.setAdaptiveBitrateStreaming(0);
-        chukasaModel.setVideoCodecType(videoCodecType);
+        chukasaModel.setHardwareAccelerationType(hardwareAccelerationType);
 
         chukasaModel = ChukasaUtility.operateEncodingSettings(chukasaModel);
         if(chukasaModel == null){

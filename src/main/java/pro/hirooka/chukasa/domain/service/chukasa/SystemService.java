@@ -132,7 +132,7 @@ public class SystemService implements ISystemService {
     }
 
     @Override
-    public HardwareAccelerationType getVideoCodecType() {
+    public HardwareAccelerationType getHardwareAccelerationType() {
         final String H264_QSV = "--enable-libmfx";
         final String H264 = "--enable-libx264";
         final String H264_OMX = "--enable-omx-rpi";

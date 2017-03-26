@@ -83,7 +83,7 @@ public class ChukasaModel {
     private PlaylisterRunner playlisterRunner;
     private UUID uuid;
 
-    private HardwareAccelerationType videoCodecType;
+    private HardwareAccelerationType hardwareAccelerationType;
 
     private int sequenceMediaSegment;
     private int sequenceLastMediaSegment;
@@ -155,7 +155,7 @@ public class ChukasaModel {
         this.playlisterRunner = null;
         this.uuid = null;
 
-        this.videoCodecType = HardwareAccelerationType.UNKNOWN;
+        this.hardwareAccelerationType = HardwareAccelerationType.UNKNOWN;
 
         this.sequenceMediaSegment = -1;
         this.sequenceLastMediaSegment = -1;

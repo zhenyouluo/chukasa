@@ -46,7 +46,7 @@ public class FFmpegService implements IFFmpegService {
 
         // TODO: chukasaModel final
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
-        final HardwareAccelerationType hardwareAccelerationType = chukasaModel.getVideoCodecType();
+        final HardwareAccelerationType hardwareAccelerationType = chukasaModel.getHardwareAccelerationType();
         final boolean canEncrypt = chukasaModel.getChukasaSettings().isCanEncrypt();
         final String ffmpegOutputPath;
         if (canEncrypt) {

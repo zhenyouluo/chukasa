@@ -40,7 +40,7 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
         log.debug("StreamPath: {}", chukasaModel.getStreamPath());
 
-        final HardwareAccelerationType hardwareAccelerationType = chukasaModel.getVideoCodecType();
+        final HardwareAccelerationType hardwareAccelerationType = chukasaModel.getHardwareAccelerationType();
 
         final boolean canEncrypt = chukasaModel.getChukasaSettings().isCanEncrypt();
         final String ffmpegOutputPath;

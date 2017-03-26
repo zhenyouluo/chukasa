@@ -14,5 +14,5 @@ public interface ISystemService {
     boolean canFileStreaming();
     boolean canPTxStreaming();
     boolean canRecording();
-    HardwareAccelerationType getVideoCodecType();
+    HardwareAccelerationType getHardwareAccelerationType();
 }

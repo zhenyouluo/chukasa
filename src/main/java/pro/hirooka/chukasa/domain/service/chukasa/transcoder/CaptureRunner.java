@@ -32,7 +32,7 @@ public class CaptureRunner implements Runnable {
 
 //        boolean isQSV = chukasaModel.getSystemConfiguration().isQuickSyncVideoEnabled();
 //        boolean isOpenMAX = chukasaModel.getSystemConfiguration().isOpenmaxEnabled();
-        HardwareAccelerationType videoCodecType = chukasaModel.getVideoCodecType();
+        HardwareAccelerationType hardwareAccelerationType = chukasaModel.getHardwareAccelerationType();
 
         boolean isEncrypted = chukasaModel.getChukasaSettings().isCanEncrypt();
         String ffmpegOutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + "%d" + STREAM_FILE_EXTENSION;
@@ -44,7 +44,7 @@ public class CaptureRunner implements Runnable {
 
         String[] commandArray = {""};
 
-        if(videoCodecType.equals(HardwareAccelerationType.H264_OMX)){
+        if(hardwareAccelerationType == HardwareAccelerationType.H264_OMX){
             String[] commandArrayTemporary =  {
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     "--b25", "--strip",
@@ -73,7 +73,7 @@ public class CaptureRunner implements Runnable {
                     ffmpegOutputPath
             };
             commandArray = commandArrayTemporary;
-        } else if(videoCodecType.equals(HardwareAccelerationType.H264_QSV)){
+        } else if(hardwareAccelerationType == HardwareAccelerationType.H264_QSV){
             String[] commandArrayTemporary =  {
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     "--b25", "--strip",
@@ -100,7 +100,7 @@ public class CaptureRunner implements Runnable {
                     ffmpegOutputPath
             };
             commandArray = commandArrayTemporary;
-        }else if(videoCodecType.equals(HardwareAccelerationType.H264)){
+        }else if(hardwareAccelerationType == HardwareAccelerationType.H264){
             String[] commandArrayTemporary = {
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     "--b25", "--strip",

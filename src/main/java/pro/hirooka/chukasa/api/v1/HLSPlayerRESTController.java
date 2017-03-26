@@ -66,8 +66,8 @@ public class  HLSPlayerRESTController {
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     HLSPlaylist play(@RequestBody @Validated ChukasaSettings chukasaSettings) throws ChukasaBadRequestException, ChukasaInternalServerErrorException {
 
-        HardwareAccelerationType videoCodecType = systemService.getVideoCodecType();
-        if(videoCodecType.equals(HardwareAccelerationType.UNKNOWN)){
+        HardwareAccelerationType hardwareAccelerationType = systemService.getHardwareAccelerationType();
+        if(hardwareAccelerationType.equals(HardwareAccelerationType.UNKNOWN)){
             throw new ChukasaInternalServerErrorException("FFmpeg configuration is not suitable for this application.");
         }
 
@@ -91,7 +91,7 @@ public class  HLSPlayerRESTController {
 
         chukasaModel.setUuid(UUID.randomUUID());
         chukasaModel.setAdaptiveBitrateStreaming(0);
-        chukasaModel.setVideoCodecType(videoCodecType);
+        chukasaModel.setHardwareAccelerationType(hardwareAccelerationType);
 
         chukasaModel = ChukasaUtility.operateEncodingSettings(chukasaModel);
         if(chukasaModel == null){

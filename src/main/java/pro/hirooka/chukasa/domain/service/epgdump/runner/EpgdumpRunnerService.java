@@ -50,7 +50,7 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
     public Future<Integer> submit(List<ChannelConfiguration> channelConfigurationList) {
 
         // TODO: tsid
-        final boolean isOMX = systemService.getVideoCodecType() == HardwareAccelerationType.H264_OMX;
+        final boolean isOMX = systemService.getHardwareAccelerationType() == HardwareAccelerationType.H264_OMX;
 
         File temporaryEpgdumpPathFile = new File(epgdumpConfiguration.getTemporaryPath());
         if(temporaryEpgdumpPathFile.mkdirs()){

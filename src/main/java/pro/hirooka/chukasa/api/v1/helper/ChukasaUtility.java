@@ -154,7 +154,7 @@ public class ChukasaUtility {
                 || streamingType.equals(StreamingType.WEBCAM)) {
             timerSegmenterDelay = (long) (duration * 1000);
         }
-        if(chukasaModel.getVideoCodecType().equals(HardwareAccelerationType.H264_OMX)){
+        if(chukasaModel.getHardwareAccelerationType().equals(HardwareAccelerationType.H264_OMX)){
             timerSegmenterDelay = timerSegmenterDelay + 3000; // todo
         }
         long timerSegmenterPeriod = (long) (duration * 1000);
