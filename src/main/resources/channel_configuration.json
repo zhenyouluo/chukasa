@@ -134,7 +134,8 @@
       "channelType" : "BS",
       "remoteControllerChannel" : 232,
       "physicalLogicalChannel" : 232
-    },    {
+    },
+    {
       "channelType" : "BS",
       "remoteControllerChannel" : 233,
       "physicalLogicalChannel" : 233
@@ -143,11 +144,13 @@
       "channelType" : "BS",
       "remoteControllerChannel" : 234,
       "physicalLogicalChannel" : 234
-    },    {
+    },
+    {
       "channelType" : "BS",
       "remoteControllerChannel" : 236,
       "physicalLogicalChannel" : 236
-    },    {
+    },
+    {
       "channelType" : "BS",
       "remoteControllerChannel" : 238,
       "physicalLogicalChannel" : 238
