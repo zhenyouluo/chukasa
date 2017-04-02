@@ -1,0 +1,20 @@
+{
+  "tuner": [
+    {
+      "channelType": "BS",
+      "deviceName": "/dev/dvb/adapter4"
+    },
+    {
+      "channelType": "GR",
+      "deviceName": "/dev/dvb/adapter5"
+    },
+    {
+      "channelType": "BS",
+      "deviceName": "/dev/dvb/adapter6"
+    },
+    {
+      "channelType": "GR",
+      "deviceName": "/dev/dvb/adapter7"
+    }
+  ]
+}
