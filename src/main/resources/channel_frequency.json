@@ -1,0 +1,58 @@
+{
+  "channelConfiguration" : [
+    {
+      "channelType" : "GR",
+      "remoteControllerChannel" : 9,
+      "physicalLogicalChannel" : 16,
+      "frequency" : 491143000
+    },
+    {
+      "channelType" : "GR",
+      "remoteControllerChannel" : 3,
+      "physicalLogicalChannel" : 18,
+      "frequency" : 503143000
+    },
+    {
+      "channelType" : "GR",
+      "remoteControllerChannel" : 8,
+      "physicalLogicalChannel" : 21,
+      "frequency" : 521143000
+    },
+    {
+      "channelType" : "GR",
+      "remoteControllerChannel" : 6,
+      "physicalLogicalChannel" : 22,
+      "frequency" : 527143000
+    },
+    {
+      "channelType" : "GR",
+      "remoteControllerChannel" : 7,
+      "physicalLogicalChannel" : 23,
+      "frequency" : 533143000
+    },
+    {
+      "channelType" : "GR",
+      "remoteControllerChannel" : 5,
+      "physicalLogicalChannel" : 24,
+      "frequency" : 539143000
+    },
+    {
+      "channelType" : "GR",
+      "remoteControllerChannel" : 4,
+      "physicalLogicalChannel" : 25,
+      "frequency" : 545143000
+    },
+    {
+      "channelType" : "GR",
+      "remoteControllerChannel" : 2,
+      "physicalLogicalChannel" : 26,
+      "frequency" : 551143000
+    },
+    {
+      "channelType" : "GR",
+      "remoteControllerChannel" : 1,
+      "physicalLogicalChannel" : 27,
+      "frequency" : 557143000
+    }
+  ]
+}

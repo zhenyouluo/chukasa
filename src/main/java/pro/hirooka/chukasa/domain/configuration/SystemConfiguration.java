@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "system")
 public class SystemConfiguration {
+    String haryukaPath;
     String ffmpegPath;
     String recxxxPath;
     String webcamDeviceName;
