@@ -8,8 +8,6 @@ import pro.hirooka.chukasa.domain.model.epgdump.RecdvbBSModel;
 @Component
 public class EpgdumpRecdvbHelper implements IEpgdumpRecdvbHelper {
 
-    // TODO: add
-
     @Override
     public RecdvbBSModel resovle(int logicalChannel) {
         RecdvbBSModel recdvbBSModel = new RecdvbBSModel();
@@ -100,46 +98,74 @@ public class EpgdumpRecdvbHelper implements IEpgdumpRecdvbHelper {
                 recdvbBSModel.setTsid("0x46b2");
                 break;
             case 234:
-
+                recdvbBSModel.setLoginalChannel(logicalChannel);
+                recdvbBSModel.setName("bs19");
+                recdvbBSModel.setTsid("0x4730");
                 break;
             case 236:
-
+                recdvbBSModel.setLoginalChannel(logicalChannel);
+                recdvbBSModel.setName("bs07");
+                recdvbBSModel.setTsid("0x4671");
                 break;
             case 238:
-
+                recdvbBSModel.setLoginalChannel(logicalChannel);
+                recdvbBSModel.setName("bs11");
+                recdvbBSModel.setTsid("0x46b0");
                 break;
             case 241:
-
+                recdvbBSModel.setLoginalChannel(logicalChannel);
+                recdvbBSModel.setName("bs11");
+                recdvbBSModel.setTsid("0x46b1");
                 break;
             case 242:
-
+                recdvbBSModel.setLoginalChannel(logicalChannel);
+                recdvbBSModel.setName("bs19");
+                recdvbBSModel.setTsid("0x4731");
                 break;
             case 243:
-
+                recdvbBSModel.setLoginalChannel(logicalChannel);
+                recdvbBSModel.setName("bs19");
+                recdvbBSModel.setTsid("0x4732");
                 break;
             case 244:
-
+                recdvbBSModel.setLoginalChannel(logicalChannel);
+                recdvbBSModel.setName("bs21");
+                recdvbBSModel.setTsid("0x4751");
                 break;
             case 245:
-
+                recdvbBSModel.setLoginalChannel(logicalChannel);
+                recdvbBSModel.setName("bs21");
+                recdvbBSModel.setTsid("0x4752");
                 break;
             case 251:
-
+                recdvbBSModel.setLoginalChannel(logicalChannel);
+                recdvbBSModel.setName("bs23");
+                recdvbBSModel.setTsid("0x4771");
                 break;
             case 252:
-
+                recdvbBSModel.setLoginalChannel(logicalChannel);
+                recdvbBSModel.setName("bs21");
+                recdvbBSModel.setTsid("0x4750");
                 break;
             case 255:
-
+                recdvbBSModel.setLoginalChannel(logicalChannel);
+                recdvbBSModel.setName("bs23");
+                recdvbBSModel.setTsid("0x4771");
                 break;
             case 256:
-
+                recdvbBSModel.setLoginalChannel(logicalChannel);
+                recdvbBSModel.setName("bs07");
+                recdvbBSModel.setTsid("0x4672");
                 break;
             case 258:
-
+                recdvbBSModel.setLoginalChannel(logicalChannel);
+                recdvbBSModel.setName("bs23");
+                recdvbBSModel.setTsid("0x4772");
                 break;
             case 531:
-
+                recdvbBSModel.setLoginalChannel(logicalChannel);
+                recdvbBSModel.setName("bs11");
+                recdvbBSModel.setTsid("0x46b2");
                 break;
             default:
                 break;

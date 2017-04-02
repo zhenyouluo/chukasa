@@ -199,11 +199,6 @@
       "channelType" : "BS",
       "remoteControllerChannel" : 258,
       "physicalLogicalChannel" : 258
-    },
-    {
-      "channelType" : "BS",
-      "remoteControllerChannel" : 910,
-      "physicalLogicalChannel" : 910
     }
   ]
 }
