@@ -166,8 +166,7 @@ public class SystemService implements ISystemService {
         } catch (IOException e) {
             log.error("{} {}", e.getMessage(), e);
         }
-        return HardwareAccelerationType.UNKNOWN;
+        return HardwareAccelerationType.H264_NVENC;
     }
-
 
 }
