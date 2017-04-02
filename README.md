@@ -1,12 +1,12 @@
 # chukasa 
 
-HTTP Live Streaming (HLS) server to deliver PT3, PX-S1UD, web camera and video file to cross-platform
+HTTP Live Streaming (HLS) server to deliver tuner, web camera and video file to cross-platform
 
 [![Build Status](https://travis-ci.org/hirooka/chukasa.svg?branch=master)](https://travis-ci.org/hirooka/chukasa) [![Build Status](https://circleci.com/gh/hirooka/chukasa.png?style=shield)](https://circleci.com/gh/hirooka/chukasa)
 
 # Description
 
-PT3, PX-S1UD の出力，Web カメラの映像とそのマイクの音声，任意のビデオファイルをリアルタイムにトランスコードしながら HLS で配信するウェブアプリケーションです．ストリーミングされたビデオは，Safari (OS X, iOS) や iOS App で再生することができます．
+チューナーの出力，Web カメラの映像とそのマイクの音声，任意のビデオファイルをリアルタイムにトランスコードしながら HLS で配信するウェブアプリケーションです．ストリーミングされたビデオは，Safari (OS X, iOS) や iOS App で再生することができます．
 
 # Demo
 
@@ -20,12 +20,12 @@ PT3, PX-S1UD の出力，Web カメラの映像とそのマイクの音声，任
 
 # Features
 
-* PT3 の出力を「やや」リアルタイムに HLS で配信
+* チューナーの出力を「やや」リアルタイムに HLS で配信
 * Web カメラの映像とそのマイクの音声を「やや」リアルタイムに HLS で配信
 * 任意のビデオファイルを HLS で配信
 * epgdump を使用した番組情報の取得 (EXPERIMENTAL)
-* PT3 を使用した録画 (EXPERIMENTAL)
-* PT3 を使用した追っかけ再生 (EXPERIMENTAL)
+* チューナーを使用した録画 (EXPERIMENTAL)
+* チューナーを使用した追っかけ再生 (EXPERIMENTAL)
 
 「やや」リアルタイムということで，10 - 15 秒くらいは遅延が発生します．
 
