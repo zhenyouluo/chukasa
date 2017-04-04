@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant;
-import pro.hirooka.chukasa.domain.model.common.Tuner;
+import pro.hirooka.chukasa.domain.model.common.TunerStatus;
+import pro.hirooka.chukasa.domain.model.common.enums.RecxxxDriverType;
 import pro.hirooka.chukasa.domain.model.epgdump.LastEpgdumpExecuted;
 import pro.hirooka.chukasa.domain.model.epgdump.RecdvbBSModel;
 import pro.hirooka.chukasa.domain.model.recorder.ChannelConfiguration;
 import pro.hirooka.chukasa.domain.model.recorder.enums.ChannelType;
+import pro.hirooka.chukasa.domain.service.common.ITunerManagementService;
 import pro.hirooka.chukasa.domain.service.common.ulitities.CommonUtilityService;
 import pro.hirooka.chukasa.domain.service.epgdump.ILastEpgdumpExecutedService;
 import pro.hirooka.chukasa.domain.service.epgdump.parser.IEpgdumpParser;
@@ -43,20 +45,17 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
     @Autowired
     private IEpgdumpRecdvbHelper epgdumpRecdvbHelper;
     @Autowired
-    private CommonUtilityService commonUtilityService;
+    private ITunerManagementService tunerManagementService;
 
     @Async
     @Override
     public Future<Integer> submit(List<ChannelConfiguration> channelConfigurationList) {
 
-        final List<Tuner> tunerList = commonUtilityService.getTunerList();
-        boolean isDVB = false;
-        for(Tuner tuner : tunerList){
-            if(tuner.getDeviceName().startsWith("/dev/dvb/adapter")){
-                isDVB = true;
-                break;
-            }
-        }
+        final RecxxxDriverType recxxxDriverType = tunerManagementService.getRecxxxDriverType();
+        TunerStatus tunerStatusGR = tunerManagementService.findOne(ChannelType.GR);
+        tunerStatusGR = tunerManagementService.update(tunerStatusGR, false);
+        TunerStatus tunerStatusBS = tunerManagementService.findOne(ChannelType.BS);
+        tunerStatusBS = tunerManagementService.update(tunerStatusBS, false);
 
         File temporaryEpgdumpPathFile = new File(epgdumpConfiguration.getTemporaryPath());
         if(temporaryEpgdumpPathFile.mkdirs()){
@@ -75,36 +74,23 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
             for(ChannelConfiguration channelConfiguration : channelConfigurationList){
                 if(channelConfiguration.getChannelType() == ChannelType.GR || !isBS) {
                     try {
-                        int physicalChannel = channelConfiguration.getPhysicalLogicalChannel();
-                        final String recpt1Command;
-                        if(!isDVB) {
-                            recpt1Command = systemConfiguration.getRecxxxPath() + " " + physicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
-                        }else{
+                        final int physicalLogicalChannel = channelConfiguration.getPhysicalLogicalChannel();
+                        final String recxxxCommand;
+                        if(recxxxDriverType == RecxxxDriverType.DVB){
                             if(channelConfiguration.getChannelType() == ChannelType.GR) {
-                                int deviceIndex = 0;
-                                for(Tuner tuner : tunerList){
-                                    if(tuner.getChannelType() == ChannelType.GR){
-                                        deviceIndex = Integer.parseInt(tuner.getDeviceName().split("adapter")[1]); // TODO: exception
-                                        break;
-                                    }
-                                }
-                                recpt1Command = systemConfiguration.getRecxxxPath() + " --dev " + Integer.toString(deviceIndex) + " " + physicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
+                                recxxxCommand = systemConfiguration.getRecxxxPath() + " --dev " + tunerStatusGR.getIndex() + " " + physicalLogicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
                             }else if(channelConfiguration.getChannelType() == ChannelType.BS){
-                                int deviceIndex = 0;
-                                for(Tuner tuner : tunerList){
-                                    if(tuner.getChannelType() == ChannelType.BS){
-                                        deviceIndex = Integer.parseInt(tuner.getDeviceName().split("adapter")[1]); // TODO: exception
-                                        break;
-                                    }
-                                }
-                                RecdvbBSModel recdvbBSModel = epgdumpRecdvbHelper.resovle(physicalChannel);
-                                recpt1Command = systemConfiguration.getRecxxxPath() + " --dev " + Integer.toString(deviceIndex) + " --tsid " + recdvbBSModel.getTsid() + " " + recdvbBSModel.getName() + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
+                                RecdvbBSModel recdvbBSModel = epgdumpRecdvbHelper.resovle(physicalLogicalChannel);
+                                recxxxCommand = systemConfiguration.getRecxxxPath() + " --dev " + tunerStatusBS.getIndex() + " --tsid " + recdvbBSModel.getTsid() + " " + recdvbBSModel.getName() + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
                             }else{
-                                recpt1Command = "";
+                                recxxxCommand = "";
                             }
+                        }else{
+                            recxxxCommand = systemConfiguration.getRecxxxPath() + " " + physicalLogicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
+
                         }
-                        String epgdumpCommand = epgdumpConfiguration.getPath() + " json " + epgdumpConfiguration.getTemporaryPath()+ FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".json";
-                        bufferedWriter.write(recpt1Command);
+                        String epgdumpCommand = epgdumpConfiguration.getPath() + " json " + epgdumpConfiguration.getTemporaryPath()+ FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".json";
+                        bufferedWriter.write(recxxxCommand);
                         bufferedWriter.newLine();
                         bufferedWriter.write(epgdumpCommand);
                         bufferedWriter.newLine();
@@ -189,6 +175,10 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
         } catch (IOException e) {
             log.error("{} {}", e.getMessage(), e);
         }
+
+        tunerManagementService.update(tunerStatusGR, true);
+        tunerManagementService.update(tunerStatusBS, true);
+
         return new AsyncResult<>(0);
     }
 
