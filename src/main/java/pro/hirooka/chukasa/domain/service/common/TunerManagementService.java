@@ -11,7 +11,6 @@ import pro.hirooka.chukasa.domain.service.common.ulitities.CommonUtilityService;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -23,7 +22,7 @@ public class TunerManagementService implements ITunerManagementService {
     final String DVB_DEVICE = "dvb";
     final String CHADEV_DEVICE = "pt3";
 
-    private List<TunerStatus> tunerStatusList = Collections.synchronizedList(new ArrayList<>());
+    private List<TunerStatus> tunerStatusList = new ArrayList<>(); //Collections.synchronizedList(new ArrayList<>());
 
     @Autowired
     private CommonUtilityService commonUtilityService;
@@ -108,6 +107,21 @@ public class TunerManagementService implements ITunerManagementService {
         for(int i = 0; i < tunerStatusList.size(); i++) {
             if (tunerStatusList.get(i).getChannelType() == tunerStatus.getChannelType()
                     && tunerStatusList.get(i).getDeviceName().equals(tunerStatus.getDeviceName())) {
+                return tunerStatusList.get(i);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public TunerStatus update(String deviceName, boolean canUse) {
+        for(int i = 0; i < tunerStatusList.size(); i++) {
+            if (tunerStatusList.get(i).getDeviceName().equals(deviceName)) {
+                tunerStatusList.get(i).setCanUse(canUse);
+            }
+        }
+        for(int i = 0; i < tunerStatusList.size(); i++) {
+            if (tunerStatusList.get(i).getDeviceName().equals(deviceName)) {
                 return tunerStatusList.get(i);
             }
         }

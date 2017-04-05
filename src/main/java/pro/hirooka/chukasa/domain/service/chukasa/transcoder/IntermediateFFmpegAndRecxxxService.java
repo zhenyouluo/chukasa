@@ -45,6 +45,7 @@ public class IntermediateFFmpegAndRecxxxService implements IIntermediateFFmpegAn
 
     @Override
     public void cancel(int adaptiveBitrateStreaming) {
+        ffmpegAndRecxxxService.cancel(adaptiveBitrateStreaming);
         if(future != null){
             future.cancel(true);
         }

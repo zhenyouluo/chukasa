@@ -15,5 +15,6 @@ public interface ITunerManagementService {
     TunerStatus get(String deviceName);
     TunerStatus update(TunerStatus tunerStatus);
     TunerStatus update(TunerStatus tunerStatus, boolean canUse);
+    TunerStatus update(String deviceName, boolean canUse);
     RecxxxDriverType getRecxxxDriverType();
 }

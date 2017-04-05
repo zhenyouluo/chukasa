@@ -32,7 +32,8 @@ public class FFmpegStopperService implements IFFmpegStopperService {
             while((str = bufferedReader.readLine()) != null){
                 log.debug("{}", str);
                 final String trimmedString = str.trim();
-                if ((trimmedString.matches(".*libx264.*") && trimmedString.matches(".*mpegts.*")) || (trimmedString.matches(".*h264_qsv.*") && trimmedString.matches(".*mpegts.*")) || (trimmedString.matches(".*h264_omx.*") && trimmedString.matches(".*mpegts.*"))) {
+                // TODO: マズー
+                if ((trimmedString.matches(".*libx264.*") && trimmedString.matches(".*mpegts.*")) || (trimmedString.matches(".*h264_qsv.*") && trimmedString.matches(".*mpegts.*")) || (trimmedString.matches(".*h264_omx.*") && trimmedString.matches(".*mpegts.*")) || (trimmedString.matches(".*h264_nvenc.*") && trimmedString.matches(".*hls.*"))) {
                     final String[] trimmedStringArray = trimmedString.split(" ");
                     final List<String> pidList = new ArrayList<>();
                     for(int i = 0; i < trimmedStringArray.length; i++) {

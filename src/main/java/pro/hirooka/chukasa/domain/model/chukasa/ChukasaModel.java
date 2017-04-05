@@ -19,6 +19,8 @@ import java.util.UUID;
 @Data
 public class ChukasaModel {
 
+    // TODO: せいり
+
     private int adaptiveBitrateStreaming;
 
     private ChukasaConfiguration chukasaConfiguration;
@@ -88,6 +90,8 @@ public class ChukasaModel {
     private int sequenceMediaSegment;
     private int sequenceLastMediaSegment;
     private int sequencePlaylist;
+
+    private String tunerDeviceName;
 
     public ChukasaModel(){
 
@@ -160,6 +164,8 @@ public class ChukasaModel {
         this.sequenceMediaSegment = -1;
         this.sequenceLastMediaSegment = -1;
         this.sequencePlaylist = -1;
+
+        this.tunerDeviceName = "";
     }
 
 }

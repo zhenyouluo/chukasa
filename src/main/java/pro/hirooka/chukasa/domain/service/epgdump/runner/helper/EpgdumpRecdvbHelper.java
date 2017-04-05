@@ -8,6 +8,8 @@ import pro.hirooka.chukasa.domain.model.epgdump.RecdvbBSModel;
 @Component
 public class EpgdumpRecdvbHelper implements IEpgdumpRecdvbHelper {
 
+    // TODO: -> common tuner service
+
     @Override
     public RecdvbBSModel resovle(int logicalChannel) {
         RecdvbBSModel recdvbBSModel = new RecdvbBSModel();
