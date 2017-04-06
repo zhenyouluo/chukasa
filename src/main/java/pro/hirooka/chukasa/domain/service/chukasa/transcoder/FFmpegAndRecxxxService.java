@@ -47,8 +47,8 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
     public Future<Integer> submit(int adaptiveBitrateStreaming) {
 
         final RecxxxDriverType recxxxDriverType = tunerManagementService.getRecxxxDriverType();
-        TunerStatus tunerStatusGR = tunerManagementService.findOne(ChannelType.GR);
-        TunerStatus tunerStatusBS = tunerManagementService.findOne(ChannelType.BS);
+//        TunerStatus tunerStatusGR = tunerManagementService.findOne(ChannelType.GR);
+//        TunerStatus tunerStatusBS = tunerManagementService.findOne(ChannelType.BS);
 
         // TODO: final
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
@@ -70,19 +70,22 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
             ffmpegM3U8OutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
         }
 
+        TunerStatus tunerStatus = null;
         ChannelType channelType = ChannelType.GR;
         List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
         for(ChannelConfiguration channelConfiguration : channelConfigurationList){
             if(channelConfiguration.getPhysicalLogicalChannel() == chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()){
                 if(channelConfiguration.getChannelType() == ChannelType.GR){
                     channelType = ChannelType.GR;
-                    tunerStatusGR = tunerManagementService.update(tunerStatusGR, false);
-                    chukasaModel.setTunerDeviceName(tunerStatusGR.getDeviceName());
+                    tunerStatus = tunerManagementService.findOne(ChannelType.GR);
+                    tunerStatus = tunerManagementService.update(tunerStatus, false);
+                    chukasaModel.setTunerDeviceName(tunerStatus.getDeviceName());
                     chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
                 }else if(channelConfiguration.getChannelType() == ChannelType.BS){
                     channelType = ChannelType.BS;
-                    tunerStatusBS = tunerManagementService.update(tunerStatusBS, false);
-                    chukasaModel.setTunerDeviceName(tunerStatusBS.getDeviceName());
+                    tunerStatus = tunerManagementService.findOne(ChannelType.BS);
+                    tunerStatus = tunerManagementService.update(tunerStatus, false);
+                    chukasaModel.setTunerDeviceName(tunerStatus.getDeviceName());
                     chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
                 }
             }
@@ -159,6 +162,7 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
         } else if(hardwareAccelerationType == HardwareAccelerationType.H264_QSV){
             commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
+                    "--device", tunerStatus.getDeviceName(),
                     "--b25", "--strip",
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",
@@ -214,7 +218,7 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
                 if(recxxxDriverType == RecxxxDriverType.DVB) {
                     commandArray = new String[]{
                             chukasaModel.getSystemConfiguration().getRecxxxPath(),
-                            "--dev", Integer.toString(tunerStatusGR.getIndex()),
+                            "--dev", Integer.toString(tunerStatus.getIndex()),
                             Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                             "-", "-",
                             "|",
@@ -287,7 +291,7 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
                 if(recxxxDriverType == RecxxxDriverType.DVB){
                     commandArray = new String[]{
                             chukasaModel.getSystemConfiguration().getRecxxxPath(),
-                            "--dev", Integer.toString(tunerStatusBS.getIndex()),
+                            "--dev", Integer.toString(tunerStatus.getIndex()),
                             "--tsid", recdvbBSModel.getTsid(), recdvbBSModel.getName(),
                             Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                             "-", "-",
