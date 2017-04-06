@@ -94,19 +94,11 @@ sudo apt-get -y install autoconf libpcsclite-dev pcsc-tools pcscd cmake libasoun
 # recdvb
 #*******************************************************************************************************************
 cd /tmp && \
-    wget http://hg.honeyplanet.jp/pt1/archive/ec7c87854f2f.tar.bz2 && \
-    tar xvlf ec7c87854f2f.tar.bz2 && \
-    cd pt1-ec7c87854f2f/arib25 && \
-    make -j$(nproc) && \
-    sudo make install && \
-    sudo ldconfig
-
-cd /tmp && \
     git clone https://github.com/k-pi/recdvb && \
     cd recdvb && \
     chmod a+x autogen.sh && \
     ./autogen.sh && \
-    ./configure --enable-b25 && \
+    ./configure && \
     make -j$(nproc) && \
     sudo make install && \
     sudo ldconfig
@@ -138,7 +130,7 @@ cd /tmp && \
 #*******************************************************************************************************************
 cd /tmp && \
     sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.11.12.tar.gz && \
+    wget http://nginx.org/download/nginx-1.11.13.tar.gz && \
     tar zxvf nginx-*.tar.gz && \
     cd nginx-* && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
