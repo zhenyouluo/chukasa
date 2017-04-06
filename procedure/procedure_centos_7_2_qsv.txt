@@ -71,10 +71,10 @@ sudo sh -c "echo 'Cflags: -I\${includedir} -I/usr/include/libdrm' >> /usr/lib64/
 #*******************************************************************************************************************
 cd /tmp && \
     wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz && \
-    tar zxvf yasm-1.3.0.tar.gz && \
-    cd yasm-1.3.0 && \
+    tar zxvf yasm-*.tar.gz && \
+    cd yasm-* && \
     ./configure && \
-    make -j8 && \
+    make -j$(nproc) && \
     sudo make install && \
     sudo ldconfig
 
@@ -86,7 +86,7 @@ cd /tmp && \
     tar jxvf ffmpeg-*.tar.bz2 && \
     cd ffmpeg-* && \
     ./configure --enable-libmfx && \
-    make -j8 && \
+    make -j$(nproc) && \
     sudo make install && \
     sudo ldconfig
 
@@ -104,7 +104,7 @@ sudo ln -s /lib/modules/3.10.0-327.el7.x86_64/build /lib/modules/3.10.0-327.el7.
 cd /tmp && \
     git clone https://github.com/m-tsudo/pt3.git && \
     cd pt3 && \
-    make && \
+    make -j$(nproc) && \
     sudo make install && \
     sudo modprobe pt3_drv
 
@@ -116,7 +116,7 @@ cd /tmp && \
     wget http://hg.honeyplanet.jp/pt1/archive/ec7c87854f2f.tar.bz2 && \
     tar xvlf ec7c87854f2f.tar.bz2 && \
     cd pt1-ec7c87854f2f/arib25 && \
-    make && \
+    make -j$(nproc) && \
     sudo make install && \
     sudo ldconfig
 
@@ -125,7 +125,7 @@ cd /tmp && \
     cd recpt1/recpt1 && \
     ./autogen.sh && \
     ./configure --enable-b25 && \
-    make && \
+    make -j$(nproc) && \
     sudo make install && \
     sudo ldconfig
 
@@ -137,7 +137,7 @@ cd /tmp && \
     git clone https://github.com/Piro77/epgdump.git && \
     cd epgdump && \
     ./autogen.sh && \
-    make && \
+    make -j$(nproc) && \
     sudo make install && \
     sudo ldconfig
 
@@ -159,11 +159,11 @@ sudo yum -y install mongodb-org
 #*******************************************************************************************************************
 cd /tmp && \
     sudo yum -y install pcre-devel openssl-devel && \
-    wget http://nginx.org/download/nginx-1.11.10.tar.gz && \
+    wget http://nginx.org/download/nginx-1.11.13.tar.gz && \
     tar zxvf nginx-*.tar.gz && \
     cd nginx-* && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
-    make -j8 && \
+    make -j$(nproc) && \
     sudo make install
 
 #*******************************************************************************************************************
