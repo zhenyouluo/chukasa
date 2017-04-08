@@ -1,4 +1,10 @@
-# CentOS 7.2 (1511) with QSV
+# CentOS 7.2 (1511), Quick Sync Video (QSV), Intel Media Server Studio 2017 R2
+# Linux localhost.localdomain 3.10.0-327.el7.x86_64 #1 SMP Thu Nov 19 22:10:57 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
+
+#*******************************************************************************************************************
+# Temporary directory
+#*******************************************************************************************************************
+mkdir ~/chukasa_temporary
 
 #*******************************************************************************************************************
 # Intel Media Server Studio 2017 R2 for Linux - Community Edition
@@ -69,7 +75,7 @@ sudo sh -c "echo 'Cflags: -I\${includedir} -I/usr/include/libdrm' >> /usr/lib64/
 #*******************************************************************************************************************
 # Yasm
 #*******************************************************************************************************************
-cd /tmp && \
+cd ~/chukasa_temporary && \
     wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz && \
     tar zxvf yasm-*.tar.gz && \
     cd yasm-* && \
@@ -81,7 +87,7 @@ cd /tmp && \
 #*******************************************************************************************************************
 # FFmpeg
 #*******************************************************************************************************************
-cd /tmp && \
+cd ~/chukasa_temporary && \
     wget https://ffmpeg.org/releases/ffmpeg-3.2.4.tar.bz2 && \
     tar jxvf ffmpeg-*.tar.bz2 && \
     cd ffmpeg-* && \
@@ -101,7 +107,7 @@ sudo ln -s /lib/modules/3.10.0-327.el7.x86_64/build /lib/modules/3.10.0-327.el7.
 #*******************************************************************************************************************
 # PT3 driver
 #*******************************************************************************************************************
-cd /tmp && \
+cd ~/chukasa_temporary && \
     git clone https://github.com/m-tsudo/pt3.git && \
     cd pt3 && \
     make -j$(nproc) && \
@@ -112,7 +118,7 @@ cd /tmp && \
 # recpt1
 #*******************************************************************************************************************
 sudo yum -y install pcsc-lite-devel
-cd /tmp && \
+cd ~/chukasa_temporary && \
     wget http://hg.honeyplanet.jp/pt1/archive/ec7c87854f2f.tar.bz2 && \
     tar xvlf ec7c87854f2f.tar.bz2 && \
     cd pt1-ec7c87854f2f/arib25 && \
@@ -120,7 +126,7 @@ cd /tmp && \
     sudo make install && \
     sudo ldconfig
 
-cd /tmp && \
+cd ~/chukasa_temporary && \
     git clone https://github.com/stz2012/recpt1.git && \
     cd recpt1/recpt1 && \
     ./autogen.sh && \
@@ -133,7 +139,7 @@ cd /tmp && \
 # epgdump
 #*******************************************************************************************************************
 sudo yum -y install cmake
-cd /tmp && \
+cd ~/chukasa_temporary && \
     git clone https://github.com/Piro77/epgdump.git && \
     cd epgdump && \
     ./autogen.sh && \
@@ -157,7 +163,7 @@ sudo yum -y install mongodb-org
 #*******************************************************************************************************************
 # nginx
 #*******************************************************************************************************************
-cd /tmp && \
+cd ~/chukasa_temporary && \
     sudo yum -y install pcre-devel openssl-devel && \
     wget http://nginx.org/download/nginx-1.11.13.tar.gz && \
     tar zxvf nginx-*.tar.gz && \
@@ -169,7 +175,7 @@ cd /tmp && \
 #*******************************************************************************************************************
 # Java 8
 #*******************************************************************************************************************
-cd /tmp
+cd ~/chukasa_temporary
 wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/jdk-8u121-linux-x64.rpm"
 sudo yum -y install jdk-8u121-linux-x64.rpm
 sudo sh -c "echo 'export JAVA_HOME=/usr/java/default' >> /etc/profile.d/jdk.sh"
@@ -184,7 +190,7 @@ sudo chown $USER:$USER /opt/chukasa
 mkdir /opt/chukasa/video
 
 # clone project and edit configuration file
-cd /tmp
+cd ~/chukasa_temporary
 git clone https://github.com/hirooka/chukasa.git
 cd chukasa
 
