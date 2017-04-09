@@ -95,9 +95,11 @@ public class FFmpegService implements IFFmpegService {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
                         "-f", "video4linux2",
+                        "-thread_queue_size", "2048",
                         "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
                         "-i", chukasaModel.getSystemConfiguration().getWebcamDeviceName(),
                         "-f", "alsa",
+                        "-thread_queue_size", "2048",
                         "-ac", Integer.toString(chukasaModel.getSystemConfiguration().getWebcamAudioChannel()),
                         "-i", "hw:0,0",
                         "-acodec", "aac",
