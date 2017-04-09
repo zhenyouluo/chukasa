@@ -136,7 +136,7 @@ public class FFmpegHLSMediaSegmentDetector implements Runnable {
                         // LIVE プレイリストの場合は過去の不要なファイルを削除する．
                         if (chukasaModel.getChukasaSettings().getPlaylistType() == PlaylistType.LIVE) {
                             final int URI_IN_PLAYLIST = chukasaModel.getHlsConfiguration().getUriInPlaylist();
-                            for (int i = 0; i < sequenceMediaSegment - URI_IN_PLAYLIST - URI_IN_PLAYLIST; i++) {
+                            for (int i = 0; i < sequenceMediaSegment - 3 * URI_IN_PLAYLIST; i++) {
                                 final File oldMediaSegmentFile = new File(mediaPath + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + i + STREAM_FILE_EXTENSION);
                                 if (oldMediaSegmentFile.exists()) {
                                     oldMediaSegmentFile.delete();
