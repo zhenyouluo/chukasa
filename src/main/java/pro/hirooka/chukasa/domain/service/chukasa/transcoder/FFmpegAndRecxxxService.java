@@ -182,6 +182,7 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
                     "-ac", "2",
                     "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
                     "-vcodec", "h264_nvenc",
+                    "-deinterlace",
                     "-g", "10",
                     "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
                     "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
