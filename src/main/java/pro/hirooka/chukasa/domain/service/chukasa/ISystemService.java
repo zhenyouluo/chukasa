@@ -6,8 +6,8 @@ public interface ISystemService {
     boolean isFFmpeg();
     boolean isWebCamera();
     String getWebCameraDeviceName();
-    boolean isPTx();
-    boolean isRecpt1();
+    boolean isTuner();
+    boolean isRecxxx();
     boolean isEpgdump();
     boolean isMongoDB();
     boolean canWebCameraStreaming();

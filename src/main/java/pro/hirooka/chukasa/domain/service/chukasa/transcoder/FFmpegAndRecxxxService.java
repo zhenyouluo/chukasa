@@ -8,7 +8,6 @@ import pro.hirooka.chukasa.domain.model.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.domain.model.common.TunerStatus;
 import pro.hirooka.chukasa.domain.model.common.enums.RecxxxDriverType;
-import pro.hirooka.chukasa.domain.model.epgdump.RecdvbBSModel;
 import pro.hirooka.chukasa.domain.model.recorder.ChannelConfiguration;
 import pro.hirooka.chukasa.domain.model.recorder.enums.ChannelType;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
@@ -46,10 +45,6 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
     @Override
     public Future<Integer> submit(int adaptiveBitrateStreaming) {
 
-        final RecxxxDriverType recxxxDriverType = tunerManagementService.getRecxxxDriverType();
-//        TunerStatus tunerStatusGR = tunerManagementService.findOne(ChannelType.GR);
-//        TunerStatus tunerStatusBS = tunerManagementService.findOne(ChannelType.BS);
-
         // TODO: final
         ChukasaModel chukasaModel = chukasaModelManagementComponent.get(adaptiveBitrateStreaming);
         log.debug("StreamPath: {}", chukasaModel.getStreamPath());
@@ -71,18 +66,15 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
         }
 
         TunerStatus tunerStatus = null;
-        ChannelType channelType = ChannelType.GR;
         List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
         for(ChannelConfiguration channelConfiguration : channelConfigurationList){
             if(channelConfiguration.getPhysicalLogicalChannel() == chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()){
                 if(channelConfiguration.getChannelType() == ChannelType.GR){
-                    channelType = ChannelType.GR;
                     tunerStatus = tunerManagementService.findOne(ChannelType.GR);
                     tunerStatus = tunerManagementService.update(tunerStatus, false);
                     chukasaModel.setTunerDeviceName(tunerStatus.getDeviceName());
                     chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
                 }else if(channelConfiguration.getChannelType() == ChannelType.BS){
-                    channelType = ChannelType.BS;
                     tunerStatus = tunerManagementService.findOne(ChannelType.BS);
                     tunerStatus = tunerManagementService.update(tunerStatus, false);
                     chukasaModel.setTunerDeviceName(tunerStatus.getDeviceName());
@@ -90,80 +82,42 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
                 }
             }
         }
-        RecdvbBSModel recdvbBSModel = epgdumpRecdvbHelper.resovle(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel());
 
-        int frequency = 0;
-        for(ChannelConfiguration channelConfiguration : channelConfigurationList){
-            if(channelConfiguration.getPhysicalLogicalChannel() == chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()){
-                frequency = channelConfiguration.getFrequency();
-            }
-        }
-
+        final String DEVICE_OPTION = tunerManagementService.getDeviceOption();
         final String[] commandArray;
 
         if(hardwareAccelerationType == HardwareAccelerationType.H264_OMX){
-            if(channelType == ChannelType.GR) {
-                commandArray = new String[]{
-                        chukasaModel.getSystemConfiguration().getRecxxxPath(),
-                        "--b25", "--strip",
-                        Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
-                        "-", "-",
-                        "|",
-                        chukasaModel.getSystemConfiguration().getFfmpegPath(),
-                        "-i", "-",
-                        "-acodec", "copy",
-                        //"-acodec", "aac",
-                        //"-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
-                        //"-ar", "44100",
-                        //"-ac", "2",
-                        "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
-                        "-c:v", "h264_omx",
-                        //"-vcodec", "h264_qsv",
-                        //"-g", "60",
-                        //"-profile:v", "high",
-                        //"-level", "4.2",
-                        //"-b:v", chukasaModel.getChukasaSettings().getVideoBitrate()+"k",
-                        "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
-                        "-f", "segment",
-                        "-segment_format", "mpegts",
-                        "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-//                    "-segment_list", m3u8OutputPath,
-                        ffmpegOutputPath
+            commandArray = new String[]{
+                    chukasaModel.getSystemConfiguration().getRecxxxPath(),
+                    DEVICE_OPTION, tunerStatus.getDeviceName(),
+                    Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
+                    "-", "-",
+                    "|",
+                    chukasaModel.getSystemConfiguration().getFfmpegPath(),
+                    "-i", "-",
+                    "-acodec", "copy",
+                    //"-acodec", "aac",
+                    //"-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
+                    //"-ar", "44100",
+                    //"-ac", "2",
+                    "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
+                    "-c:v", "h264_omx",
+                    //"-vcodec", "h264_qsv",
+                    //"-g", "60",
+                    //"-profile:v", "high",
+                    //"-level", "4.2",
+                    //"-b:v", chukasaModel.getChukasaSettings().getVideoBitrate()+"k",
+                    "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
+                    "-f", "segment",
+                    "-segment_format", "mpegts",
+                    "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
+//                  "-segment_list", m3u8OutputPath,
+                    ffmpegOutputPath
                 };
-            } else {
-                commandArray = new String[]{
-                        chukasaModel.getSystemConfiguration().getRecxxxPath(),
-                        "--b25", "--strip", "--dev", "1", "--lch",
-                        Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
-                        "-", "-",
-                        "|",
-                        chukasaModel.getSystemConfiguration().getFfmpegPath(),
-                        "-i", "-",
-                        "-acodec", "copy",
-                        //"-acodec", "aac",
-                        //"-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
-                        //"-ar", "44100",
-                        //"-ac", "2",
-                        "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
-                        "-c:v", "h264_omx",
-                        //"-vcodec", "h264_qsv",
-                        //"-g", "60",
-                        //"-profile:v", "high",
-                        //"-level", "4.2",
-                        //"-b:v", chukasaModel.getChukasaSettings().getVideoBitrate()+"k",
-                        "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
-                        "-f", "segment",
-                        "-segment_format", "mpegts",
-                        "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-//                    "-segment_list", m3u8OutputPath,
-                        ffmpegOutputPath
-                };
-            }
         } else if(hardwareAccelerationType == HardwareAccelerationType.H264_QSV){
             commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
-                    "--device", tunerStatus.getDeviceName(),
-                    "--b25", "--strip",
+                    DEVICE_OPTION, tunerStatus.getDeviceName(),
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",
                     "|",
@@ -189,7 +143,7 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
         }else if(hardwareAccelerationType == HardwareAccelerationType.H264) {
             commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
-                    "--b25", "--strip",
+                    DEVICE_OPTION, tunerStatus.getDeviceName(),
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",
                     "|",
@@ -214,132 +168,28 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
                     ffmpegOutputPath
             };
         } else if(hardwareAccelerationType == HardwareAccelerationType.H264_NVENC){
-            if(channelType == ChannelType.GR) {
-                if(recxxxDriverType == RecxxxDriverType.DVB) {
-                    commandArray = new String[]{
-                            chukasaModel.getSystemConfiguration().getRecxxxPath(),
-                            "--dev", Integer.toString(tunerStatus.getIndex()),
-                            Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
-                            "-", "-",
-                            "|",
-                            chukasaModel.getSystemConfiguration().getFfmpegPath(),
-                            "-i", "-",
-                            "-acodec", "aac",
-                            "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
-                            "-ar", "48000",
-                            "-ac", "2",
-                            "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
-                            "-vcodec", "h264_nvenc",
-                            "-g", "10",
-                            //"-profile:v", "high",
-                            //"-level", "4.2",
-                            "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
-                            "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
-                            "-f", "hls",
-                            "-hls_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-//                    "-segment_list", m3u8OutputPath,
-                            "-hls_segment_filename", ffmpegOutputPath,
-                            ffmpegM3U8OutputPath
-//                    chukasaModel.getSystemConfiguration().getHaryukaPath(),
-//                    "/dev/dvb/adapter5", // TODO:
-//                    Integer.toString(frequency),
-//                    "0", "-",
-//                    "|",
-//                    chukasaModel.getSystemConfiguration().getFfmpegPath(),
-//                    "-i", "-",
-//                    "-acodec", "aac",
-//                    "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
-//                    "-ar", "48000",
-//                    "-ac", "2",
-//                    "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
-//                    "-vcodec", "h264_nvenc",
-//                    "-g", "10",
-//                    "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate()+"k",
-//                    "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
-//                    "-f", "hls",
-//                    "-hls_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-////                    "-segment_list", m3u8OutputPath,
-//                    "-hls_segment_filename", ffmpegOutputPath,
-//                    ffmpegM3U8OutputPath
-                    };
-                }else if(recxxxDriverType == RecxxxDriverType.CHARDEV){
-                    commandArray = new String[]{
-                            chukasaModel.getSystemConfiguration().getRecxxxPath(),
-                            Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
-                            "-", "-",
-                            "|",
-                            chukasaModel.getSystemConfiguration().getFfmpegPath(),
-                            "-i", "-",
-                            "-acodec", "aac",
-                            "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
-                            "-ar", "48000",
-                            "-ac", "2",
-                            "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
-                            "-vcodec", "h264_nvenc",
-                            "-g", "10",
-                            "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
-                            "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
-                            "-f", "hls",
-                            "-hls_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-                            "-hls_segment_filename", ffmpegOutputPath,
-                            ffmpegM3U8OutputPath
-                    };
-                }else{
-                    commandArray = new String[]{};
-                }
-            }else if(channelType == ChannelType.BS){
-                if(recxxxDriverType == RecxxxDriverType.DVB){
-                    commandArray = new String[]{
-                            chukasaModel.getSystemConfiguration().getRecxxxPath(),
-                            "--dev", Integer.toString(tunerStatus.getIndex()),
-                            "--tsid", recdvbBSModel.getTsid(), recdvbBSModel.getName(),
-                            Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
-                            "-", "-",
-                            "|",
-                            chukasaModel.getSystemConfiguration().getFfmpegPath(),
-                            "-i", "-",
-                            "-acodec", "aac",
-                            "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
-                            "-ar", "48000",
-                            "-ac", "2",
-                            "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
-                            "-vcodec", "h264_nvenc",
-                            "-g", "10",
-                            "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
-                            "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
-                            "-f", "hls",
-                            "-hls_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-                            "-hls_segment_filename", ffmpegOutputPath,
-                            ffmpegM3U8OutputPath
-                    };
-                }else if(recxxxDriverType == RecxxxDriverType.CHARDEV) {
-                    commandArray = new String[]{
-                            chukasaModel.getSystemConfiguration().getRecxxxPath(),
-                            Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
-                            "-", "-",
-                            "|",
-                            chukasaModel.getSystemConfiguration().getFfmpegPath(),
-                            "-i", "-",
-                            "-acodec", "aac",
-                            "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
-                            "-ar", "48000",
-                            "-ac", "2",
-                            "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
-                            "-vcodec", "h264_nvenc",
-                            "-g", "10",
-                            "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
-                            "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
-                            "-f", "hls",
-                            "-hls_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
-                            "-hls_segment_filename", ffmpegOutputPath,
-                            ffmpegM3U8OutputPath
-                    };
-                }else{
-                    commandArray = new String[]{};
-                }
-            }else{
-                commandArray = new String[]{};
-            }
+            commandArray = new String[]{
+                    chukasaModel.getSystemConfiguration().getRecxxxPath(),
+                    DEVICE_OPTION, Integer.toString(tunerStatus.getIndex()),
+                    Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
+                    "-", "-",
+                    "|",
+                    chukasaModel.getSystemConfiguration().getFfmpegPath(),
+                    "-i", "-",
+                    "-acodec", "aac",
+                    "-ab", chukasaModel.getChukasaSettings().getAudioBitrate() + "k",
+                    "-ar", "48000",
+                    "-ac", "2",
+                    "-s", chukasaModel.getChukasaSettings().getVideoResolution(),
+                    "-vcodec", "h264_nvenc",
+                    "-g", "10",
+                    "-b:v", chukasaModel.getChukasaSettings().getVideoBitrate() + "k",
+                    "-threads", Integer.toString(chukasaModel.getSystemConfiguration().getFfmpegThreads()),
+                    "-f", "hls",
+                    "-hls_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
+                    "-hls_segment_filename", ffmpegOutputPath,
+                    ffmpegM3U8OutputPath
+            };
         } else {
             commandArray = new String[]{};
         }

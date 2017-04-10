@@ -3,6 +3,7 @@ package pro.hirooka.chukasa.domain.service.common;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant;
 import pro.hirooka.chukasa.domain.model.common.Tuner;
 import pro.hirooka.chukasa.domain.model.common.TunerStatus;
 import pro.hirooka.chukasa.domain.model.common.enums.RecxxxDriverType;
@@ -19,8 +20,8 @@ import java.util.stream.Collectors;
 @Service
 public class TunerManagementService implements ITunerManagementService {
 
-    final String DVB_DEVICE = "dvb";
-    final String CHADEV_DEVICE = "pt3";
+    final String DVB_DEVICE = ChukasaConstant.DVB_DEVICE;
+    final String CHADEV_DEVICE = ChukasaConstant.CHARACTER_DEVICE;
 
     private List<TunerStatus> tunerStatusList = new ArrayList<>(); //Collections.synchronizedList(new ArrayList<>());
 
@@ -36,9 +37,9 @@ public class TunerManagementService implements ITunerManagementService {
             tunerStatus.setDeviceName(tuner.getDeviceName());
             tunerStatus.setCanUse(true);
             tunerStatus.setIndex(Integer.parseInt(tuner.getDeviceName().substring(tuner.getDeviceName().length() - 1)));
-            if(tuner.getDeviceName().contains(DVB_DEVICE)){
+            if(tuner.getDeviceName().startsWith(DVB_DEVICE)){
                 tunerStatus.setRecxxxDriverType(RecxxxDriverType.DVB);
-            }else if(tuner.getDeviceName().contains(CHADEV_DEVICE)){
+            }else if(tuner.getDeviceName().startsWith(CHADEV_DEVICE)){
                 tunerStatus.setRecxxxDriverType(RecxxxDriverType.CHARDEV);
             }
             tunerStatusList.add(tunerStatus);
@@ -134,5 +135,15 @@ public class TunerManagementService implements ITunerManagementService {
             return tunerStatus.getRecxxxDriverType(); // TODO:
         }
         return null;
+    }
+
+    @Override
+    public String getDeviceOption() {
+        final RecxxxDriverType recxxxDriverType = getRecxxxDriverType();
+        if(recxxxDriverType == RecxxxDriverType.DVB){
+            return "--dev";
+        }else{
+            return "--device";
+        }
     }
 }

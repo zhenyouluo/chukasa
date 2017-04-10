@@ -26,8 +26,8 @@ public class SystemController {
     String index(Model model){
 
         boolean isFFmpeg = systemService.isFFmpeg();
-        boolean isPTx = systemService.isPTx();
-        boolean isRecpt1 = systemService.isRecpt1();
+        boolean isPTx = systemService.isTuner();
+        boolean isRecpt1 = systemService.isRecxxx();
         boolean isEpgdump = systemService.isEpgdump();
         boolean isMongoDB = systemService.isMongoDB();
         boolean isWebCamera = systemService.isWebCamera();

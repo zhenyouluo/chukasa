@@ -69,6 +69,7 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(epgdumpShellFile));
             bufferedWriter.write("#!/bin/bash");
             bufferedWriter.newLine();
+            final String DEVICE_OPTION = tunerManagementService.getDeviceOption();
             boolean isBS = false;
             for(ChannelConfiguration channelConfiguration : channelConfigurationList){
                 if(channelConfiguration.getChannelType() == ChannelType.GR || !isBS) {
@@ -76,9 +77,9 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
                         final int physicalLogicalChannel = channelConfiguration.getPhysicalLogicalChannel();
                         final String recxxxCommand;
                         if(channelConfiguration.getChannelType() == ChannelType.GR) {
-                            recxxxCommand = systemConfiguration.getRecxxxPath() + " --dev " + usingTunerStatusGR.getIndex() + " " + physicalLogicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
+                            recxxxCommand = systemConfiguration.getRecxxxPath() + " " + DEVICE_OPTION + " " + usingTunerStatusGR.getIndex() + " " + physicalLogicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
                         }else if(channelConfiguration.getChannelType() == ChannelType.BS){
-                            recxxxCommand = systemConfiguration.getRecxxxPath() + " --dev " + usingTunerStatusBS.getIndex() + " " + physicalLogicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
+                            recxxxCommand = systemConfiguration.getRecxxxPath() + " " + DEVICE_OPTION + " " + usingTunerStatusBS.getIndex() + " " + physicalLogicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
                         }else{
                             log.error("unknown ChannelType");
                             releaseTuner(tunerStatusGR);

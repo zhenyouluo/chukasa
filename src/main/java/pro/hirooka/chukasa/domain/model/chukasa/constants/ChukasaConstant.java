@@ -18,4 +18,6 @@ public class ChukasaConstant {
     public static int MPEG2_TS_PACKET_LENGTH = 188;
     public static final String ALTERNATIVE_HLS_PLAYER = "hlsjs";
     public static final String USER_AGENT = "chukasa-ios";
+    public static final String DVB_DEVICE = "/dev/dvb/adapter";
+    public static final String CHARACTER_DEVICE = "/dev/pt3video";
 }

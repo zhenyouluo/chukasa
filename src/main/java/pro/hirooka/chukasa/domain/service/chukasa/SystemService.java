@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.configuration.EpgdumpConfiguration;
 import pro.hirooka.chukasa.domain.configuration.MongoDBConfiguration;
 import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
+import pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 
 import java.io.*;
@@ -17,7 +18,8 @@ import java.io.*;
 @Service
 public class SystemService implements ISystemService {
 
-    private final String PT3_DEVICE = "/dev/pt3video0";
+    private final String DVB_DEVICE = ChukasaConstant.DVB_DEVICE + "0"; // TODO:
+    private final String CHARACTER_DEVICE = ChukasaConstant.CHARACTER_DEVICE + "0";;
 
     @Autowired
     SystemConfiguration systemConfiguration;
@@ -29,10 +31,7 @@ public class SystemService implements ISystemService {
     @Override
     public boolean isFFmpeg() {
         File ffmpeg = new File(systemConfiguration.getFfmpegPath());
-        if(ffmpeg.exists()){
-            return true;
-        }
-        return false;
+        return ffmpeg.exists();
     }
 
     @Override
@@ -48,34 +47,21 @@ public class SystemService implements ISystemService {
     }
 
     @Override
-    public boolean isPTx() {
-        File pt3 = new File(PT3_DEVICE);
-        if(pt3.exists()){
-            return true;
-        }
-        // for PX-S1UD V2.0 (temporary)
-        if(new File("/dev/dvb/adapter0/frontend0").exists()){
-            return true;
-        }
-        return false;
+    public boolean isTuner() {
+        return new File(DVB_DEVICE).exists() || new File(CHARACTER_DEVICE).exists();
     }
 
     @Override
-    public boolean isRecpt1() {
-        File recpt1 = new File(systemConfiguration.getRecxxxPath());
-        if(recpt1.exists()){
-            return true;
-        }
-        return false;
+    public boolean isRecxxx() {
+        String recxxxPath = systemConfiguration.getRecxxxPath().split(" ")[0];
+        File recpt1 = new File(recxxxPath);
+        return recpt1.exists();
     }
 
     @Override
     public boolean isEpgdump() {
         File epgdump = new File(epgdumpConfiguration.getPath());
-        if(epgdump.exists()){
-            return true;
-        }
-        return false;
+        return epgdump.exists();
     }
 
     @Override
@@ -101,34 +87,22 @@ public class SystemService implements ISystemService {
 
     @Override
     public boolean canWebCameraStreaming() {
-        if(isFFmpeg() && isWebCamera()){
-            return true;
-        }
-        return false;
+        return isFFmpeg() && isWebCamera();
     }
 
     @Override
     public boolean canFileStreaming() {
-        if(isFFmpeg()){
-            return true;
-        }
-        return false;
+        return isFFmpeg();
     }
 
     @Override
     public boolean canPTxStreaming() {
-        if(isFFmpeg() && isPTx() && isRecpt1()){
-            return true;
-        }
-        return false;
+        return isFFmpeg() && isTuner() && isRecxxx();
     }
 
     @Override
     public boolean canRecording() {
-        if(isFFmpeg() && isPTx() && isRecpt1() && isEpgdump() && isMongoDB()){
-            return true;
-        }
-        return false;
+        return isFFmpeg() && isTuner() && isRecxxx() && isEpgdump() && isMongoDB();
     }
 
     @Override
