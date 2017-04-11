@@ -4,22 +4,8 @@ MAINTAINER hirooka
 
 # Package
 RUN apt-get -y update && apt-get -y upgrade
-RUN apt-get -y dist-upgrade
-RUN apt-get -y install build-essential git wget libasound2-dev autoconf libtool pcsc-tools pkg-config libpcsclite-dev unzip
-
-# Lib
-RUN touch /etc/ld.so.conf.d/local.conf
-RUN echo '/usr/local/lib' >> /etc/ld.so.conf.d/local.conf
-
-# Yasm
-RUN cd /tmp && \
-    wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz && \
-    tar zxvf yasm-1.3.0.tar.gz && \
-    cd yasm-1.3.0 && \
-    ./configure && \
-    make && \
-    make install && \
-    ldconfig
+#RUN apt-get -y dist-upgrade
+RUN apt-get -y install build-essential git wget libasound2-dev autoconf libtool pcsc-tools pkg-config libpcsclite-dev unzip yasm
 
 # x264
 RUN cd /tmp && \
@@ -28,8 +14,7 @@ RUN cd /tmp && \
     cd x264-snapshot-* && \
     ./configure --enable-shared && \
     make && \
-    make install && \
-    ldconfig
+    make install
 
 # FFmpeg
 RUN cd /tmp && \
@@ -38,8 +23,7 @@ RUN cd /tmp && \
     cd ffmpeg && \
     ./configure --enable-gpl --enable-libx264 && \
     make -j8 && \
-    make install && \
-    ldconfig
+    make install
 
 # Web camera (audio)
 RUN mkdir /etc/modprobe.d
@@ -48,21 +32,21 @@ RUN echo 'options snd slots=snd_usb_audio,snd_hda_intel' >> /etc/modprobe.d/alsa
 RUN echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf
 RUN echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf
 
-# recpt1
+# recdvb
 RUN cd /tmp && \
     wget http://hg.honeyplanet.jp/pt1/archive/ec7c87854f2f.tar.bz2 && \
     tar xvlf ec7c87854f2f.tar.bz2 && \
     cd pt1-ec7c87854f2f/arib25 && \
     make && \
-    make install && \
-    ldconfig
+    make install
 
 RUN cd /tmp && \
-    git clone https://github.com/stz2012/recpt1.git && \
-    cd recpt1/recpt1 && \
+    git clone https://github.com/dogeel/recdvb && \
+    cd recdvb && \
+    chmod a+x autogen.sh && \
     ./autogen.sh && \
     ./configure --enable-b25 && \
-    make && \
+    make -j$(nproc) && \
     make install
 
 # epgdump
@@ -86,7 +70,7 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 # nginx
 RUN cd /tmp && \
     apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.11.10.tar.gz && \
+    wget http://nginx.org/download/nginx-1.11.13.tar.gz && \
     tar zxvf nginx-*.tar.gz && \
     cd nginx-* && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
