@@ -142,7 +142,7 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
         }else if(hardwareAccelerationType == HardwareAccelerationType.H264) {
             commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
-                    DEVICE_OPTION, tunerStatus.getDeviceName(),
+                    DEVICE_OPTION, Integer.toString(tunerStatus.getIndex()),
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",
                     "|",
