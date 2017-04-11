@@ -1,65 +1,17 @@
-# procedure_raspberry_pi_3_raspbian_jessie.txt
+# procedure_ubuntu_16_04_2_nvenc.txt
 
-# Raspberry Pi 3 Model B, PX-S1UD V2.0, PX-BCUD
+# Ubuntu 16.04.2
 
-# unzip 2017-04-10-raspbian-jessie.zip
-# sudo dd bs=4M if=2017-04-10-raspbian-jessie.img of=/dev/sdXXX
-#   1021+1 records in
-#   1021+1 records out
-#   4285005824 bytes (4.3 GB, 4.0 GiB) copied, 354.121 s, 12.1 MB/s
-# sudo sync
-
-# Raspbian Jessie 2017-04-10
 # uname -a
-# Linux raspberrypi 4.4.50-v7+ #970 SMP Mon Feb 20 19:18:29 GMT 2017 armv7l GNU/Linux
+# Linux localhost 4.8.0-46-generic #49~16.04.1-Ubuntu SMP Fri Mar 31 14:51:03 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
 
 /*******************************************************
-Prefernces -> Raspberry Pi Configuration
-  System
-    Change Password
-    Auto Login
-  Interfaces
-    SSH
-  Localisation
-    Set Locale
-    Set Timezone
-    Set Keyboard
-    Set WiFi Country
+cat /etc/lsb-release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=16.04
+DISTRIB_CODENAME=xenial
+DISTRIB_DESCRIPTION="Ubuntu 16.04.2 LTS"
 /*******************************************************
-
-# sudo adduser XXX
-# sudo gpasswd -a XXX sudo
-
-# -> apt-get dist-upgrade
-#   -> //
-
-# -> sudo BRANCH=next rpi-update
-#   -> Linux raspberrypi 4.9.13-v7+ #974 SMP Wed Mar 1 20:09:48 GMT 2017 armv7l GNU/Linux
-
-/*******************************************************
-cat /etc/os-release
-PRETTY_NAME="Raspbian GNU/Linux 8 (jessie)"
-NAME="Raspbian GNU/Linux"
-VERSION_ID="8"
-VERSION="8 (jessie)"
-ID=raspbian
-ID_LIKE=debian
-HOME_URL="http://www.raspbian.org/"
-SUPPORT_URL="http://www.raspbian.org/RaspbianForums"
-BUG_REPORT_URL="http://www.raspbian.org/RaspbianBugs"
-
-df -h
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/root        30G  3.6G   25G  13% /
-devtmpfs        459M     0  459M   0% /dev
-tmpfs           463M     0  463M   0% /dev/shm
-tmpfs           463M  6.3M  457M   2% /run
-tmpfs           5.0M  4.0K  5.0M   1% /run/lock
-tmpfs           463M     0  463M   0% /sys/fs/cgroup
-/dev/mmcblk0p1   41M   21M   21M  51% /boot
-tmpfs            93M     0   93M   0% /run/user/109
-tmpfs            93M     0   93M   0% /run/user/1001
-*******************************************************/
 
 ########## Begin ##########
 
@@ -67,20 +19,15 @@ tmpfs            93M     0   93M   0% /run/user/1001
 # Apt
 #*******************************************************************************************************************
 sudo apt-get update
-#sudo apt-get -y upgrade
+sudo apt-get -y upgrade
 #sudo apt-get -y dist-upgrade
-
-#sudo reboot
-
-sudo BRANCH=next rpi-update
 
 sudo reboot
 
 #*******************************************************************************************************************
 # Package
 #*******************************************************************************************************************
-sudo apt-get -y install autoconf libpcsclite-dev pcsc-tools pcscd cmake libasound2-dev
-sudo apt-get -y install ttf-kochi-gothic xfonts-intl-japanese xfonts-intl-japanese-big xfonts-kaname jfbterm
+sudo apt-get -y install build-essential git wget libasound2-dev autoconf libtool pcsc-tools pkg-config libpcsclite-dev pcscd cmake yasm curl ssh
 
 #*******************************************************************************************************************
 # Temprary Directory
@@ -96,19 +43,28 @@ sudo gpasswd -a $USER audio
 #*******************************************************************************************************************
 # Webcam (Audio)
 #*******************************************************************************************************************
-#cat /proc/asound/modules
+# 環境により異なる．
+# cat /proc/asound/modules にて事前に確認する．
+
+# ASUS Z170I PRO GAMING の場合
+# cat /proc/asound/modules
+#  0 snd_hda_intel
+#  1 snd_usb_audio
 sudo touch /etc/modprobe.d/alsa-base.conf
-sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_bcm2835' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
 sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
-sudo sh -c "echo 'options snd_bcm2835 index=1' >> /etc/modprobe.d/alsa-base.conf"
+sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
+
+# ASUS B85M-E の場合
+# sudo sh -c "echo 'options snd slots=snd_usb_audio,snd_hda_intel,snd_hda_intel' >> /etc/modprobe.d/alsa-base.conf"
+# sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
+# sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
+# sudo sh -c "echo 'options snd_hda_intel index=2' >> /etc/modprobe.d/alsa-base.conf"
 
 #*******************************************************************************************************************
-# DVB Tuber (PX-S1UD V2.0)
+# DVB Tuber
 #*******************************************************************************************************************
-cd ~/chukasa_temporary && \
-    wget http://plex-net.co.jp/plex/px-s1ud/PX-S1UD_driver_Ver.1.0.1.zip && \
-    unzip PX-S1UD_driver_Ver.1.0.1.zip && \
-    sudo cp PX-S1UD_driver_Ver.1.0.1/x64/amd64/isdbt_rio.inp /lib/firmware/
+// TODO
 
 #*******************************************************************************************************************
 # recdvb
@@ -143,10 +99,10 @@ cd ~/chukasa_temporary && \
 # FFmpeg
 #*******************************************************************************************************************
 cd ~/chukasa_temporary && \
-    wget https://ffmpeg.org/releases/ffmpeg-3.2.4.tar.bz2 && \
+    wget http://ffmpeg.org/releases/ffmpeg-3.2.4.tar.bz2 && \
     tar jxvf ffmpeg-* && \
     cd ffmpeg-* && \
-    ./configure --disable-shared --enable-static --enable-omx-rpi --enable-mmal && \
+    ./configure --disable-shared --enable-static && \
     make -j$(nproc) && \
     sudo make install
 
@@ -165,7 +121,20 @@ cd ~/chukasa_temporary && \
 #*******************************************************************************************************************
 # MongoDB
 #*******************************************************************************************************************
-sudo apt-get -y install mongodb
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+sudo sh -c "echo 'deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse' | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list"
+sudo apt-get update
+sudo apt-get -y install mongodb-org
+
+#*******************************************************************************************************************
+# Java 8
+#*******************************************************************************************************************
+sudo apt-get -y install python-software-properties software-properties-common
+sudo sh -c "echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | debconf-set-selections"
+sudo add-apt-repository -y ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get -y install oracle-java8-installer
+#sudo apt-get -y install oracle-java8-set-default
 
 #*******************************************************************************************************************
 # 環境が整ったところでいったん reboot
@@ -184,7 +153,7 @@ cd ~/chukasa_temporary
 git clone https://github.com/hirooka/chukasa.git
 cd chukasa
 
-# build chukasa application
+# build chukasa application and deploy it
 ./gradlew build
 cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
 
@@ -197,6 +166,10 @@ sudo systemctl enable chukasa
 sudo cp ubuntu/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
 sudo cp ubuntu/systemd/nginx.service /etc/systemd/system/
 sudo systemctl enable nginx
+
+# MongoDB service
+sudo cp ubuntu/systemd/mongod.service /lib/systemd/system/
+sudo systemctl enable mongod
 
 sudo reboot
 
