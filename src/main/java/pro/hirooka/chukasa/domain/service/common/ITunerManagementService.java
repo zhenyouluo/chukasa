@@ -18,4 +18,5 @@ public interface ITunerManagementService {
     TunerStatus update(String deviceName, boolean canUse);
     RecxxxDriverType getRecxxxDriverType();
     String getDeviceOption();
+    String getDeviceArgument(TunerStatus tunerStatus);
 }

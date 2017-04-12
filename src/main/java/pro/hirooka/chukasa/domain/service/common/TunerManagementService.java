@@ -146,4 +146,14 @@ public class TunerManagementService implements ITunerManagementService {
             return "--device";
         }
     }
+
+    @Override
+    public String getDeviceArgument(TunerStatus tunerStatus) {
+        final RecxxxDriverType recxxxDriverType = getRecxxxDriverType();
+        if(recxxxDriverType == RecxxxDriverType.DVB){
+            return tunerStatus.getDeviceName();
+        }else{
+            return Integer.toString(tunerStatus.getIndex());
+        }
+    }
 }

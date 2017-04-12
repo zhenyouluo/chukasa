@@ -83,12 +83,13 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
         }
 
         final String DEVICE_OPTION = tunerManagementService.getDeviceOption();
+        final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(tunerStatus);
         final String[] commandArray;
 
         if(hardwareAccelerationType == HardwareAccelerationType.H264_OMX){
             commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
-                    DEVICE_OPTION, tunerStatus.getDeviceName(),
+                    DEVICE_OPTION, DEVICE_ARGUMENT,
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",
                     "|",
@@ -116,7 +117,7 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
         } else if(hardwareAccelerationType == HardwareAccelerationType.H264_QSV){
             commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
-                    DEVICE_OPTION, tunerStatus.getDeviceName(),
+                    DEVICE_OPTION, DEVICE_ARGUMENT,
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",
                     "|",
@@ -142,7 +143,7 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
         }else if(hardwareAccelerationType == HardwareAccelerationType.H264) {
             commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
-                    DEVICE_OPTION, Integer.toString(tunerStatus.getIndex()),
+                    DEVICE_OPTION, DEVICE_ARGUMENT,
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",
                     "|",
@@ -169,7 +170,7 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
         } else if(hardwareAccelerationType == HardwareAccelerationType.H264_NVENC){
             commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
-                    DEVICE_OPTION, Integer.toString(tunerStatus.getIndex()),
+                    DEVICE_OPTION, DEVICE_ARGUMENT,
                     Integer.toString(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()),
                     "-", "-",
                     "|",
