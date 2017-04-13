@@ -19,8 +19,7 @@ import pro.hirooka.chukasa.domain.service.epgdump.ILastEpgdumpExecutedService;
 import pro.hirooka.chukasa.domain.service.epgdump.parser.IEpgdumpParser;
 
 import java.io.*;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Future;
 
 @EnableAsync
@@ -70,6 +69,7 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
             bufferedWriter.write("#!/bin/bash");
             bufferedWriter.newLine();
             final String DEVICE_OPTION = tunerManagementService.getDeviceOption();
+            final Set<Integer> epgdumpChannelSet = new LinkedHashSet<>();
             boolean isBS = false;
             for(ChannelConfiguration channelConfiguration : channelConfigurationList){
                 if(channelConfiguration.getChannelType() == ChannelType.GR || !isBS) {
@@ -96,6 +96,7 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
                         if(channelConfiguration.getChannelType() == ChannelType.BS){
                             isBS = true;
                         }
+                        epgdumpChannelSet.add(channelConfiguration.getPhysicalLogicalChannel());
                     } catch (NumberFormatException e) {
                         log.error("invalid value", e.getMessage(), e);
                     }
@@ -112,21 +113,23 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
             executeCommand(epgdumpCommandArray);
 
             for(ChannelConfiguration channelConfiguration : channelConfigurationList) {
-                final String jsonStringPath = epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + channelConfiguration.getPhysicalLogicalChannel() + ".json";
-                if(new File(jsonStringPath).exists() && new File(jsonStringPath).length() > 0) {
-                    try {
-                        epgdumpParser.parse(jsonStringPath, channelConfiguration.getPhysicalLogicalChannel(), channelConfiguration.getRemoteControllerChannel());
-                    } catch (IOException e) {
-                        log.error("cannot parse epgdump output: {} {}", e.getMessage(), e);
+                if(epgdumpChannelSet.contains(channelConfiguration.getPhysicalLogicalChannel())) {
+                    final String jsonStringPath = epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + channelConfiguration.getPhysicalLogicalChannel() + ".json";
+                    if (new File(jsonStringPath).exists() && new File(jsonStringPath).length() > 0) {
+                        try {
+                            epgdumpParser.parse(jsonStringPath, channelConfiguration.getPhysicalLogicalChannel(), channelConfiguration.getRemoteControllerChannel());
+                        } catch (IOException e) {
+                            log.error("cannot parse epgdump output: {} {}", e.getMessage(), e);
+                            releaseTuner(tunerStatusGR);
+                            releaseTuner(tunerStatusBS);
+                            return new AsyncResult<>(-1);
+                        }
+                    } else {
+                        log.error("no epgdump output JSON file: {}", jsonStringPath);
                         releaseTuner(tunerStatusGR);
                         releaseTuner(tunerStatusBS);
                         return new AsyncResult<>(-1);
                     }
-                }else{
-                    log.error("no epgdump output JSON file: {}", jsonStringPath);
-                    releaseTuner(tunerStatusGR);
-                    releaseTuner(tunerStatusBS);
-                    return new AsyncResult<>(-1);
                 }
             }
 
