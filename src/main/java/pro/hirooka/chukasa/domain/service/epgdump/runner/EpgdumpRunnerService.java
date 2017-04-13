@@ -77,9 +77,11 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
                         final int physicalLogicalChannel = channelConfiguration.getPhysicalLogicalChannel();
                         final String recxxxCommand;
                         if(channelConfiguration.getChannelType() == ChannelType.GR) {
-                            recxxxCommand = systemConfiguration.getRecxxxPath() + " " + DEVICE_OPTION + " " + usingTunerStatusGR.getIndex() + " " + physicalLogicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
+                            final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(usingTunerStatusGR);
+                            recxxxCommand = systemConfiguration.getRecxxxPath() + " " + DEVICE_OPTION + " " + DEVICE_ARGUMENT + " " + physicalLogicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
                         }else if(channelConfiguration.getChannelType() == ChannelType.BS){
-                            recxxxCommand = systemConfiguration.getRecxxxPath() + " " + DEVICE_OPTION + " " + usingTunerStatusBS.getIndex() + " " + physicalLogicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
+                            final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(usingTunerStatusBS);
+                            recxxxCommand = systemConfiguration.getRecxxxPath() + " " + DEVICE_OPTION + " " + DEVICE_ARGUMENT + " " + physicalLogicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
                         }else{
                             log.error("unknown ChannelType");
                             releaseTuner(tunerStatusGR);
@@ -111,7 +113,7 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
 
             for(ChannelConfiguration channelConfiguration : channelConfigurationList) {
                 final String jsonStringPath = epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + channelConfiguration.getPhysicalLogicalChannel() + ".json";
-                if(new File(jsonStringPath).exists()) {
+                if(new File(jsonStringPath).exists() && new File(jsonStringPath).length() > 0) {
                     try {
                         epgdumpParser.parse(jsonStringPath, channelConfiguration.getPhysicalLogicalChannel(), channelConfiguration.getRemoteControllerChannel());
                     } catch (IOException e) {
@@ -120,6 +122,11 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
                         releaseTuner(tunerStatusBS);
                         return new AsyncResult<>(-1);
                     }
+                }else{
+                    log.error("no epgdump output JSON file: {}", jsonStringPath);
+                    releaseTuner(tunerStatusGR);
+                    releaseTuner(tunerStatusBS);
+                    return new AsyncResult<>(-1);
                 }
             }
 
