@@ -47,4 +47,5 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     compile 'org.webjars.bower:github-com-angular-angular:2.4.8'
     compile "io.projectreactor:reactor-bus"
+    compile 'org.springframework.boot:spring-boot-devtools'
 }

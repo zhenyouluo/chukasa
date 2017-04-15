@@ -25,7 +25,7 @@ public class RecorderChecker {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String str = "";
             while((str = bufferedReader.readLine()) != null){
-                if(str.contains(reservedProgram.getBeginDate()) && str.contains(reservedProgram.getEndDate()) && str.contains(reservedProgram.getPhysicalChannel() + "ch")){
+                if(str.contains(reservedProgram.getBeginDate()) && str.contains(reservedProgram.getEndDate()) && str.contains(reservedProgram.getPhysicalLogicalChannel() + "ch")){
                     bufferedReader.close();
                     process.destroy();
                     return true;

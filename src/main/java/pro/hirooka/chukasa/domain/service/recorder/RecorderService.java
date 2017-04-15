@@ -3,7 +3,7 @@ package pro.hirooka.chukasa.domain.service.recorder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.recorder.RecordingProgramModel;
@@ -11,13 +11,14 @@ import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
 import pro.hirooka.chukasa.domain.repository.recorder.IReservedProgramRepository;
 import pro.hirooka.chukasa.domain.service.chukasa.IRecordingProgramManagementComponent;
 import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
+import pro.hirooka.chukasa.domain.service.recorder.runner.IRecorderRunnerService;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
+@Service
 public class RecorderService implements IRecorderService {
 
     @Autowired
@@ -30,6 +31,8 @@ public class RecorderService implements IRecorderService {
     ISystemService systemService;
     @Autowired
     IRecordingProgramManagementComponent recordingProgramManagementComponent;
+    @Autowired
+    private IRecorderRunnerService recorderRunnerService;
 
     @PostConstruct
     public void init(){
@@ -57,9 +60,10 @@ public class RecorderService implements IRecorderService {
 
                         long duration = (stopRecording - now) / 1000;
                         reservedProgram.setDuration(duration);
-                        SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
-                        RecorderRunner recorderRunner = new RecorderRunner(systemConfiguration, reservedProgram);
-                        simpleAsyncTaskExecutor.execute(recorderRunner);
+//                        SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
+//                        RecorderRunner recorderRunner = new RecorderRunner(systemConfiguration, reservedProgram);
+//                        simpleAsyncTaskExecutor.execute(recorderRunner);
+                        recorderRunnerService.submit(reservedProgram);
 
                         RecordingProgramModel recordingProgramModel = new RecordingProgramModel();
                         recordingProgramModel.setFileName(reservedProgram.getFileName());
@@ -104,7 +108,7 @@ public class RecorderService implements IRecorderService {
         reservedProgram.setDurationRecording(durationRecording);
         reservedProgram.setRecordingDuration(recordingDuration);
 
-        String fileName = reservedProgram.getPhysicalChannel() + "_" + reservedProgram.getBegin() + "_" + reservedProgram.getTitle()  + ".ts";
+        String fileName = reservedProgram.getPhysicalLogicalChannel() + "_" + reservedProgram.getBegin() + "_" + reservedProgram.getTitle()  + ".ts";
         reservedProgram.setFileName(fileName);
 
         long now = new Date().getTime();
@@ -124,9 +128,11 @@ public class RecorderService implements IRecorderService {
 
             durationRecording = (stopRecording - now) / 1000;
             reservedProgram.setDurationRecording(durationRecording);
-            SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
-            RecorderRunner recorderRunner = new RecorderRunner(systemConfiguration, reservedProgram);
-            simpleAsyncTaskExecutor.execute(recorderRunner);
+//            SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
+//            RecorderRunner recorderRunner = new RecorderRunner(systemConfiguration, reservedProgram, tunerManagementService);
+//            simpleAsyncTaskExecutor.execute(recorderRunner);
+            recorderRunnerService.submit(reservedProgram);
+
 
             RecordingProgramModel recordingProgramModel = new RecordingProgramModel();
             recordingProgramModel.setFileName(reservedProgram.getFileName());

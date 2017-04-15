@@ -74,7 +74,8 @@ public class ProgramController {
         createdReservedProgram.setBegin(reservedProgram.getStart());
         createdReservedProgram.setEnd(reservedProgram.getEnd());
         createdReservedProgram.setDuration(reservedProgram.getDuration());
-        createdReservedProgram.setPhysicalChannel(reservedProgram.getPhysicalChannel());
+        createdReservedProgram.setPhysicalLogicalChannel(reservedProgram.getPhysicalLogicalChannel());
+        createdReservedProgram.setRemoteControllerChannel(reservedProgram.getRemoteControllerChannel());
         createdReservedProgram.setChannelName(reservedProgram.getChannelName());
         createdReservedProgram.setBeginDate(reservedProgram.getBeginDate());
         createdReservedProgram.setEndDate(reservedProgram.getEndDate());

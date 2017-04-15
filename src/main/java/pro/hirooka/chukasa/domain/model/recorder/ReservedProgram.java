@@ -17,7 +17,8 @@ public class ReservedProgram {
     private boolean freeCA;
     private int eventID;
 
-    private int physicalChannel;
+    private int physicalLogicalChannel;
+    private int remoteControllerChannel;
     private String channelName;
     private String beginDate;
     private String endDate;

@@ -10,6 +10,7 @@ import java.util.Date;
 
 import static java.util.Objects.requireNonNull;
 
+@Deprecated
 @Slf4j
 public class RecorderRunner implements Runnable {
 
@@ -29,7 +30,7 @@ public class RecorderRunner implements Runnable {
 
         log.info("start recording... ");
 
-        int physicalCnannel = reservedProgram.getPhysicalChannel();
+        int physicalLogicalChannel = reservedProgram.getPhysicalLogicalChannel();
         long startRecording = reservedProgram.getStartRecording();
         long stopRecording = reservedProgram.getStopRecording();
 //        long duration = reservedProgram.getDurationRecording();
@@ -42,7 +43,7 @@ public class RecorderRunner implements Runnable {
 
         // start recording immediately
         // Create do-record.sh (do-record_ch_yyyyMMdd_yyyyMMdd.sh)
-        String doRecordFileName = "do-record_" + physicalCnannel + "_" + startRecording + "_" + stopRecording + ".sh";
+        String doRecordFileName = "do-record_" + physicalLogicalChannel + "_" + startRecording + "_" + stopRecording + ".sh";
         try{
             File doRecordFile = new File(systemConfiguration.getFilePath() + FILE_SEPARATOR + doRecordFileName);
             log.info("doRecordFile: {}", doRecordFileName);
@@ -51,7 +52,7 @@ public class RecorderRunner implements Runnable {
                 BufferedWriter bw = new BufferedWriter(new FileWriter(doRecordFile));
                 bw.write("#!/bin/bash");
                 bw.newLine();
-                bw.write(systemConfiguration.getRecxxxPath() + " " + physicalCnannel + " " + duration + " \"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " >/dev/null");
+                bw.write(systemConfiguration.getRecxxxPath() + " " + physicalLogicalChannel + " " + duration + " \"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " >/dev/null");
                 bw.newLine();
                 bw.write(systemConfiguration.getFfmpegPath() +  " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -ss " + d + " -vframes 1 -f image2 " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".jpg\"" + " >/dev/null");
                 bw.newLine();

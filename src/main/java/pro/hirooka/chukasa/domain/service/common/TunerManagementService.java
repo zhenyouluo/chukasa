@@ -7,6 +7,8 @@ import pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant;
 import pro.hirooka.chukasa.domain.model.common.Tuner;
 import pro.hirooka.chukasa.domain.model.common.TunerStatus;
 import pro.hirooka.chukasa.domain.model.common.enums.RecxxxDriverType;
+import pro.hirooka.chukasa.domain.model.common.enums.TunerUseType;
+import pro.hirooka.chukasa.domain.model.recorder.ChannelConfiguration;
 import pro.hirooka.chukasa.domain.model.recorder.enums.ChannelType;
 import pro.hirooka.chukasa.domain.service.common.ulitities.CommonUtilityService;
 
@@ -155,5 +157,27 @@ public class TunerManagementService implements ITunerManagementService {
         }else{
             return tunerStatus.getDeviceName();
         }
+    }
+
+    @Override
+    public String getDeviceArgument(TunerUseType tunerUseType, int physicalLogicalChannel, List<ChannelConfiguration> channelConfigurationList) {
+        TunerStatus tunerStatus = null;
+        for(ChannelConfiguration channelConfiguration : channelConfigurationList){
+            if(channelConfiguration.getPhysicalLogicalChannel() == physicalLogicalChannel){
+                if(channelConfiguration.getChannelType() == ChannelType.GR){
+                    tunerStatus = findOne(ChannelType.GR);
+                    tunerStatus.setTunerUseType(tunerUseType);
+                    //update(tunerStatus, false); // TODO:
+                }else if(channelConfiguration.getChannelType() == ChannelType.BS){
+                    tunerStatus = findOne(ChannelType.BS);
+                    tunerStatus.setTunerUseType(tunerUseType);
+                    //update(tunerStatus, false);
+                }
+            }
+        }
+        if(tunerStatus != null){
+            return getDeviceArgument(tunerStatus);
+        }
+        return null;
     }
 }
