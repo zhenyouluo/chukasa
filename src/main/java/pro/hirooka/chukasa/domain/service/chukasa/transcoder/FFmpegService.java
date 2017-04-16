@@ -119,7 +119,7 @@ public class FFmpegService implements IFFmpegService {
 //                        "-segment_list", m3u8OutputPath,
                         ffmpegOutputPath
                 };
-            } else if (hardwareAccelerationType == HardwareAccelerationType.H264) {
+            } else if (hardwareAccelerationType == HardwareAccelerationType.H264_X264) {
                 commandArray = new String[]{
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -192,7 +192,7 @@ public class FFmpegService implements IFFmpegService {
                         "-segment_time", Integer.toString(chukasaModel.getHlsConfiguration().getDuration()),
                         ffmpegOutputPath
                 };
-            } else if (hardwareAccelerationType == HardwareAccelerationType.H264) {
+            } else if (hardwareAccelerationType == HardwareAccelerationType.H264_X264) {
                 commandArray = new String[]{
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -240,7 +240,7 @@ public class FFmpegService implements IFFmpegService {
                             "-f", "mpegts",
                             "-y", chukasaModel.getTempEncPath() + FILE_SEPARATOR + "fileSequenceEncoded" + sequenceMediaSegment + STREAM_FILE_EXTENSION // TODO
                     };
-                } else if (hardwareAccelerationType == HardwareAccelerationType.H264) {
+                } else if (hardwareAccelerationType == HardwareAccelerationType.H264_X264) {
                     commandArray = new String[]{
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -284,7 +284,7 @@ public class FFmpegService implements IFFmpegService {
                             "-f", "mpegts",
                             "-y", chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + sequenceMediaSegment + STREAM_FILE_EXTENSION
                     };
-                } else if (hardwareAccelerationType == HardwareAccelerationType.H264) {
+                } else if (hardwareAccelerationType == HardwareAccelerationType.H264_X264) {
                     commandArray = new String[]{
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),

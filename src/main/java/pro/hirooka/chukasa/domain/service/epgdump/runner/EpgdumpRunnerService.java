@@ -45,10 +45,14 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
     public Future<Integer> submit(List<ChannelConfiguration> channelConfigurationList) {
 
         // TODO: null
-        final TunerStatus tunerStatusGR = tunerManagementService.findOne(ChannelType.GR);
-        final TunerStatus usingTunerStatusGR = tunerManagementService.update(tunerStatusGR, false);
-        final TunerStatus tunerStatusBS = tunerManagementService.findOne(ChannelType.BS);
-        final TunerStatus usingTunerStatusBS = tunerManagementService.update(tunerStatusBS, false);
+        TunerStatus tunerStatusGR = tunerManagementService.findOne(ChannelType.GR);
+        if(tunerStatusGR != null){
+            tunerStatusGR = tunerManagementService.update(tunerStatusGR, false);
+        }
+        TunerStatus tunerStatusBS = tunerManagementService.findOne(ChannelType.BS);
+        if(tunerStatusGR != null){
+            tunerStatusBS = tunerManagementService.update(tunerStatusBS, false);
+        }
 
         final File temporaryEpgdumpPathFile = new File(epgdumpConfiguration.getTemporaryPath());
 
@@ -57,8 +61,8 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
             log.info("epgdump temporary path: {}", temporaryEpgdumpPathFile);
         }else{
             log.error("cannot create epgdump temporary path: {}", temporaryEpgdumpPathFile);
-            releaseTuner(tunerStatusGR);
-            releaseTuner(tunerStatusBS);
+            if(tunerStatusGR != null) releaseTuner(tunerStatusGR);
+            if(tunerStatusBS != null) releaseTuner(tunerStatusBS);
             return new AsyncResult<>(-1);
         }
         final String epgdumpShellPath = epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump.sh";
@@ -77,15 +81,15 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
                         final int physicalLogicalChannel = channelConfiguration.getPhysicalLogicalChannel();
                         final String recxxxCommand;
                         if(channelConfiguration.getChannelType() == ChannelType.GR) {
-                            final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(usingTunerStatusGR);
+                            final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(tunerStatusGR);
                             recxxxCommand = systemConfiguration.getRecxxxPath() + " " + DEVICE_OPTION + " " + DEVICE_ARGUMENT + " " + physicalLogicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
                         }else if(channelConfiguration.getChannelType() == ChannelType.BS){
-                            final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(usingTunerStatusBS);
+                            final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(tunerStatusBS);
                             recxxxCommand = systemConfiguration.getRecxxxPath() + " " + DEVICE_OPTION + " " + DEVICE_ARGUMENT + " " + physicalLogicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts";
                         }else{
                             log.error("unknown ChannelType");
-                            releaseTuner(tunerStatusGR);
-                            releaseTuner(tunerStatusBS);
+                            if(tunerStatusGR != null) releaseTuner(tunerStatusGR);
+                            if(tunerStatusBS != null) releaseTuner(tunerStatusBS);
                             return new AsyncResult<>(-1);
                         }
                         final String epgdumpCommand = epgdumpConfiguration.getPath() + " json " + epgdumpConfiguration.getTemporaryPath()+ FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".ts " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalLogicalChannel + ".json";
@@ -120,14 +124,14 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
                             epgdumpParser.parse(jsonStringPath, channelConfiguration.getPhysicalLogicalChannel(), channelConfiguration.getRemoteControllerChannel());
                         } catch (IOException e) {
                             log.error("cannot parse epgdump output: {} {}", e.getMessage(), e);
-                            releaseTuner(tunerStatusGR);
-                            releaseTuner(tunerStatusBS);
+                            if(tunerStatusGR != null) releaseTuner(tunerStatusGR);
+                            if(tunerStatusBS != null) releaseTuner(tunerStatusBS);
                             return new AsyncResult<>(-1);
                         }
                     } else {
                         log.error("no epgdump output JSON file: {}", jsonStringPath);
-                        releaseTuner(tunerStatusGR);
-                        releaseTuner(tunerStatusBS);
+                        if(tunerStatusGR != null) releaseTuner(tunerStatusGR);
+                        if(tunerStatusBS != null) releaseTuner(tunerStatusBS);
                         return new AsyncResult<>(-1);
                     }
                 }
@@ -152,14 +156,14 @@ public class EpgdumpRunnerService implements IEpgdumpRunnerService {
 
             cleanupTemporaryEpgdumpPath(temporaryEpgdumpPathFile);
 
-            releaseTuner(tunerStatusGR);
-            releaseTuner(tunerStatusBS);
+            if(tunerStatusGR != null) releaseTuner(tunerStatusGR);
+            if(tunerStatusBS != null) releaseTuner(tunerStatusBS);
             return new AsyncResult<>(0);
 
         } catch (IOException e) {
             log.error("{} {}", e.getMessage(), e);
-            releaseTuner(tunerStatusGR);
-            releaseTuner(tunerStatusBS);
+            if(tunerStatusGR != null) releaseTuner(tunerStatusGR);
+            if(tunerStatusBS != null) releaseTuner(tunerStatusBS);
             return new AsyncResult<>(-1);
         }
     }

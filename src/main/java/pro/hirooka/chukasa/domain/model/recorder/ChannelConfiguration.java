@@ -6,7 +6,7 @@ import pro.hirooka.chukasa.domain.model.recorder.enums.ChannelType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class ChannelConfiguration {
+public class ChannelConfiguration { // TODO: -> common
     private ChannelType channelType;
     private int remoteControllerChannel;
     private int physicalLogicalChannel;

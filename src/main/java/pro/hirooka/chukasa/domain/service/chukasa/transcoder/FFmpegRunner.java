@@ -116,7 +116,7 @@ public class FFmpegRunner implements Runnable {
                         ffmpegOutputPath
                 };
                 cmdArray = cmdArrayTemporary;
-            }else if(hardwareAccelerationType == HardwareAccelerationType.H264){
+            }else if(hardwareAccelerationType == HardwareAccelerationType.H264_X264){
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -189,7 +189,7 @@ public class FFmpegRunner implements Runnable {
                         ffmpegOutputPath
                 };
                 cmdArray = cmdArrayTemporary;
-            }else if(hardwareAccelerationType == HardwareAccelerationType.H264){
+            }else if(hardwareAccelerationType == HardwareAccelerationType.H264_X264){
                 String[] cmdArrayTemporary = {
 
                         chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -237,7 +237,7 @@ public class FFmpegRunner implements Runnable {
                             "-y", chukasaModel.getTempEncPath() + FILE_SEPARATOR + "fileSequenceEncoded" + seqCapturedTimeShifted + STREAM_FILE_EXTENSION // TODO
                     };
                     cmdArray = cmdArrayTemporary;
-                }else if(hardwareAccelerationType == HardwareAccelerationType.H264){
+                }else if(hardwareAccelerationType == HardwareAccelerationType.H264_X264){
                     String[] cmdArrayTemporary = {
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),
@@ -281,7 +281,7 @@ public class FFmpegRunner implements Runnable {
                             "-y", chukasaModel.getStreamPath() + FILE_SEPARATOR + STREAM_FILE_NAME_PREFIX + seqCapturedTimeShifted + STREAM_FILE_EXTENSION
                     };
                     cmdArray = cmdArrayTemporary;
-                }else if(hardwareAccelerationType == HardwareAccelerationType.H264){
+                }else if(hardwareAccelerationType == HardwareAccelerationType.H264_X264){
                     String[] cmdArrayTemporary = {
 
                             chukasaModel.getSystemConfiguration().getFfmpegPath(),

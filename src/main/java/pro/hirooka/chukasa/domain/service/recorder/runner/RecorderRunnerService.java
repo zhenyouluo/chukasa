@@ -3,13 +3,16 @@ package pro.hirooka.chukasa.domain.service.recorder.runner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
+import pro.hirooka.chukasa.domain.model.common.TunerStatus;
 import pro.hirooka.chukasa.domain.model.common.enums.TunerUseType;
 import pro.hirooka.chukasa.domain.model.recorder.ChannelConfiguration;
 import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
+import pro.hirooka.chukasa.domain.model.recorder.enums.ChannelType;
 import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
 import pro.hirooka.chukasa.domain.service.common.ITunerManagementService;
 import pro.hirooka.chukasa.domain.service.common.ulitities.ICommonUtilityService;
@@ -39,15 +42,15 @@ public class RecorderRunnerService implements IRecorderRunnerService {
     @Override
     public Future<Integer> submit(ReservedProgram reservedProgram) {
 
-        log.info("start recording... ");
-
         final int physicalLogicalChannel = reservedProgram.getPhysicalLogicalChannel();
         final long startRecording = reservedProgram.getStartRecording();
         final long stopRecording = reservedProgram.getStopRecording();
         final long duration = reservedProgram.getRecordingDuration();
-        final long d = duration / 3;
+        final long thumbnailPoint = duration / 3;
         final String title = reservedProgram.getTitle();
         final String fileName = reservedProgram.getFileName();
+
+        log.info("start recording... [{}] {}", physicalLogicalChannel, title);
 
         final long now = new Date().getTime();
 
@@ -55,8 +58,17 @@ public class RecorderRunnerService implements IRecorderRunnerService {
         // Create do-record.sh (do-record_ch_yyyyMMdd_yyyyMMdd.sh)
         final String doRecordFileName = "do-record_" + physicalLogicalChannel + "_" + startRecording + "_" + stopRecording + ".sh";
         final List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
+        final ChannelType channelType = commonUtilityService.getChannelType(physicalLogicalChannel);
+        TunerStatus tunerStatus = tunerManagementService.findOne(channelType);
+        if(tunerStatus != null) {
+            tunerStatus = tunerManagementService.update(tunerStatus, false);
+        }else{
+            // TODO: priority
+            log.warn("Tuner for recording is not available.");
+            return new AsyncResult<>(-1);
+        }
         final String DEVICE_OPTION = tunerManagementService.getDeviceOption();
-        final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(TunerUseType.RECORDING, physicalLogicalChannel, channelConfigurationList);
+        final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(tunerStatus);
         try{
             final File doRecordFile = new File(systemConfiguration.getFilePath() + FILE_SEPARATOR + doRecordFileName);
             log.info("doRecordFile: {}", doRecordFileName);
@@ -67,8 +79,9 @@ public class RecorderRunnerService implements IRecorderRunnerService {
                 bw.newLine();
                 bw.write(systemConfiguration.getRecxxxPath() + " " + DEVICE_OPTION + " " + DEVICE_ARGUMENT + " " + physicalLogicalChannel + " " + duration + " \"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " >/dev/null");
                 bw.newLine();
-                bw.write(systemConfiguration.getFfmpegPath() +  " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -ss " + d + " -vframes 1 -f image2 " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".jpg\"" + " >/dev/null");
-                bw.newLine();
+                // TODO: separate sh into recoding and transcoding
+//                bw.write(systemConfiguration.getFfmpegPath() +  " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -ss " + thumbnailPoint + " -vframes 1 -f image2 " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".jpg\"" + " >/dev/null");
+//                bw.newLine();
                 final HardwareAccelerationType hardwareAccelerationType = systemService.getHardwareAccelerationType();
                 final String SPECIFIC_OPTIONS;
                 if(hardwareAccelerationType == HardwareAccelerationType.H264_QSV){
@@ -77,14 +90,15 @@ public class RecorderRunnerService implements IRecorderRunnerService {
                     SPECIFIC_OPTIONS = "h264_nvenc";
                 }else if(hardwareAccelerationType == HardwareAccelerationType.H264_OMX){
                     SPECIFIC_OPTIONS = "h264_omx";
-                }else if(hardwareAccelerationType == HardwareAccelerationType.H264){
+                }else if(hardwareAccelerationType == HardwareAccelerationType.H264_X264){
                     SPECIFIC_OPTIONS = "libx264";
                 }else{
                     SPECIFIC_OPTIONS = "";
                 }
-                bw.write(systemConfiguration.getFfmpegPath() + " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -acodec aac -ab 160k -ar 44100 -ac 2 -s 1280x720 -vcodec " + SPECIFIC_OPTIONS + " -profile:v high -level 4.2 -b:v 2400k -threads 1 -y " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".m4v\"" + " >/dev/null");
-                bw.newLine();
-                bw.write(systemConfiguration.getFfmpegPath() + " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -acodec aac -ab 32k -ar 44100 -ac 2 -s 320x180 -vcodec " + SPECIFIC_OPTIONS + " -profile:v high -level 4.1 -b:v 160k -threads 1 -y " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".watch.m4v\"" + " >/dev/null");
+                // TODO: separate sh into recoding and transcoding
+//                bw.write(systemConfiguration.getFfmpegPath() + " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -acodec aac -ab 160k -ar 44100 -ac 2 -s 1280x720 -vcodec " + SPECIFIC_OPTIONS + " -profile:v high -level 4.2 -b:v 2400k -threads 1 -y " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".m4v\"" + " >/dev/null");
+//                bw.newLine();
+//                bw.write(systemConfiguration.getFfmpegPath() + " -i " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + "\"" + " -acodec aac -ab 32k -ar 44100 -ac 2 -s 320x180 -vcodec " + SPECIFIC_OPTIONS + " -profile:v high -level 4.1 -b:v 160k -threads 1 -y " + "\"" + systemConfiguration.getFilePath() + FILE_SEPARATOR + fileName + ".watch.m4v\"" + " >/dev/null");
                 bw.close();
             }
 
@@ -123,11 +137,12 @@ public class RecorderRunnerService implements IRecorderRunnerService {
 
         }catch(IOException e){
             log.error("cannot run do-record.sh: {} {}", e.getMessage(), e);
+            tunerManagementService.update(tunerStatus, true);
+            return new AsyncResult<>(-1);
         }
 
-        // TODO: release Tuner
-
-        return null;
+        tunerManagementService.update(tunerStatus, true);
+        return new AsyncResult<>(0);
     }
 
     @Override

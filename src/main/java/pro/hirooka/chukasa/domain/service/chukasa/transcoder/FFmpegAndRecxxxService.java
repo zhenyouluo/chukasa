@@ -3,6 +3,7 @@ package pro.hirooka.chukasa.domain.service.chukasa.transcoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.model.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
@@ -64,23 +65,17 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
             ffmpegM3U8OutputPath = chukasaModel.getStreamPath() + FILE_SEPARATOR + M3U8_FILE_NAME + M3U8_FILE_EXTENSION;
         }
 
-        TunerStatus tunerStatus = null;
-        List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
-        for(ChannelConfiguration channelConfiguration : channelConfigurationList){
-            if(channelConfiguration.getPhysicalLogicalChannel() == chukasaModel.getChukasaSettings().getPhysicalLogicalChannel()){
-                if(channelConfiguration.getChannelType() == ChannelType.GR){
-                    tunerStatus = tunerManagementService.findOne(ChannelType.GR);
-                    tunerStatus = tunerManagementService.update(tunerStatus, false);
-                    chukasaModel.setTunerDeviceName(tunerStatus.getDeviceName());
-                    chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-                }else if(channelConfiguration.getChannelType() == ChannelType.BS){
-                    tunerStatus = tunerManagementService.findOne(ChannelType.BS);
-                    tunerStatus = tunerManagementService.update(tunerStatus, false);
-                    chukasaModel.setTunerDeviceName(tunerStatus.getDeviceName());
-                    chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
-                }
-            }
+        final List<ChannelConfiguration> channelConfigurationList = commonUtilityService.getChannelConfigurationList();
+        final ChannelType channelType = commonUtilityService.getChannelType(chukasaModel.getChukasaSettings().getPhysicalLogicalChannel());
+        TunerStatus tunerStatus = tunerManagementService.findOne(channelType);
+        if(tunerStatus != null) {
+            tunerStatus = tunerManagementService.update(tunerStatus, false);
+        }else{
+            log.warn("Tuner for HLS is not available.");
+            return new AsyncResult<>(-1);
         }
+        chukasaModel.setTunerDeviceName(tunerStatus.getDeviceName());
+        chukasaModel = chukasaModelManagementComponent.update(adaptiveBitrateStreaming, chukasaModel);
 
         final String DEVICE_OPTION = tunerManagementService.getDeviceOption();
         final String DEVICE_ARGUMENT = tunerManagementService.getDeviceArgument(tunerStatus);
@@ -142,7 +137,7 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
 //                    "-segment_list", m3u8OutputPath,
                     ffmpegOutputPath
             };
-        }else if(hardwareAccelerationType == HardwareAccelerationType.H264) {
+        }else if(hardwareAccelerationType == HardwareAccelerationType.H264_X264) {
             commandArray = new String[]{
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     DEVICE_OPTION, DEVICE_ARGUMENT,
@@ -282,7 +277,8 @@ public class FFmpegAndRecxxxService implements IFFmpegAndRecxxxService {
                 log.error("{} {}", e.getMessage(), e);
             }
         }
-        return null;
+
+        return new AsyncResult<>(0);
     }
 
     @Override

@@ -13,6 +13,7 @@ import pro.hirooka.chukasa.domain.model.common.Tuner;
 import pro.hirooka.chukasa.domain.model.common.TunerWrapper;
 import pro.hirooka.chukasa.domain.model.recorder.ChannelConfiguration;
 import pro.hirooka.chukasa.domain.model.recorder.ChannelConfigurationWrapper;
+import pro.hirooka.chukasa.domain.model.recorder.enums.ChannelType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -94,5 +95,19 @@ public class CommonUtilityService implements ICommonUtilityService {
             log.error("invalid tuner.json: {} {}", e.getMessage(), e);
         }
         return tunerList;
+    }
+
+    @Override
+    public ChannelType getChannelType(int physicalLogicalChannel) {
+        for(ChannelConfiguration channelConfiguration : getChannelConfigurationList()){
+            if(channelConfiguration.getPhysicalLogicalChannel() == physicalLogicalChannel){
+                if(channelConfiguration.getChannelType() == ChannelType.GR){
+                    return ChannelType.GR;
+                }else if(channelConfiguration.getChannelType() == ChannelType.BS){
+                    return ChannelType.BS;
+                }
+            }
+        }
+        return null;
     }
 }

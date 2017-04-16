@@ -100,7 +100,7 @@ public class CaptureRunner implements Runnable {
                     ffmpegOutputPath
             };
             commandArray = commandArrayTemporary;
-        }else if(hardwareAccelerationType == HardwareAccelerationType.H264){
+        }else if(hardwareAccelerationType == HardwareAccelerationType.H264_X264){
             String[] commandArrayTemporary = {
                     chukasaModel.getSystemConfiguration().getRecxxxPath(),
                     "--b25", "--strip",

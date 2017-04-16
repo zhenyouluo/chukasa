@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ChannelConfigurationWrapper {
+public class ChannelConfigurationWrapper { // TODO: -> common
     @JsonProperty("channelConfiguration")
     private List<ChannelConfiguration> channelConfigurationList;
 }

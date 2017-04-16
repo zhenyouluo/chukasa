@@ -68,7 +68,8 @@ public class TunerManagementService implements ITunerManagementService {
     @Override
     public List<TunerStatus> available(ChannelType channelType) {
         Predicate<TunerStatus> predicate = tunerStatus -> tunerStatus.getChannelType() == channelType && tunerStatus.isCanUse();
-        return tunerStatusList.stream().filter(predicate).collect(Collectors.toList());
+        List<TunerStatus> availableTunerStatusList = tunerStatusList.stream().filter(predicate).collect(Collectors.toList());
+        return availableTunerStatusList;
     }
 
     @Override

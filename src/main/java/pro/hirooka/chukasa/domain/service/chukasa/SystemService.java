@@ -108,7 +108,7 @@ public class SystemService implements ISystemService {
     @Override
     public HardwareAccelerationType getHardwareAccelerationType() {
         final String H264_QSV = "--enable-libmfx";
-        final String H264 = "--enable-libx264";
+        final String H264_X264 = "--enable-libx264";
         final String H264_OMX = "--enable-omx-rpi";
         String ffmpeg = systemConfiguration.getFfmpegPath();
         String[] command = {ffmpeg, "-version"};
@@ -129,10 +129,10 @@ public class SystemService implements ISystemService {
                     process.destroy();
                     return HardwareAccelerationType.H264_OMX;
                 }
-                if(str.contains(H264)){
+                if(str.contains(H264_X264)){
                     bufferedReader.close();
                     process.destroy();
-                    return HardwareAccelerationType.H264;
+                    return HardwareAccelerationType.H264_X264;
                 }
             }
             bufferedReader.close();

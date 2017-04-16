@@ -105,42 +105,4 @@ public class RecorderRunner implements Runnable {
             log.error("cannot run do-record.sh: {} {}", e.getMessage(), e);
         }
     }
-
-    // TODO:
-    HardwareAccelerationType getVideoCodecType() {
-        final String H264_QSV = "--enable-libmfx";
-        final String H264 = "--enable-x264";
-        final String H264_OMX = "--enable-omx-rpi";
-        String ffmpeg = systemConfiguration.getFfmpegPath();
-        String[] command = {ffmpeg, "-version"};
-        ProcessBuilder processBuilder = new ProcessBuilder(command);
-        try {
-            Process process = processBuilder.start();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String str = "";
-            while ((str = bufferedReader.readLine()) != null) {
-                log.info(str);
-                if (str.contains(H264_QSV)) {
-                    bufferedReader.close();
-                    process.destroy();
-                    return HardwareAccelerationType.H264_QSV;
-                }
-                if (str.contains(H264_OMX)) {
-                    bufferedReader.close();
-                    process.destroy();
-                    return HardwareAccelerationType.H264_OMX;
-                }
-                if (str.contains(H264)) {
-                    bufferedReader.close();
-                    process.destroy();
-                    return HardwareAccelerationType.H264;
-                }
-            }
-            bufferedReader.close();
-            process.destroy();
-        } catch (IOException e) {
-            log.error("{} {}", e.getMessage(), e);
-        }
-        return HardwareAccelerationType.UNKNOWN;
-    }
 }
