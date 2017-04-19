@@ -99,7 +99,7 @@ cd ~/chukasa_temporary && \
 # FFmpeg
 #*******************************************************************************************************************
 cd ~/chukasa_temporary && \
-    wget http://ffmpeg.org/releases/ffmpeg-3.2.4.tar.bz2 && \
+    wget http://ffmpeg.org/releases/ffmpeg-3.3.tar.bz2 && \
     tar jxvf ffmpeg-* && \
     cd ffmpeg-* && \
     ./configure --disable-shared --enable-static && \
