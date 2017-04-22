@@ -2,6 +2,11 @@
 # Linux localhost.localdomain 3.10.0-327.el7.x86_64 #1 SMP Thu Nov 19 22:10:57 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
 
 #*******************************************************************************************************************
+# Time
+#*******************************************************************************************************************
+sudo timedatectl set-ntp 1
+
+#*******************************************************************************************************************
 # Temporary directory
 #*******************************************************************************************************************
 mkdir ~/chukasa_temporary
@@ -121,7 +126,8 @@ cd ~/chukasa_temporary && \
     tar xvlf ec7c87854f2f.tar.bz2 && \
     cd pt1-ec7c87854f2f/arib25 && \
     make -j$(nproc) && \
-    sudo make install
+    sudo make install && \
+    sudo ldconfig
 
 cd ~/chukasa_temporary && \
     git clone https://github.com/stz2012/recpt1.git && \
@@ -192,6 +198,8 @@ cd chukasa
 # build chukasa application and deploy it
 ./gradlew build
 cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
+# cp src/main/resources/application.properties /opt/chukasa/
+# cp src/main/resources/tuner.json /opt/chukasa/
 
 # chukasa sysconfig
 sudo cp centos/etc/sysconfig/chukasa /etc/sysconfig/
