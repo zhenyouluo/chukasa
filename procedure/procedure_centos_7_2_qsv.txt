@@ -81,8 +81,7 @@ cd ~/chukasa_temporary && \
     cd yasm-* && \
     ./configure && \
     make -j$(nproc) && \
-    sudo make install && \
-    sudo ldconfig
+    sudo make install
 
 #*******************************************************************************************************************
 # FFmpeg
@@ -93,8 +92,7 @@ cd ~/chukasa_temporary && \
     cd ffmpeg-* && \
     ./configure --enable-libmfx && \
     make -j$(nproc) && \
-    sudo make install && \
-    sudo ldconfig
+    sudo make install
 
 #*******************************************************************************************************************
 # Fix link
@@ -123,8 +121,7 @@ cd ~/chukasa_temporary && \
     tar xvlf ec7c87854f2f.tar.bz2 && \
     cd pt1-ec7c87854f2f/arib25 && \
     make -j$(nproc) && \
-    sudo make install && \
-    sudo ldconfig
+    sudo make install
 
 cd ~/chukasa_temporary && \
     git clone https://github.com/stz2012/recpt1.git && \
@@ -132,8 +129,7 @@ cd ~/chukasa_temporary && \
     ./autogen.sh && \
     ./configure --enable-b25 && \
     make -j$(nproc) && \
-    sudo make install && \
-    sudo ldconfig
+    sudo make install
 
 #*******************************************************************************************************************
 # epgdump
@@ -144,8 +140,7 @@ cd ~/chukasa_temporary && \
     cd epgdump && \
     ./autogen.sh && \
     make -j$(nproc) && \
-    sudo make install && \
-    sudo ldconfig
+    sudo make install
 
 #*******************************************************************************************************************
 # MongoDB 3.4
@@ -165,7 +160,7 @@ sudo yum -y install mongodb-org
 #*******************************************************************************************************************
 cd ~/chukasa_temporary && \
     sudo yum -y install pcre-devel openssl-devel && \
-    wget http://nginx.org/download/nginx-1.11.13.tar.gz && \
+    wget http://nginx.org/download/nginx-1.12.0.tar.gz && \
     tar zxvf nginx-*.tar.gz && \
     cd nginx-* && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
@@ -176,8 +171,8 @@ cd ~/chukasa_temporary && \
 # Java 8
 #*******************************************************************************************************************
 cd ~/chukasa_temporary
-wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/jdk-8u121-linux-x64.rpm"
-sudo yum -y install jdk-8u121-linux-x64.rpm
+wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
+sudo yum -y install jdk-8u131-linux-x64.rpm
 sudo sh -c "echo 'export JAVA_HOME=/usr/java/default' >> /etc/profile.d/jdk.sh"
 sudo sh -c "echo 'export PATH=\$JAVA_HOME/bin:\$PATH' >> /etc/profile.d/jdk.sh"
 source /etc/profile.d/jdk.sh
