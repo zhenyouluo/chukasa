@@ -1,9 +1,10 @@
-FROM ubuntu:16.10
+FROM ubuntu:17.04
 
 MAINTAINER hirooka
 
 # Package
-RUN apt-get -y update && apt-get -y upgrade
+RUN apt-get -y update
+#RUN apt-get -y update && apt-get -y upgrade
 #RUN apt-get -y dist-upgrade
 RUN apt-get -y install build-essential git wget libasound2-dev autoconf libtool pcsc-tools pkg-config libpcsclite-dev unzip yasm
 
@@ -70,7 +71,7 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 # nginx
 RUN cd /tmp && \
     apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.11.13.tar.gz && \
+    wget http://nginx.org/download/nginx-1.12.0.tar.gz && \
     tar zxvf nginx-*.tar.gz && \
     cd nginx-* && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
@@ -97,6 +98,7 @@ ENV LANG ja_JP.UTF-8
 ENV LANGUAGE ja_JP:ja
 ENV LC_ALL ja_JP.UTF-8
 
+RUN apt-get -y install tzdata
 RUN echo "Asia/Tokyo" > /etc/timezone && dpkg-reconfigure tzdata
 
 # run only Spring Boot
