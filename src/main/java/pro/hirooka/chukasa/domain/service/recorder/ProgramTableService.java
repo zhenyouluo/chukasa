@@ -96,7 +96,7 @@ public class ProgramTableService implements IProgramTableService {
 
     @Override
     public Program read(String id) {
-        return programRepository.findOne(id);
+        return programRepository.findOne(id).orElse(null);
     }
 
     @Override

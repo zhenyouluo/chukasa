@@ -20,7 +20,7 @@ public class LastEpgdumpExecutedService implements ILastEpgdumpExecutedService {
 
     @Override
     public LastEpgdumpExecuted read(int unique) {
-        return lastEpgdumpExecutedRepository.findOne(unique);
+        return lastEpgdumpExecutedRepository.findOne(unique).orElse(null);
     }
 
     @Override

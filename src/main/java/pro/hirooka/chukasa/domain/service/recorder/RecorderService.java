@@ -159,7 +159,7 @@ public class RecorderService implements IRecorderService {
 
     @Override
     public ReservedProgram read(int id) {
-        return reservedProgramRepository.findOne(id);
+        return reservedProgramRepository.findOne(id).orElse(null);
     }
 
     @Override
