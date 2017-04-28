@@ -4,16 +4,15 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import pro.hirooka.chukasa.domain.event.LastMediaSegmentSequenceEvent;
 import pro.hirooka.chukasa.domain.model.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.PlaylistType;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
 import pro.hirooka.chukasa.domain.service.chukasa.playlister.IPlaylistBuilder;
-import reactor.Environment;
-import reactor.bus.Event;
-import reactor.bus.EventBus;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
@@ -38,14 +37,13 @@ public class FFmpegHLSMediaSegmentDetector implements Runnable {
     private int adaptiveBitrateStreaming;
     private final IChukasaModelManagementComponent chukasaModelManagementComponent;
     private final IPlaylistBuilder playlistBuilder;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    private EventBus eventBus;
-
-    @Autowired
-    public FFmpegHLSMediaSegmentDetector(IChukasaModelManagementComponent chukasaModelManagementComponent, IPlaylistBuilder playlistBuilder) {
+    public FFmpegHLSMediaSegmentDetector(IChukasaModelManagementComponent chukasaModelManagementComponent, IPlaylistBuilder playlistBuilder, ApplicationEventPublisher applicationEventPublisher) {
         this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
         this.playlistBuilder = requireNonNull(playlistBuilder, "playlistBuilder");
+        this.applicationEventPublisher = requireNonNull(applicationEventPublisher, "applicationEventPublisher");
     }
 
     @Override
@@ -181,7 +179,7 @@ public class FFmpegHLSMediaSegmentDetector implements Runnable {
                 log.info("ls = {}", lastSequenceMediaSegment);
                 if(lastSequenceMediaSegment > -1){
                     if(sequenceMediaSegment >= lastSequenceMediaSegment - (chukasaModel.getHlsConfiguration().getUriInPlaylist() - 1)){
-                        eventBus.notify("FFmpegHLSMediaSegmentDetector", Event.wrap(adaptiveBitrateStreaming));
+                        applicationEventPublisher.publishEvent(new LastMediaSegmentSequenceEvent(this, adaptiveBitrateStreaming));
                     }
                 }
             }
@@ -204,13 +202,4 @@ public class FFmpegHLSMediaSegmentDetector implements Runnable {
         }
     }
 
-    @Bean
-    Environment env() {
-        return Environment.initializeIfEmpty().assignErrorJournal();
-    }
-
-    @Bean
-    reactor.bus.EventBus createEventBus(Environment env) {
-        return reactor.bus.EventBus.create(env, Environment.THREAD_POOL);
-    }
 }

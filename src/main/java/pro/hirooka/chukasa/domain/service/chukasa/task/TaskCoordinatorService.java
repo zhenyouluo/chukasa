@@ -11,7 +11,6 @@ import pro.hirooka.chukasa.domain.service.chukasa.segmenter.IIntermediateChukasa
 import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IIntermediateFFmpegAndRecxxxService;
 import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IIntermediateFFmpegService;
 import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IIntermediateFFmpegStopperService;
-import reactor.bus.EventBus;
 
 import java.util.Date;
 
@@ -28,9 +27,6 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
     private final IIntermediateFFmpegStopperService intermediateFFmpegStopperService;
     private final IIntermediateChukasaHLSFileRemoverService intermediateChukasaHLSFileRemoverService;
     private final IIntermediateChukasaHLSSegmenterService intermediateChukasaHLSSegmenterService;
-
-    @Autowired
-    EventBus eventBus;
 
     @Autowired
     public TaskCoordinatorService(IChukasaModelManagementComponent chukasaModelManagementComponent, IIntermediateFFmpegService intermediateFFmpegService, IIntermediateFFmpegAndRecxxxService intermediateFFmpegAndRecxxxService, IIntermediateFFmpegHLSMediaSegmentDetectorService intermediateFFmpegHLSMediaSegmentDetectorService, IIntermediateFFmpegStopperService intermediateFFmpegStopperService, IIntermediateChukasaHLSFileRemoverService intermediateChukasaHLSFileRemoverService, IIntermediateChukasaHLSSegmenterService intermediateChukasaHLSSegmenterService) {
