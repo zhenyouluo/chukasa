@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="common_header(title,links)">
+
+    <title th:replace="${title}">title</title>
+
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/piyo.css}">
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap-theme.min.css}"/>
+
+    <script src="/js/mokyu.js"></script>
+    <script>
+        console.log("piyo")
+    </script>
+
+    <th:block th:replace="${links}" />
+
+</head>
+
+<body></body>
+</html>

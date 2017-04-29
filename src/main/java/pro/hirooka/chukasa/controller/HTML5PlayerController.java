@@ -174,6 +174,6 @@ public class HTML5PlayerController {
 //        }else {
 //            log.warn("cannot remove files bacause streamRootPath: {} does not exist.", streamRootPath);
 //        }
-        return "redirect:/";
+        return "redirect:/menu";
     }
 }

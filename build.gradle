@@ -40,10 +40,12 @@ dependencies {
         exclude module: 'spring-boot-starter-tomcat'
     }
     compile 'org.springframework.boot:spring-boot-starter-jetty'
+    compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
     compile 'org.springframework.data:spring-data-mongodb'
     compile 'org.springframework.boot:spring-boot-devtools'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
+    compile 'org.thymeleaf.extras:thymeleaf-extras-springsecurity4'
     compile 'org.projectlombok:lombok:1.16.14'
     compile 'org.apache.commons:commons-lang3:3.5'
     compile 'commons-io:commons-io:2.5'
@@ -53,4 +55,5 @@ dependencies {
     compile 'com.amazonaws:aws-java-sdk-core:1.11.105'
     compile 'org.webjars:bootstrap:3.3.6'
     compile 'org.webjars.bower:github-com-angular-angular:2.4.8'
+    compile project(':chukasa-auth')
 }

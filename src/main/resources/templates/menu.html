@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap-theme.min.css}"/>
+</head>
+<body>
+
+<div class="container">
+
+    <div th:replace="header :: header"></div>
+
+    <ul class="nav nav-tabs">
+        <li class="active" th:if="${isPTxByProgram == true}"><a href="#tabNow" data-toggle="tab">PT3</a></li>
+        <li class="active" th:if="${isPTxByChannel == true}"><a href="#tabCapture" data-toggle="tab">PT3</a></li>
+        <li th:if="${isPTxByChannel == true or isPTxByProgram == true}"><a href="#tabFile" data-toggle="tab">Video File</a></li>
+        <li class="active" th:if="${isPTxByChannel == false and isPTxByProgram == false}"><a href="#tabFile" data-toggle="tab">Video File</a></li>
+        <li th:if="${isWebCamera == true}"><a href="#tabWebCamera" data-toggle="tab">Web Camera</a></li>
+        <li th:if="${isPTxByProgram == true}"><a href="#tabOkkake" data-toggle="tab">Okkake(EXPERIMENTAL)</a></li>
+    </ul>
+
+    <div class="tab-content">
+
+        <p></p>
+
+        <!-- Now -->
+
+        <div th:if="${isPTxByProgram == true}" class="tab-pane active" id="tabNow">
+
+            <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
+
+                <input type = "hidden" id = "streamingTypeNow" name = "streamingType" value = "TUNER"/>
+
+                <div class="form-group">
+                    <label for="chCapture">Program</label>
+                    <select class="form-control" id="chNow" name="physicalLogicalChannel">
+                        <option th:value="${program.physicalLogicalChannel}" th:text="${program.channelName + ' (' + program.remoteControllerChannel + '): ' + program.title}" th:each="program : ${programList}">...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="encodingSettingsTypeNow">Encoding Settings</label>
+                    <select class="form-control" id="encodingSettingsTypeNow" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
+                        <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
+                        <option value="CELLULAR_MID">CELLULAR_MID</option>
+                        <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
+                        <option value="WIFI_LOW">WIFI_LOW</option>
+                        <option value="WIFI_MID">WIFI_MID</option>
+                        <option value="WIFI_HIGH">WIFI_HIGH</option>
+                        <option value="HD_LOW">HD_LOW</option>
+                        <option value="HD_HIGH">HD_HIGH</option>
+                        <option value="FULL_HD_LOW">FULL_HD_LOW</option>
+                        <option value="FULL_HD_HIGH">FULL_HD_HIGH</option>
+                        <option value="FULL_HD_EXTREME">FULL_HD_EXTREME</option>
+                    </select>
+                </div>
+
+                <ul>
+                    <li>Video Resolution : <span id="videoResolutionTextNow">400 x 224</span></li>
+                    <li>Video Bitrate : <span id="totalBitrateTextNow">0.1</span> [Mbps]</li>
+                    <li>Video Bitrate : <span id="videoBitrateTextNow">0.1</span> [Mbps]</li>
+                    <li>Audio Bitrate : <span id="audioBitrateTextNow">32</span> [kbps]</li>
+                </ul>
+
+                <div class="form-group">
+                    <label for="encryptionNow">Encryption</label>
+                    <select class="form-control" id="encryptionNow" name="canEncrypt">
+                        <option value="true" selected="selected">AES-128/CBC/PKCS7Padding</option>
+                        <option value="false">None</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="playlistTypeNow">Playlist Type</label>
+                    <select class="form-control" id="playlistTypeNow" name="playlistType">
+                        <option value="LIVE" selected="selected">Live</option>
+                        <option value="EVNET">Event</option>
+                    </select>
+                </div>
+
+                <span th:if="${isSupported == true}">
+                <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
+                <span th:if="${isSupported == false}">
+                <input class="btn btn-primary disabled" type="button" value="Start HTTP Live Streaming (HLS)"/>
+                <p>This browser is not supported.</p>
+            </span>
+
+            </form>
+
+        </div>
+
+        <!-- CAPTURE -->
+        <div th:if="${isPTxByChannel == true}" class="tab-pane active" id="tabCapture">
+
+            <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
+
+                <input type = "hidden" id = "streamingTypeCapture" name = "streamingType" value = "TUNER"/>
+
+                <div class="form-group">
+                    <label for="chCapture">Physical Channel</label>
+                    <select class="form-control" id="chCapture" name="physicalLogicalChannel">
+                        <option th:value="${program.physicalLogicalChannel}" th:text="${program.remoteControllerChannel}" th:each="program : ${programList}">...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="encodingSettingsTypeCapture">Encoding Settings</label>
+                    <select class="form-control" id="encodingSettingsTypeCapture" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
+                        <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
+                        <option value="CELLULAR_MID">CELLULAR_MID</option>
+                        <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
+                        <option value="WIFI_LOW">WIFI_LOW</option>
+                        <option value="WIFI_MID">WIFI_MID</option>
+                        <option value="WIFI_HIGH">WIFI_HIGH</option>
+                        <option value="HD_LOW">HD_LOW</option>
+                        <option value="HD_HIGH">HD_HIGH</option>
+                        <option value="FULL_HD_LOW">FULL_HD_LOW</option>
+                        <option value="FULL_HD_HIGH">FULL_HD_HIGH</option>
+                        <option value="FULL_HD_EXTREME">FULL_HD_EXTREME</option>
+                    </select>
+                </div>
+
+                <ul>
+                    <li>Video Resolution : <span id="videoResolutionTextCapture">400 x 224</span></li>
+                    <li>Video Bitrate : <span id="totalBitrateTextCapture">0.1</span> [Mbps]</li>
+                    <li>Video Bitrate : <span id="videoBitrateTextCapture">0.1</span> [Mbps]</li>
+                    <li>Audio Bitrate : <span id="audioBitrateTextCapture">32</span> [kbps]</li>
+                </ul>
+
+                <div class="form-group">
+                    <label for="encryptionCapture">Encryption</label>
+                    <select class="form-control" id="encryptionCapture" name="canEncrypt">
+                        <option value="true" selected="selected">AES-128/CBC/PKCS7Padding</option>
+                        <option value="false">None</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="playlistTypeCapture">Playlist Type</label>
+                    <select class="form-control" id="playlistTypeCapture" name="playlistType">
+                        <option value="LIVE" selected="selected">Live</option>
+                        <option value="EVNET">Event</option>
+                    </select>
+                </div>
+
+                <span th:if="${isSupported == true}">
+                <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
+                <span th:if="${isSupported == false}">
+                <input class="btn btn-primary disabled" type="button" value="Start HTTP Live Streaming (HLS)"/>
+                <p>This browser is not supported.</p>
+            </span>
+
+            </form>
+
+        </div>
+
+        <!-- FILE -->
+        <div th:if="${isPTxByChannel == false and isPTxByProgram == false}" class="tab-pane active" id="tabFile">
+
+            <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
+
+                <input type = "hidden" id = "streamingTypeFile" name = "streamingType" value = "FILE"/>
+
+                <div class="form-group">
+                    <label for="fileNameFile">File Name</label>
+                    <select class="form-control" id="fileNameFile" name="fileName">
+                        <option th:value="${videoFileModel.name}" th:text="${videoFileModel.name}" th:each="videoFileModel : ${videoFileModelList}">...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="encodingSettingsTypeFile">Encoding Settings</label>
+                    <select class="form-control" id="encodingSettingsTypeFile" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
+                        <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
+                        <option value="CELLULAR_MID">CELLULAR_MID</option>
+                        <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
+                        <option value="WIFI_LOW">WIFI_LOW</option>
+                        <option value="WIFI_MID">WIFI_MID</option>
+                        <option value="WIFI_HIGH">WIFI_HIGH</option>
+                        <option value="HD_LOW">HD_LOW</option>
+                        <option value="HD_HIGH">HD_HIGH</option>
+                        <option value="FULL_HD_LOW">FULL_HD_LOW</option>
+                        <option value="FULL_HD_HIGH">FULL_HD_HIGH</option>
+                        <option value="FULL_HD_EXTREME">FULL_HD_EXTREME</option>
+                    </select>
+                </div>
+
+                <ul>
+                    <li>Video Resolution : <span id="videoResolutionTextFile">400 x 224</span></li>
+                    <li>Video Bitrate : <span id="totalBitrateTextFile">0.1</span> [Mbps]</li>
+                    <li>Video Bitrate : <span id="videoBitrateTextFile">0.1</span> [Mbps]</li>
+                    <li>Audio Bitrate : <span id="audioBitrateTextFile">32</span> [kbps]</li>
+                </ul>
+
+                <div class="form-group">
+                    <label for="encryptionFile">Encryption</label>
+                    <select class="form-control" id="encryptionFile" name="canEncrypt">
+                        <option value="true" selected="selected">AES-128/CBC/PKCS7Padding</option>
+                        <option value="false">None</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="playlistTypeFile">Playlist Type</label>
+                    <select class="form-control" id="playlistTypeFile" name="playlistType">
+                        <option value="LIVE" selected="selected">Live</option>
+                        <option value="EVNET">Event</option>
+                    </select>
+                </div>
+
+                <span th:if="${isSupported == true}">
+                <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
+                <span th:if="${isSupported == false}">
+                <input class="btn btn-primary disabled" type="button" value="Start HTTP Live Streaming (HLS)"/>
+                <p>This browser is not supported.</p>
+            </span>
+
+            </form>
+
+        </div>
+
+        <div th:if="${isPTxByChannel == true or isPTxByProgram == true}" class="tab-pane" id="tabFile">
+
+            <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
+
+                <input type = "hidden" id = "streamingTypeFile" name = "streamingType" value = "FILE"/>
+
+                <div class="form-group">
+                    <label for="fileNameFile">File Name</label>
+                    <select class="form-control" id="fileNameFile" name="fileName">
+                        <option th:value="${videoFileModel.name}" th:text="${videoFileModel.name}" th:each="videoFileModel : ${videoFileModelList}">...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="encodingSettingsTypeFile">Encoding Settings</label>
+                    <select class="form-control" id="encodingSettingsTypeFile" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
+                        <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
+                        <option value="CELLULAR_MID">CELLULAR_MID</option>
+                        <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
+                        <option value="WIFI_LOW">WIFI_LOW</option>
+                        <option value="WIFI_MID">WIFI_MID</option>
+                        <option value="WIFI_HIGH">WIFI_HIGH</option>
+                        <option value="HD_LOW">HD_LOW</option>
+                        <option value="HD_HIGH">HD_HIGH</option>
+                        <option value="FULL_HD_LOW">FULL_HD_LOW</option>
+                        <option value="FULL_HD_HIGH">FULL_HD_HIGH</option>
+                        <option value="FULL_HD_EXTREME">FULL_HD_EXTREME</option>
+                    </select>
+                </div>
+
+                <ul>
+                    <li>Video Resolution : <span id="videoResolutionTextFile">400 x 224</span></li>
+                    <li>Video Bitrate : <span id="totalBitrateTextFile">0.1</span> [Mbps]</li>
+                    <li>Video Bitrate : <span id="videoBitrateTextFile">0.1</span> [Mbps]</li>
+                    <li>Audio Bitrate : <span id="audioBitrateTextFile">32</span> [kbps]</li>
+                </ul>
+
+                <div class="form-group">
+                    <label for="encryptionFile">Encryption</label>
+                    <select class="form-control" id="encryptionFile" name="canEncrypt">
+                        <option value="true" selected="selected">AES-128/CBC/PKCS7Padding</option>
+                        <option value="false">None</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="playlistTypeFile">Playlist Type</label>
+                    <select class="form-control" id="playlistTypeFile" name="playlistType">
+                        <option value="LIVE">Live</option>
+                        <option value="EVNET" selected="selected">Event</option>
+                    </select>
+                </div>
+
+                <span th:if="${isSupported == true}">
+                <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
+                <span th:if="${isSupported == false}">
+                <input class="btn btn-primary disabled" type="button" value="Start HTTP Live Streaming (HLS)"/>
+                <p>This browser is not supported.</p>
+            </span>
+
+            </form>
+
+        </div>
+
+        <!-- OKKAKE -->
+        <div class="tab-pane" id="tabOkkake">
+
+            <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
+
+                <input type = "hidden" id = "streamingTypeOkkake" name = "streamingType" value = "OKKAKE"/>
+
+                <div class="form-group">
+                    <label for="fileNameFile">File Name</label>
+                    <select class="form-control" id="fileNameOkkake" name="fileName">
+                        <option th:value="${okkakeVideoFileModel.name}" th:text="${okkakeVideoFileModel.name}" th:each="okkakeVideoFileModel : ${okkakeVideoFileModelList}">...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="encodingSettingsTypeOkkake">Encoding Settings</label>
+                    <select class="form-control" id="encodingSettingsTypeOkkake" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
+                        <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
+                        <option value="CELLULAR_MID">CELLULAR_MID</option>
+                        <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
+                        <option value="WIFI_LOW">WIFI_LOW</option>
+                        <option value="WIFI_MID">WIFI_MID</option>
+                        <option value="WIFI_HIGH">WIFI_HIGH</option>
+                        <option value="HD_LOW">HD_LOW</option>
+                        <option value="HD_HIGH">HD_HIGH</option>
+                        <option value="FULL_HD_LOW">FULL_HD_LOW</option>
+                        <option value="FULL_HD_HIGH">FULL_HD_HIGH</option>
+                        <option value="FULL_HD_EXTREME">FULL_HD_EXTREME</option>
+                    </select>
+                </div>
+
+                <ul>
+                    <li>Video Resolution : <span id="videoResolutionTextOkkake">400 x 224</span></li>
+                    <li>Video Bitrate : <span id="totalBitrateTextOkkake">0.1</span> [Mbps]</li>
+                    <li>Video Bitrate : <span id="videoBitrateTextOkkake">0.1</span> [Mbps]</li>
+                    <li>Audio Bitrate : <span id="audioBitrateTextOkkake">32</span> [kbps]</li>
+                </ul>
+
+                <div class="form-group">
+                    <label for="encryptionOkkake">Encryption</label>
+                    <select class="form-control" id="encryptionOkkake" name="canEncrypt">
+                        <option value="true" selected="selected">AES-128/CBC/PKCS7Padding</option>
+                        <option value="false">None</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="playlistTypeOkkake">Playlist Type</label>
+                    <select class="form-control" id="playlistTypeOkkake" name="playlistType">
+                        <option value="LIVE" selected="selected">Live</option>
+                        <option value="EVNET">Event</option>
+                    </select>
+                </div>
+
+                <span th:if="${isSupported == true}">
+                <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
+                <span th:if="${isSupported == false}">
+                <input class="btn btn-primary disabled" type="button" value="Start HTTP Live Streaming (HLS)"/>
+                <p>This browser is not supported.</p>
+            </span>
+
+            </form>
+
+        </div>
+
+        <!-- WEB_CAMERA -->
+        <div class="tab-pane" id="tabWebCamera">
+
+            <form th:action="@{/video}" th:object="${chukasaSettings}" method="post">
+
+                <input type = "hidden" id = "streamingTypeWebCamera" name = "streamingType" value = "WEBCAM"/>
+
+                <div class="form-group">
+                    <label for="encodingSettingsTypeWebCamera">Encoding Settings</label>
+                    <select class="form-control" id="encodingSettingsTypeWebCamera" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
+                        <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
+                        <option value="CELLULAR_MID">CELLULAR_MID</option>
+                        <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
+                        <option value="WIFI_LOW">WIFI_LOW</option>
+                        <option value="WIFI_MID">WIFI_MID</option>
+                        <option value="WIFI_HIGH">WIFI_HIGH</option>
+                        <option value="HD_LOW">HD_LOW</option>
+                        <option value="HD_HIGH">HD_HIGH</option>
+                        <option value="FULL_HD_LOW">FULL_HD_LOW</option>
+                        <option value="FULL_HD_HIGH">FULL_HD_HIGH</option>
+                        <option value="FULL_HD_EXTREME">FULL_HD_EXTREME</option>
+                    </select>
+                </div>
+
+                <ul>
+                    <li>Video Resolution : <span id="videoResolutionTextWebCamera">400 x 224</span></li>
+                    <li>Video Bitrate : <span id="totalBitrateTextWebCamera">0.1</span> [Mbps]</li>
+                    <li>Video Bitrate : <span id="videoBitrateTextWebCamera">0.1</span> [Mbps]</li>
+                    <li>Audio Bitrate : <span id="audioBitrateTextWebCamera">32</span> [kbps]</li>
+                </ul>
+
+                <div class="form-group">
+                    <label for="encryptionWebCamera">Encryption</label>
+                    <select class="form-control" id="encryptionWebCamera" name="canEncrypt">
+                        <option value="true">AES-128/CBC/PKCS7Padding</option>
+                        <option value="false" selected="selected">None</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="playlistTypeWebCamera">Playlist Type</label>
+                    <select class="form-control" id="playlistTypeWebCamera" name="playlistType">
+                        <option value="LIVE" selected="selected">Live</option>
+                        <option value="EVNET">Event</option>
+                    </select>
+                </div>
+
+                <!--<div class="form-group">-->
+                <!--<label for="totalWebCameraLivedurationWebCamera">Live Duration [s]</label>-->
+                <!--<input enums="text" class="form-control" id="totalWebCameraLivedurationWebCamera" name="totalWebCameraLiveduration" value="600"/>-->
+                <!--</div>-->
+
+                <span th:if="${isSupported == true}">
+                <input class="btn btn-primary" type="submit" value="Start HTTP Live Streaming (HLS)"/>
+            </span>
+                <span th:if="${isSupported == false}">
+                <input class="btn btn-primary disabled" type="button" value="Start HTTP Live Streaming (HLS)"/>
+                <p>This browser is not supported.</p>
+            </span>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <hr/>
+
+    <!--<span th:if="${isSupported == true}">-->
+    <!--<form th:action="@{/video/remove}" method="get">-->
+    <!--<input class="btn btn-warning" enums="submit" value="Remove segmented files on server"/>-->
+    <!--</form>-->
+    <!--</span>-->
+    <!--<span th:if="${isSupported == false}">-->
+    <!--<input class="btn btn-warning disabled" enums="button" value="Remove segmented files on server"/>-->
+    <!--</span>-->
+    <div th:replace="footer :: footer"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"
+        th:src="@{/webjars/jquery/1.11.1/jquery.min.js}"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+        th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+
+<script>
+    function onChangeTranscodingSettings(obj){
+        var id = obj.id;
+        var type = id.split("transcodingSettings")[1];
+        var index = obj.selectedIndex;
+        var value = obj.options[index].value;
+        var text = obj.options[index].text;
+        switch (value){
+            case "CELLULAR_LOW":
+                document.getElementById("videoResolutionText" + type).innerHTML = "400 x 224";
+                document.getElementById("totalBitrateText" + type).innerHTML = "0.1";
+                document.getElementById("videoBitrateText" + type).innerHTML = "0.1";
+                document.getElementById("audioBitrateText" + type).innerHTML = "32";
+                break;
+            case "CELLULAR_MID":
+                document.getElementById("videoResolutionText" + type).innerHTML = "400 x 224";
+                document.getElementById("totalBitrateText" + type).innerHTML = "0.2";
+                document.getElementById("videoBitrateText" + type).innerHTML = "0.2";
+                document.getElementById("audioBitrateText" + type).innerHTML = "32";
+                break;
+            case "CELLULAR_HIGH":
+                document.getElementById("videoResolutionText" + type).innerHTML = "480 x 270";
+                document.getElementById("totalBitrateText" + type).innerHTML = "0.4";
+                document.getElementById("videoBitrateText" + type).innerHTML = "0.4";
+                document.getElementById("audioBitrateText" + type).innerHTML = "64";
+                break;
+            case "WIFI_LOW":
+                document.getElementById("videoResolutionText" + type).innerHTML = "640 x 360";
+                document.getElementById("totalBitrateText" + type).innerHTML = "0.6";
+                document.getElementById("videoBitrateText" + type).innerHTML = "0.6";
+                document.getElementById("audioBitrateText" + type).innerHTML = "64";
+                break;
+            case "WIFI_MID":
+                document.getElementById("videoResolutionText" + type).innerHTML = "640 x 360";
+                document.getElementById("totalBitrateText" + type).innerHTML = "1.2";
+                document.getElementById("videoBitrateText" + type).innerHTML = "1.2";
+                document.getElementById("audioBitrateText" + type).innerHTML = "128";
+                break;
+            case "WIFI_HIGH":
+                document.getElementById("videoResolutionText" + type).innerHTML = "960 x 540";
+                document.getElementById("totalBitrateText" + type).innerHTML = "1.8";
+                document.getElementById("videoBitrateText" + type).innerHTML = "1.8";
+                document.getElementById("audioBitrateText" + type).innerHTML = "128";
+                break;
+            case "HD_LOW":
+                document.getElementById("videoResolutionText" + type).innerHTML = "1280 x 720";
+                document.getElementById("totalBitrateText" + type).innerHTML = "2.6";
+                document.getElementById("videoBitrateText" + type).innerHTML = "2.5";
+                document.getElementById("audioBitrateText" + type).innerHTML = "160";
+                break;
+            case "HD_HIGH":
+                document.getElementById("videoResolutionText" + type).innerHTML = "1280 x 720";
+                document.getElementById("totalBitrateText" + type).innerHTML = "4.5";
+                document.getElementById("videoBitrateText" + type).innerHTML = "4.5";
+                document.getElementById("audioBitrateText" + type).innerHTML = "160";
+                break;
+            case "FULL_HD_LOW":
+                document.getElementById("videoResolutionText" + type).innerHTML = "1920 x 1080";
+                document.getElementById("totalBitrateText" + type).innerHTML = "12";
+                document.getElementById("videoBitrateText" + type).innerHTML = "11";
+                document.getElementById("audioBitrateText" + type).innerHTML = "160";
+                break;
+            case "FULL_HD_HIGH":
+                document.getElementById("videoResolutionText" + type).innerHTML = "1920 x 1080";
+                document.getElementById("totalBitrateText" + type).innerHTML = "25";
+                document.getElementById("videoBitrateText" + type).innerHTML = "24";
+                document.getElementById("audioBitrateText" + type).innerHTML = "160";
+                break;
+            case "FULL_HD_EXTREME":
+                document.getElementById("videoResolutionText" + type).innerHTML = "1920 x 1080";
+                document.getElementById("totalBitrateText" + type).innerHTML = "40";
+                document.getElementById("videoBitrateText" + type).innerHTML = "39";
+                document.getElementById("audioBitrateText" + type).innerHTML = "160";
+                break;
+            default:
+                break;
+        }
+    }
+</script>
+
+</body>
+</html>

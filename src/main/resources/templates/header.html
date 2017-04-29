@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<body>
+<header>
+    <a href="#" title="chukasa"><span><img src="/images/chukasa.jpg" height="180" width="211"></img></span></a>
+    <span th:text="${user.username + ' (' + user.username + ') | '}">...</span>
+    <span sec:authentication="name">...</span>
+    <span sec:authentication="principal.authorities">...</span>
+    <span sec:authorize="isAuthenticated()">AUTHENTICATED</span>
+    <span sec:authorize="hasRole('ROLE_ADMIN')">ADMIN</span>
+    <span sec:authorize="hasRole('ROLE_USER')">USER</span>
+    <a href="/logout">logout</a>
+</header>
+</body>
+
+</html>
