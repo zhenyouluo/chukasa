@@ -161,19 +161,22 @@ sudo reboot
 #*******************************************************************************************************************
 # chukasa
 #*******************************************************************************************************************
-sudo adduser chukasa
-sudo mkdir /opt/chukasa
-sudo chown $USER:$USER /opt/chukasa
-mkdir /opt/chukasa/video
-
 # clone project and edit configuration file
 cd ~/chukasa_temporary
 git clone https://github.com/hirooka/chukasa.git
 cd chukasa
 
-# build chukasa application and deploy it
+# build chukasa application
 ./gradlew build
-cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
+
+# deploy chukasa application
+sudo adduser chukasa
+sudo gpasswd -a chukasa video
+sudo gpasswd -a chukasa audio
+sudo mkdir -p /opt/chukasa/video
+sudo cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
+sudo chmod u+x /opt/chukasa/chukasa-0.0.1-SNAPSHOT.jar
+sudo chown chukasa:chukasa -R /opt/chukasa
 
 #　nginx service
 sudo cp ubuntu/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
@@ -186,7 +189,7 @@ sudo cp ubuntu/systemd/mongod.service /lib/systemd/system/
 sudo systemctl enable mongod
 sudo systemctl start mongod
 
-#　chukasa service
+# chukasa service
 sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/
 sudo systemctl enable chukasa
 sudo systemctl start chukasa
