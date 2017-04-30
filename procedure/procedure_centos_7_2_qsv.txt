@@ -1,4 +1,7 @@
+# procedure_centos_7_2_qsv.txt
+
 # CentOS 7.2 (1511), Quick Sync Video (QSV), Intel Media Server Studio 2017 R2
+
 # Linux localhost.localdomain 3.10.0-327.el7.x86_64 #1 SMP Thu Nov 19 22:10:57 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
 
 #*******************************************************************************************************************
@@ -10,24 +13,6 @@ sudo timedatectl set-ntp 1
 # Temporary directory
 #*******************************************************************************************************************
 mkdir ~/chukasa_temporary
-
-#*******************************************************************************************************************
-# Intel Media Server Studio 2017 R2 for Linux - Community Edition
-#*******************************************************************************************************************
-# Download MediaServerStudioEssentials2017.tar.gz via Intel Developer Zone (https://software.intel.com/en-us/intel-media-server-studio)
-sudo usermod -a -G video $USER
-tar zxvf MediaServerStudioEssentials2017R2.tar.gz
-cd MediaServerStudioEssentials2017R2
-tar zxvf SDK2017Production16.5.1.tar.gz
-cd SDK2017Production16.5.1
-cd CentOS
-tar zxvf install_scripts_centos_16.5.1-59511.tar.gz
-sudo sh -c "sed -i -e 's/mirrorlist=/#mirrorlist=/g' /etc/yum.repos.d/CentOS-Base.repo"
-sudo sh -c "sed -i -e 's/#baseurl=http:\/\/mirror.centos.org\/centos/baseurl=http:\/\/vault.centos.org/g' /etc/yum.repos.d/CentOS-Base.repo"
-sudo ./install_sdk_CentOS.sh
-sudo sh -c "sed -i -e 's/#mirrorlist=/mirrorlist=/g' /etc/yum.repos.d/CentOS-Base.repo"
-sudo sh -c "sed -i -e 's/baseurl=http:\/\/vault.centos.org/#baseurl=http:\/\/mirror.centos.org\/centos/g' /etc/yum.repos.d/CentOS-Base.repo"
-sudo reboot
 
 #*******************************************************************************************************************
 # Web Camera (Audio)
@@ -51,6 +36,24 @@ sudo gpasswd -a $USER audio
 #sudo sh -c "echo 'options snd_usb_audio index=0' >> /etc/modprobe.d/alsa-base.conf"
 #sudo sh -c "echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf"
 #sudo sh -c "echo 'options snd_hda_intel index=2' >> /etc/modprobe.d/alsa-base.conf"
+
+#*******************************************************************************************************************
+# Intel Media Server Studio 2017 R2 for Linux - Community Edition
+#*******************************************************************************************************************
+# Download MediaServerStudioEssentials2017.tar.gz via Intel Developer Zone (https://software.intel.com/en-us/intel-media-server-studio)
+sudo usermod -a -G video $USER
+tar zxvf MediaServerStudioEssentials2017R2.tar.gz
+cd MediaServerStudioEssentials2017R2
+tar zxvf SDK2017Production16.5.1.tar.gz
+cd SDK2017Production16.5.1
+cd CentOS
+tar zxvf install_scripts_centos_16.5.1-59511.tar.gz
+sudo sh -c "sed -i -e 's/mirrorlist=/#mirrorlist=/g' /etc/yum.repos.d/CentOS-Base.repo"
+sudo sh -c "sed -i -e 's/#baseurl=http:\/\/mirror.centos.org\/centos/baseurl=http:\/\/vault.centos.org/g' /etc/yum.repos.d/CentOS-Base.repo"
+sudo ./install_sdk_CentOS.sh
+sudo sh -c "sed -i -e 's/#mirrorlist=/mirrorlist=/g' /etc/yum.repos.d/CentOS-Base.repo"
+sudo sh -c "sed -i -e 's/baseurl=http:\/\/vault.centos.org/#baseurl=http:\/\/mirror.centos.org\/centos/g' /etc/yum.repos.d/CentOS-Base.repo"
+sudo reboot
 
 #*******************************************************************************************************************
 # Lib
@@ -151,6 +154,7 @@ cd ~/chukasa_temporary && \
 #*******************************************************************************************************************
 # MongoDB 3.4
 #*******************************************************************************************************************
+cd ~/chukasa_temporary
 sudo semanage port -a -t mongod_port_t -p tcp 27017
 sudo touch /etc/yum.repos.d/mongodb-org-3.4.repo
 sudo sh -c "echo '[mongodb-org-3.4]' >> /etc/yum.repos.d/mongodb-org-3.4.repo"
@@ -162,11 +166,27 @@ sudo sh -c "echo 'gpgkey=https://www.mongodb.org/static/pgp/server-3.4.asc' >> /
 sudo yum -y install mongodb-org
 
 #*******************************************************************************************************************
+# PostgreSQL
+#*******************************************************************************************************************
+cd ~/chukasa_temporary
+wget https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-9.6-3.noarch.rpm
+sudo yum install -y pgdg-redhat96-9.6-3.noarch.rpm
+sudo yum install -y postgresql96-server
+sudo /usr/pgsql-9.6/bin/postgresql96-setup initdb
+# TODO:
+# edit /var/lib/pgsql/9.6/data/pg_hba.conf ident -> trust
+sudo systemctl enable postgresql-9.6
+sudo systemctl start postgresql-9.6
+# TODO: change password
+sudo -u postgres bash -c "psql -c \"CREATE USER chukasa WITH PASSWORD 'chukasa';\""
+sudo -u postgres bash -c "psql -c \"CREATE DATABASE chukasa ENCODING 'UTF8' OWNER chukasa;\""
+
+#*******************************************************************************************************************
 # nginx
 #*******************************************************************************************************************
 cd ~/chukasa_temporary && \
     sudo yum -y install pcre-devel openssl-devel && \
-    wget http://nginx.org/download/nginx-1.12.0.tar.gz && \
+    wget http://nginx.org/download/nginx-1.13.0.tar.gz && \
     tar zxvf nginx-*.tar.gz && \
     cd nginx-* && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
@@ -186,20 +206,26 @@ source /etc/profile.d/jdk.sh
 #*******************************************************************************************************************
 # chukasa
 #*******************************************************************************************************************
-sudo mkdir /opt/chukasa
-sudo chown $USER:$USER /opt/chukasa
-mkdir /opt/chukasa/video
-
 # clone project and edit configuration file
 cd ~/chukasa_temporary
 git clone https://github.com/hirooka/chukasa.git
 cd chukasa
 
-# build chukasa application and deploy it
+# build chukasa application
 ./gradlew build
-cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
+
+# deploy chukasa application
+sudo adduser chukasa
+sudo passwd chukasa
+sudo gpasswd -a chukasa video
+sudo gpasswd -a chukasa audio
+sudo mkdir -p /opt/chukasa/video
+sudo cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
+# // TODO:
 # cp src/main/resources/application.properties /opt/chukasa/
 # cp src/main/resources/tuner.json /opt/chukasa/
+sudo chmod u+x /opt/chukasa/chukasa-0.0.1-SNAPSHOT.jar
+sudo chown chukasa:chukasa -R /opt/chukasa
 
 # chukasa sysconfig
 sudo cp centos/etc/sysconfig/chukasa /etc/sysconfig/
@@ -210,15 +236,16 @@ sudo cp centos/etc/sysconfig/chukasa /etc/sysconfig/
 # sudo sh -c "echo 'MFX_HOME=\"/opt/intel/mediasdk\"' >> /etc/sysconfig/chukasa"
 # sudo sh -c "echo 'LIBVA_DRIVERS_PATH=\"/opt/intel/mediasdk/lib64\"' >> /etc/sysconfig/chukasa"
 
-#　chukasa
-sed -i -e "s/User=hirooka/User=$USER/g" ubuntu/systemd/chukasa.service
-sudo cp centos/systemd/chukasa.service /etc/systemd/system/
-sudo systemctl enable chukasa
-
-#　nginx
+# nginx service
 sudo cp ubuntu/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
 sudo cp ubuntu/systemd/nginx.service /etc/systemd/system/
 sudo systemctl enable nginx
+sudo systemctl start nginx
+
+# chukasa service
+sudo cp centos/systemd/chukasa.service /etc/systemd/system/
+sudo systemctl enable chukasa
+sudo systemctl start chukasa
 
 sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
 sudo firewall-cmd --reload
