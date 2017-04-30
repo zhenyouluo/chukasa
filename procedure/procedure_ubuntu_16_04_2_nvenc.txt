@@ -3,7 +3,7 @@
 # Ubuntu 16.04.2
 
 # uname -a
-# Linux localhost 4.8.0-46-generic #49~16.04.1-Ubuntu SMP Fri Mar 31 14:51:03 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
+# Linux localhost 4.8.0-36-generic #36~16.04.1-Ubuntu SMP Sun Feb 5 09:39:57 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
 
 /*******************************************************
 cat /etc/lsb-release
@@ -23,11 +23,10 @@ sudo timedatectl set-ntp 1
 #*******************************************************************************************************************
 # Apt
 #*******************************************************************************************************************
-sudo apt-get update
-sudo apt-get -y upgrade
+#sudo apt-get update
+#sudo apt-get -y upgrade
 #sudo apt-get -y dist-upgrade
-
-sudo reboot
+#sudo reboot
 
 #*******************************************************************************************************************
 # Package
@@ -116,7 +115,7 @@ cd ~/chukasa_temporary && \
 #*******************************************************************************************************************
 cd ~/chukasa_temporary && \
     sudo apt-get -y install libpcre3-dev libpcre++-dev libssl-dev && \
-    wget http://nginx.org/download/nginx-1.12.0.tar.gz && \
+    wget http://nginx.org/download/nginx-1.13.0.tar.gz && \
     tar zxvf nginx-*.tar.gz && \
     cd nginx-* && \
     ./configure --with-http_ssl_module --with-ipv6 --with-http_v2_module && \
@@ -130,6 +129,19 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A1
 sudo sh -c "echo 'deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse' | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list"
 sudo apt-get update
 sudo apt-get -y install mongodb-org
+
+#*******************************************************************************************************************
+# PostgreSQL
+#*******************************************************************************************************************
+sudo sh -c "echo 'deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main' | sudo tee /etc/apt/sources.list.d/pgdg.list"
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+sudo apt-get update
+sudo apt-get -y install postgresql-9.6
+sudo systemctl enable postgresql
+sudo systemctl start postgresql
+# TODO: change password
+sudo -u postgres bash -c "psql -c \"CREATE USER chukasa WITH PASSWORD 'chukasa';\""
+sudo -u postgres bash -c "psql -c \"CREATE DATABASE chukasa ENCODING 'UTF8' OWNER chukasa;\""
 
 #*******************************************************************************************************************
 # Java 8
@@ -149,6 +161,7 @@ sudo reboot
 #*******************************************************************************************************************
 # chukasa
 #*******************************************************************************************************************
+sudo adduser chukasa
 sudo mkdir /opt/chukasa
 sudo chown $USER:$USER /opt/chukasa
 mkdir /opt/chukasa/video
@@ -162,19 +175,21 @@ cd chukasa
 ./gradlew build
 cp build/libs/chukasa-0.0.1-SNAPSHOT.jar /opt/chukasa/
 
-#　chukasa service
-sed -i -e "s/User=hirooka/User=$USER/g" ubuntu/systemd/chukasa.service
-sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/
-sudo systemctl enable chukasa
-
 #　nginx service
 sudo cp ubuntu/nginx/nginx.conf /usr/local/nginx/conf/nginx.conf
 sudo cp ubuntu/systemd/nginx.service /etc/systemd/system/
 sudo systemctl enable nginx
+sudo systemctl start nginx
 
 # MongoDB service
 sudo cp ubuntu/systemd/mongod.service /lib/systemd/system/
 sudo systemctl enable mongod
+sudo systemctl start mongod
+
+#　chukasa service
+sudo cp ubuntu/systemd/chukasa.service /etc/systemd/system/
+sudo systemctl enable chukasa
+sudo systemctl start chukasa
 
 sudo reboot
 
