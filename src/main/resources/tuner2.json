@@ -1,0 +1,20 @@
+{
+  "tuner": [
+    {
+      "channelType": "BS",
+      "deviceName": "/dev/pt3video0"
+    },
+    {
+      "channelType": "BS",
+      "deviceName": "/dev/pt3video1"
+    },
+    {
+      "channelType": "GR",
+      "deviceName": "/dev/pt3video2"
+    },
+    {
+      "channelType": "GR",
+      "deviceName": "/dev/pt3video3"
+    }
+  ]
+}
