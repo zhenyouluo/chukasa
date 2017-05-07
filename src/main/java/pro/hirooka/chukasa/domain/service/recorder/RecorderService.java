@@ -1,10 +1,16 @@
 package pro.hirooka.chukasa.domain.service.recorder;
 
+import com.mongodb.MongoClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.configuration.ChukasaConfiguration;
+import pro.hirooka.chukasa.domain.configuration.MongoDBConfiguration;
 import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.recorder.RecordingProgramModel;
 import pro.hirooka.chukasa.domain.model.recorder.ReservedProgram;
@@ -33,6 +39,8 @@ public class RecorderService implements IRecorderService {
     IRecordingProgramManagementComponent recordingProgramManagementComponent;
     @Autowired
     private IRecorderRunnerService recorderRunnerService;
+    @Autowired
+    private MongoDBConfiguration mongoDBConfiguration;
 
     @PostConstruct
     public void init(){
@@ -159,7 +167,15 @@ public class RecorderService implements IRecorderService {
 
     @Override
     public ReservedProgram read(int id) {
-        return reservedProgramRepository.findOne(id).orElse(null);
+        MongoTemplate mongoTemplate = new MongoTemplate(new SimpleMongoDbFactory(new MongoClient(mongoDBConfiguration.getHost(), mongoDBConfiguration.getPort()), mongoDBConfiguration.getDatabase()));
+        Query query = new Query(Criteria.where("id").is(id)).with(new Sort(Sort.Direction.ASC,"id"));
+        List<ReservedProgram> reservedProgramList = mongoTemplate.find(query, ReservedProgram.class);
+        if(reservedProgramList.size() != 1){
+            log.error("e");
+            return null;
+        }else{
+            return reservedProgramList.get(0);
+        }
     }
 
     @Override
@@ -169,7 +185,7 @@ public class RecorderService implements IRecorderService {
 
     @Override
     public void delete(int id) {
-        reservedProgramRepository.delete(id);
+        reservedProgramRepository.deleteById(id);
     }
 
     @Override
