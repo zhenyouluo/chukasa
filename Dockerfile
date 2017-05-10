@@ -57,8 +57,7 @@ RUN cd /tmp && \
     cd epgdump && \
     ./autogen.sh && \
     make && \
-    make install && \
-    ldconfig
+    make install
 
 # Java
 RUN apt-get -y install python-software-properties software-properties-common
