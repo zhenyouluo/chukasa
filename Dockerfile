@@ -35,18 +35,11 @@ RUN echo 'options snd_hda_intel index=1' >> /etc/modprobe.d/alsa-base.conf
 
 # recdvb
 RUN cd /tmp && \
-    wget http://hg.honeyplanet.jp/pt1/archive/ec7c87854f2f.tar.bz2 && \
-    tar xvlf ec7c87854f2f.tar.bz2 && \
-    cd pt1-ec7c87854f2f/arib25 && \
-    make && \
-    make install
-
-RUN cd /tmp && \
     git clone https://github.com/dogeel/recdvb && \
     cd recdvb && \
     chmod a+x autogen.sh && \
     ./autogen.sh && \
-    ./configure --enable-b25 && \
+    ./configure && \
     make -j$(nproc) && \
     make install
 
