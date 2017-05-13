@@ -81,7 +81,7 @@ public class EPGDumpRunner implements Runnable {
                 if(channelConfiguration.getChannelType() == ChannelType.GR || !isBS) {
                     try {
                         int physicalChannel = channelConfiguration.getPhysicalLogicalChannel();
-                        String recpt1Command = systemConfiguration.getRecxxxPath() + " --b25 --strip " + physicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
+                        String recpt1Command = systemConfiguration.getRecxxxPath() + " " + physicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
                         String epgdumpCommand = epgdumpConfiguration.getPath() + " json " + epgdumpConfiguration.getTemporaryPath()+ FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".json";
                         bufferedWriter.write(recpt1Command);
                         bufferedWriter.newLine();
@@ -99,7 +99,7 @@ public class EPGDumpRunner implements Runnable {
 //                if(entry.getValue().equals("GR") || !isBS) {
 //                    try {
 //                        int physicalChannel = Integer.parseInt(entry.getKey());
-//                        String recpt1Command = systemConfiguration.getRecpt1Path() + " --b25 --strip " + physicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
+//                        String recpt1Command = systemConfiguration.getRecpt1Path() + " " + physicalChannel + " " + epgdumpConfiguration.getRecordingDuration() + " " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
 //                        String epgdumpCommand = epgdumpConfiguration.getPath() + " json " + epgdumpConfiguration.getTemporaryPath()+ FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts " + epgdumpConfiguration.getTemporaryPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".json";
 //                        bufferedWriter.write(recpt1Command);
 //                        bufferedWriter.newLine();
@@ -114,7 +114,7 @@ public class EPGDumpRunner implements Runnable {
 //                }
 //            }
 //            for(int physicalChannel : physicalChannelList){
-//                String recpt1Command = systemConfiguration.getRecpt1Path() + " --b25 --strip " + physicalChannel + " 128 " + systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
+//                String recpt1Command = systemConfiguration.getRecpt1Path() + " " + physicalChannel + " 128 " + systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts";
 //                String epgdumpCommand = systemConfiguration.getEpgdumpPath() + " json " + systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".ts " + systemConfiguration.getTempPath() + FILE_SEPARATOR + "epgdump" + physicalChannel + ".json";
 //                bufferedWriter.write(recpt1Command);
 //                bufferedWriter.newLine();
