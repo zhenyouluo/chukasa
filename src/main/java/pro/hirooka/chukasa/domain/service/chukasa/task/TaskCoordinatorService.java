@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.StreamingType;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
 import pro.hirooka.chukasa.domain.service.chukasa.detector.IFFmpegHLSMediaSegmentDetectorService;
-import pro.hirooka.chukasa.domain.service.chukasa.remover.IIntermediateChukasaHLSFileRemoverService;
+import pro.hirooka.chukasa.domain.service.chukasa.remover.IChukasaHLSFileRemoverService;
 import pro.hirooka.chukasa.domain.service.chukasa.segmenter.IIntermediateChukasaHLSSegmenterService;
 import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IFFmpegAndRecxxxService;
 import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IFFmpegService;
@@ -26,7 +26,7 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
     private final IFFmpegAndRecxxxService ffmpegAndRecxxxService;
     private final IFFmpegHLSMediaSegmentDetectorService ffmpegHLSMediaSegmentDetectorService;
     private final IFFmpegStopperService ffmpegStopperService;
-    private final IIntermediateChukasaHLSFileRemoverService intermediateChukasaHLSFileRemoverService;
+    private final IChukasaHLSFileRemoverService chukasaHLSFileRemoverService;
     private final IIntermediateChukasaHLSSegmenterService intermediateChukasaHLSSegmenterService;
 
     private Future<Integer> future;
@@ -38,7 +38,7 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
             IFFmpegAndRecxxxService ffmpegAndRecxxxService,
             IFFmpegHLSMediaSegmentDetectorService ffmpegHLSMediaSegmentDetectorService,
             IFFmpegStopperService ffmpegStopperService,
-            IIntermediateChukasaHLSFileRemoverService intermediateChukasaHLSFileRemoverService,
+            IChukasaHLSFileRemoverService chukasaHLSFileRemoverService,
             IIntermediateChukasaHLSSegmenterService intermediateChukasaHLSSegmenterService
     ) {
         this.chukasaModelManagementComponent = requireNonNull(
@@ -51,8 +51,8 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
                 ffmpegHLSMediaSegmentDetectorService, "ffmpegHLSMediaSegmentDetectorService");
         this.ffmpegStopperService = requireNonNull(
                 ffmpegStopperService, "intermediateFFmpegStopperService");
-        this.intermediateChukasaHLSFileRemoverService = requireNonNull(
-                intermediateChukasaHLSFileRemoverService, "intermediateChukasaHLSFileRemoverService");
+        this.chukasaHLSFileRemoverService = requireNonNull(
+                chukasaHLSFileRemoverService, "intermediateChukasaHLSFileRemoverService");
         this.intermediateChukasaHLSSegmenterService = requireNonNull(
                 intermediateChukasaHLSSegmenterService, "intermediateChukasaHLSSegmenterService");
     }
@@ -124,7 +124,7 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
     public void remove() {
         chukasaModelManagementComponent.get().forEach(chukasaModel -> {
             final String streamPath = chukasaModel.getStreamPath();
-            intermediateChukasaHLSFileRemoverService.remove(streamPath);
+            chukasaHLSFileRemoverService.remove(streamPath);
         });
     }
 }
