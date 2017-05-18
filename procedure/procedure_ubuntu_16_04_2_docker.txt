@@ -23,11 +23,12 @@ sudo timedatectl set-ntp 1
 #*******************************************************************************************************************
 # Apt
 #*******************************************************************************************************************
-sudo apt-get update
-sudo apt-get -y upgrade
+#sudo apt-get update
+#sudo apt-get -y upgrade
 #sudo apt-get -y dist-upgrade
+#sudo apt-get install --install-recommends xserver-xorg-hwe-16.04 // Ubuntu 16.04.2 Server
 
-sudo reboot
+#sudo reboot
 
 #*******************************************************************************************************************
 # Package

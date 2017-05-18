@@ -4,12 +4,8 @@ import lombok.Data;
 import pro.hirooka.chukasa.domain.configuration.ChukasaConfiguration;
 import pro.hirooka.chukasa.domain.configuration.HLSConfiguration;
 import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
-import pro.hirooka.chukasa.domain.service.chukasa.detector.FFmpegHLSStreamDetectorRunner;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.PlaylistType;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
-import pro.hirooka.chukasa.domain.service.chukasa.encrypter.FFmpegHLSEncrypterRunner;
-import pro.hirooka.chukasa.domain.service.chukasa.playlister.PlaylisterRunner;
-import pro.hirooka.chukasa.domain.service.chukasa.segmenter.SegmenterRunner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -79,10 +75,6 @@ public class ChukasaModel {
     private boolean isTrascoding;
     private long ffmpegPID;
 
-    private SegmenterRunner segmenterRunner;
-    private FFmpegHLSStreamDetectorRunner ffmpegHLSStreamDetectorRunner;
-    private FFmpegHLSEncrypterRunner ffmpegHLSEncrypterRunner;
-    private PlaylisterRunner playlisterRunner;
     private UUID uuid;
 
     private HardwareAccelerationType hardwareAccelerationType;
@@ -153,10 +145,6 @@ public class ChukasaModel {
         this.isTrascoding = false;
         this.ffmpegPID = -1;
 
-        this.segmenterRunner = null;
-        this.ffmpegHLSEncrypterRunner = null;
-        this.ffmpegHLSStreamDetectorRunner = null;
-        this.playlisterRunner = null;
         this.uuid = null;
 
         this.hardwareAccelerationType = HardwareAccelerationType.UNKNOWN;

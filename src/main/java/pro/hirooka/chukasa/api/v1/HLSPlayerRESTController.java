@@ -17,19 +17,13 @@ import pro.hirooka.chukasa.domain.model.chukasa.ChukasaResponse;
 import pro.hirooka.chukasa.domain.model.chukasa.ChukasaSettings;
 import pro.hirooka.chukasa.domain.model.chukasa.HLSPlaylist;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
-import pro.hirooka.chukasa.domain.service.chukasa.eraser.ChukasaRemover;
-import pro.hirooka.chukasa.domain.service.chukasa.stopper.ChukasaStopper;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
-import pro.hirooka.chukasa.domain.service.chukasa.IChukasaTaskService;
 import pro.hirooka.chukasa.domain.service.chukasa.ISystemService;
 import pro.hirooka.chukasa.api.v1.helper.ChukasaUtility;
 import pro.hirooka.chukasa.domain.service.chukasa.task.ITaskCoordinatorService;
-import pro.hirooka.chukasa.domain.service.common.ulitities.CommonUtilityService;
 import pro.hirooka.chukasa.domain.service.common.ulitities.ICommonUtilityService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.nio.file.Files;
 import java.util.UUID;
 
 import static pro.hirooka.chukasa.domain.model.chukasa.constants.ChukasaConstant.*;
@@ -48,13 +42,7 @@ public class  HLSPlayerRESTController {
     @Autowired
     IChukasaModelManagementComponent chukasaModelManagementComponent;
     @Autowired
-    ChukasaStopper chukasaStopper;
-    @Autowired
-    ChukasaRemover chukasaRemover;
-    @Autowired
     HttpServletRequest httpServletRequest;
-    @Autowired
-    IChukasaTaskService chukasaTaskService;
     @Autowired
     ISystemService systemService;
     @Autowired

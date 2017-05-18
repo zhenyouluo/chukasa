@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import pro.hirooka.chukasa.domain.event.LastMediaSegmentSequenceEvent;
 import pro.hirooka.chukasa.domain.model.chukasa.ChukasaModel;
