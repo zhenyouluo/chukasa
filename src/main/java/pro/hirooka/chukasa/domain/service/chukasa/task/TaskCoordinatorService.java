@@ -9,7 +9,7 @@ import pro.hirooka.chukasa.domain.service.chukasa.detector.IFFmpegHLSMediaSegmen
 import pro.hirooka.chukasa.domain.service.chukasa.remover.IIntermediateChukasaHLSFileRemoverService;
 import pro.hirooka.chukasa.domain.service.chukasa.segmenter.IIntermediateChukasaHLSSegmenterService;
 import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IFFmpegAndRecxxxService;
-import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IIntermediateFFmpegService;
+import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IFFmpegService;
 import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IIntermediateFFmpegStopperService;
 
 import java.util.Date;
@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
 public class TaskCoordinatorService implements ITaskCoordinatorService {
 
     private final IChukasaModelManagementComponent chukasaModelManagementComponent;
-    private final IIntermediateFFmpegService intermediateFFmpegService;
+    private final IFFmpegService ffmpegService;
     private final IFFmpegAndRecxxxService ffmpegAndRecxxxService;
     private final IFFmpegHLSMediaSegmentDetectorService ffmpegHLSMediaSegmentDetectorService;
     private final IIntermediateFFmpegStopperService intermediateFFmpegStopperService;
@@ -34,7 +34,7 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
     @Autowired
     public TaskCoordinatorService(
             IChukasaModelManagementComponent chukasaModelManagementComponent,
-            IIntermediateFFmpegService intermediateFFmpegService,
+            IFFmpegService ffmpegService,
             IFFmpegAndRecxxxService ffmpegAndRecxxxService,
             IFFmpegHLSMediaSegmentDetectorService ffmpegHLSMediaSegmentDetectorService,
             IIntermediateFFmpegStopperService intermediateFFmpegStopperService,
@@ -43,8 +43,8 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
     ) {
         this.chukasaModelManagementComponent = requireNonNull(
                 chukasaModelManagementComponent, "chukasaModelManagementComponent");
-        this.intermediateFFmpegService = requireNonNull(
-                intermediateFFmpegService, "intermediateFFmpegService");
+        this.ffmpegService = requireNonNull(
+                ffmpegService, "ffmpegService");
         this.ffmpegAndRecxxxService = requireNonNull(
                 ffmpegAndRecxxxService, "ffmpegAndRecxxxService");
         this.ffmpegHLSMediaSegmentDetectorService = requireNonNull(
@@ -66,7 +66,10 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
             if(streamingType == StreamingType.WEBCAM
                     || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
                 ffmpegHLSMediaSegmentDetectorService.schedule(adaptiveBitrateStreaming, new Date(), 2000);
-                intermediateFFmpegService.execute(adaptiveBitrateStreaming);
+                if(future != null){
+                    future.cancel(true);
+                }
+                future = ffmpegService.submit(adaptiveBitrateStreaming);
             } else if(streamingType == StreamingType.TUNER) {
                 ffmpegHLSMediaSegmentDetectorService.schedule(adaptiveBitrateStreaming, new Date(), 2000);
                 if(future != null){
@@ -91,7 +94,10 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
             if(streamingType == StreamingType.WEBCAM
                     || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
                 ffmpegHLSMediaSegmentDetectorService.cancel(adaptiveBitrateStreaming);
-                intermediateFFmpegService.cancel(adaptiveBitrateStreaming);
+                ffmpegService.cancel(adaptiveBitrateStreaming);
+                if(future != null){
+                    future.cancel(true);
+                }
             } else if(streamingType == StreamingType.TUNER) {
                 ffmpegHLSMediaSegmentDetectorService.cancel(adaptiveBitrateStreaming);
                 ffmpegAndRecxxxService.cancel(adaptiveBitrateStreaming);
