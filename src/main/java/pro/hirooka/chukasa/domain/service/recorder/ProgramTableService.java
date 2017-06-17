@@ -96,7 +96,15 @@ public class ProgramTableService implements IProgramTableService {
 
     @Override
     public Program read(String id) {
-        return programRepository.findOne(id).orElse(null);
+        MongoTemplate mongoTemplate = new MongoTemplate(new SimpleMongoDbFactory(new MongoClient(mongoDBConfiguration.getHost(), mongoDBConfiguration.getPort()), mongoDBConfiguration.getDatabase()));
+        Query query = new Query(Criteria.where("id").is(id)).with(new Sort(Sort.Direction.ASC,"id"));
+        List<Program> programList = mongoTemplate.find(query, Program.class);
+        if(programList.size() != 1){
+            log.error("e");
+            return null;
+        }else{
+            return programList.get(0);
+        }
     }
 
     @Override
@@ -111,7 +119,7 @@ public class ProgramTableService implements IProgramTableService {
 
     @Override
     public void delete(String id) {
-        programRepository.delete(id);
+        programRepository.deleteById(id);
     }
 
     @Override
@@ -146,7 +154,7 @@ public class ProgramTableService implements IProgramTableService {
 
             List<Program> toBeDeletedProgramList = programRepository.deleteByEnd(thresholdZonedDateTime.toEpochSecond() * 1000);
             log.info("toBeDeletedProgramList.size() = {}", toBeDeletedProgramList.size());
-            toBeDeletedProgramList.forEach(program -> programRepository.delete(program.getId()));
+            toBeDeletedProgramList.forEach(program -> programRepository.deleteById(program.getId()));
         }
     }
 }

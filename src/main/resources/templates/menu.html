@@ -1,13 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title></title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
-          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap-theme.min.css}"/>
+<head th:replace="head :: common_header(~{::title},~{})">
+    <title>...</title>
 </head>
 <body>
 
@@ -44,8 +38,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="encodingSettingsTypeNow">Encoding Settings</label>
-                    <select class="form-control" id="encodingSettingsTypeNow" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
+                    <label for="transcodingSettingsNow">Encoding Settings</label>
+                    <select class="form-control" id="transcodingSettingsNow" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
                         <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
                         <option value="CELLULAR_MID">CELLULAR_MID</option>
                         <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
@@ -110,8 +104,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="encodingSettingsTypeCapture">Encoding Settings</label>
-                    <select class="form-control" id="encodingSettingsTypeCapture" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
+                    <label for="transcodingSettingsCapture">Encoding Settings</label>
+                    <select class="form-control" id="transcodingSettingsCapture" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
                         <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
                         <option value="CELLULAR_MID">CELLULAR_MID</option>
                         <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
@@ -176,8 +170,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="encodingSettingsTypeFile">Encoding Settings</label>
-                    <select class="form-control" id="encodingSettingsTypeFile" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
+                    <label for="transcodingSettingsFile">Encoding Settings</label>
+                    <select class="form-control" id="transcodingSettingsFile" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
                         <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
                         <option value="CELLULAR_MID">CELLULAR_MID</option>
                         <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
@@ -241,8 +235,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="encodingSettingsTypeFile">Encoding Settings</label>
-                    <select class="form-control" id="encodingSettingsTypeFile" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
+                    <label for="transcodingSettingsFile">Encoding Settings</label>
+                    <select class="form-control" id="transcodingSettingsFile" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
                         <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
                         <option value="CELLULAR_MID">CELLULAR_MID</option>
                         <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
@@ -307,8 +301,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="encodingSettingsTypeOkkake">Encoding Settings</label>
-                    <select class="form-control" id="encodingSettingsTypeOkkake" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
+                    <label for="transcodingSettingsOkkake">Encoding Settings</label>
+                    <select class="form-control" id="transcodingSettingsOkkake" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
                         <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
                         <option value="CELLULAR_MID">CELLULAR_MID</option>
                         <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
@@ -366,8 +360,8 @@
                 <input type = "hidden" id = "streamingTypeWebCamera" name = "streamingType" value = "WEBCAM"/>
 
                 <div class="form-group">
-                    <label for="encodingSettingsTypeWebCamera">Encoding Settings</label>
-                    <select class="form-control" id="encodingSettingsTypeWebCamera" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
+                    <label for="transcodingSettingsWebCamera">Encoding Settings</label>
+                    <select class="form-control" id="transcodingSettingsWebCamera" name="transcodingSettings" onchange="onChangeTranscodingSettings(this);">
                         <option value="CELLULAR_LOW" selected="selected">CELLULAR_LOW</option>
                         <option value="CELLULAR_MID">CELLULAR_MID</option>
                         <option value="CELLULAR_HIGH">CELLULAR_HIGH</option>
@@ -439,8 +433,8 @@
 
 <script src="https://code.jquery.com/jquery-1.11.1.min.js"
         th:src="@{/webjars/jquery/1.11.1/jquery.min.js}"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
-        th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7-1/js/bootstrap.min.js"
+        th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}"></script>
 
 <script>
     function onChangeTranscodingSettings(obj){

@@ -1,6 +1,5 @@
 package pro.hirooka.chukasa.domain.service.chukasa.remover;
 
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;

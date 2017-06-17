@@ -1,19 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title></title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
-          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap-theme.min.css}"/>
-    <style>
-        video {
-            max-width: 100%;
-            height: auto;
-        }
-    </style>
+<head th:replace="head :: common_header(~{::title}, ~{::link})">
+    <title>...</title>
+    <link rel="stylesheet" th:href="@{/css/player.css}"/>
 </head>
 <body>
     <script src="/js/hlsjs/hls.min.js"></script>

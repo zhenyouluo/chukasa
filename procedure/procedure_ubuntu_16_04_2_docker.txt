@@ -23,11 +23,12 @@ sudo timedatectl set-ntp 1
 #*******************************************************************************************************************
 # Apt
 #*******************************************************************************************************************
-sudo apt-get update
-sudo apt-get -y upgrade
+#sudo apt-get update
+#sudo apt-get -y upgrade
 #sudo apt-get -y dist-upgrade
+#sudo apt-get install --install-recommends xserver-xorg-hwe-16.04 // Ubuntu 16.04.2 Server
 
-sudo reboot
+#sudo reboot
 
 #*******************************************************************************************************************
 # Package
@@ -114,7 +115,8 @@ mkdir /opt/chukasa/video
 cd ~/chukasa_temporary
 git clone https://github.com/hirooka/chukasa.git
 cd chukasa
-sed -i -e "s/spring.data.mongodb.host=localhost/spring.data.mongodb.host=mongo/g" src/main/resources/application.properties
+sed -i -e "s/localhost/mongo/g" src/main/resources/application.properties
+sed -i -e "s/localhost/postgres/g" chukasa-auth/src/main/resources/application.yml
 
 # build chukasa application
 ./gradlew build
@@ -131,8 +133,12 @@ docker build -t hirooka/chukasa:0.0.1-SNAPSHOT .
 docker pull mongo
 docker run --name some-mongo -d mongo
 
+# pull and run PostgreSQL Docker image
+docker pull postgres
+docker run --name some-postgres -e POSTGRES_USER=chukasa -d postgres
+
 # run chukasa Docker image with MongoDB Docker image
-docker run --link some-mongo:mongo --privileged --volume /dev/:/dev/ --volume /var/run/pcscd/pcscd.comm:/var/run/pcscd/pcscd.comm -v /opt/chukasa/video:/opt/chukasa/video -p 80:80 -v /etc/localtime:/etc/localtime:ro -it hirooka/chukasa:0.0.1-SNAPSHOT /bin/bash
+docker run --link some-mongo:mongo --link some-postgres:postgres --privileged --volume /dev/:/dev/ --volume /var/run/pcscd/pcscd.comm:/var/run/pcscd/pcscd.comm -v /opt/chukasa/video:/opt/chukasa/video -p 80:80 -v /etc/localtime:/etc/localtime:ro -it hirooka/chukasa:0.0.1-SNAPSHOT /bin/bash
 
 #*******************************************************************************************************************
 # End Of File

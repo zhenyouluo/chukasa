@@ -5,14 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.StreamingType;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
-import pro.hirooka.chukasa.domain.service.chukasa.detector.IIntermediateFFmpegHLSMediaSegmentDetectorService;
-import pro.hirooka.chukasa.domain.service.chukasa.remover.IIntermediateChukasaHLSFileRemoverService;
+import pro.hirooka.chukasa.domain.service.chukasa.detector.IFFmpegHLSMediaSegmentDetectorService;
+import pro.hirooka.chukasa.domain.service.chukasa.remover.IChukasaHLSFileRemoverService;
 import pro.hirooka.chukasa.domain.service.chukasa.segmenter.IIntermediateChukasaHLSSegmenterService;
-import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IIntermediateFFmpegAndRecxxxService;
-import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IIntermediateFFmpegService;
-import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IIntermediateFFmpegStopperService;
+import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IFFmpegAndRecxxxService;
+import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IFFmpegService;
+import pro.hirooka.chukasa.domain.service.chukasa.transcoder.IFFmpegStopperService;
 
 import java.util.Date;
+import java.util.concurrent.Future;
 
 import static java.util.Objects.requireNonNull;
 
@@ -21,22 +22,39 @@ import static java.util.Objects.requireNonNull;
 public class TaskCoordinatorService implements ITaskCoordinatorService {
 
     private final IChukasaModelManagementComponent chukasaModelManagementComponent;
-    private final IIntermediateFFmpegService intermediateFFmpegService;
-    private final IIntermediateFFmpegAndRecxxxService intermediateFFmpegAndRecxxxService;
-    private final IIntermediateFFmpegHLSMediaSegmentDetectorService intermediateFFmpegHLSMediaSegmentDetectorService;
-    private final IIntermediateFFmpegStopperService intermediateFFmpegStopperService;
-    private final IIntermediateChukasaHLSFileRemoverService intermediateChukasaHLSFileRemoverService;
+    private final IFFmpegService ffmpegService;
+    private final IFFmpegAndRecxxxService ffmpegAndRecxxxService;
+    private final IFFmpegHLSMediaSegmentDetectorService ffmpegHLSMediaSegmentDetectorService;
+    private final IFFmpegStopperService ffmpegStopperService;
+    private final IChukasaHLSFileRemoverService chukasaHLSFileRemoverService;
     private final IIntermediateChukasaHLSSegmenterService intermediateChukasaHLSSegmenterService;
 
+    private Future<Integer> future;
+
     @Autowired
-    public TaskCoordinatorService(IChukasaModelManagementComponent chukasaModelManagementComponent, IIntermediateFFmpegService intermediateFFmpegService, IIntermediateFFmpegAndRecxxxService intermediateFFmpegAndRecxxxService, IIntermediateFFmpegHLSMediaSegmentDetectorService intermediateFFmpegHLSMediaSegmentDetectorService, IIntermediateFFmpegStopperService intermediateFFmpegStopperService, IIntermediateChukasaHLSFileRemoverService intermediateChukasaHLSFileRemoverService, IIntermediateChukasaHLSSegmenterService intermediateChukasaHLSSegmenterService) {
-        this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
-        this.intermediateFFmpegService = requireNonNull(intermediateFFmpegService, "intermediateFFmpegService");
-        this.intermediateFFmpegAndRecxxxService = requireNonNull(intermediateFFmpegAndRecxxxService, "intermediateFFmpegAndRecxxxService");
-        this.intermediateFFmpegHLSMediaSegmentDetectorService = requireNonNull(intermediateFFmpegHLSMediaSegmentDetectorService, "intermediateFFmpegHLSMediaSegmentDetectorService");
-        this.intermediateFFmpegStopperService = requireNonNull(intermediateFFmpegStopperService, "intermediateFFmpegStopperService");
-        this.intermediateChukasaHLSFileRemoverService = requireNonNull(intermediateChukasaHLSFileRemoverService, "intermediateChukasaHLSFileRemoverService");
-        this.intermediateChukasaHLSSegmenterService = requireNonNull(intermediateChukasaHLSSegmenterService, "intermediateChukasaHLSSegmenterService");
+    public TaskCoordinatorService(
+            IChukasaModelManagementComponent chukasaModelManagementComponent,
+            IFFmpegService ffmpegService,
+            IFFmpegAndRecxxxService ffmpegAndRecxxxService,
+            IFFmpegHLSMediaSegmentDetectorService ffmpegHLSMediaSegmentDetectorService,
+            IFFmpegStopperService ffmpegStopperService,
+            IChukasaHLSFileRemoverService chukasaHLSFileRemoverService,
+            IIntermediateChukasaHLSSegmenterService intermediateChukasaHLSSegmenterService
+    ) {
+        this.chukasaModelManagementComponent = requireNonNull(
+                chukasaModelManagementComponent, "chukasaModelManagementComponent");
+        this.ffmpegService = requireNonNull(
+                ffmpegService, "ffmpegService");
+        this.ffmpegAndRecxxxService = requireNonNull(
+                ffmpegAndRecxxxService, "ffmpegAndRecxxxService");
+        this.ffmpegHLSMediaSegmentDetectorService = requireNonNull(
+                ffmpegHLSMediaSegmentDetectorService, "ffmpegHLSMediaSegmentDetectorService");
+        this.ffmpegStopperService = requireNonNull(
+                ffmpegStopperService, "intermediateFFmpegStopperService");
+        this.chukasaHLSFileRemoverService = requireNonNull(
+                chukasaHLSFileRemoverService, "intermediateChukasaHLSFileRemoverService");
+        this.intermediateChukasaHLSSegmenterService = requireNonNull(
+                intermediateChukasaHLSSegmenterService, "intermediateChukasaHLSSegmenterService");
     }
 
     @Override
@@ -47,11 +65,17 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
             final int adaptiveBitrateStreaming = chukasaModel.getAdaptiveBitrateStreaming();
             if(streamingType == StreamingType.WEBCAM
                     || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
-                intermediateFFmpegHLSMediaSegmentDetectorService.schedule(adaptiveBitrateStreaming, new Date(), 2000);
-                intermediateFFmpegService.execute(adaptiveBitrateStreaming);
+                ffmpegHLSMediaSegmentDetectorService.schedule(adaptiveBitrateStreaming, new Date(), 2000);
+                if(future != null){
+                    future.cancel(true);
+                }
+                future = ffmpegService.submit(adaptiveBitrateStreaming);
             } else if(streamingType == StreamingType.TUNER) {
-                intermediateFFmpegHLSMediaSegmentDetectorService.schedule(adaptiveBitrateStreaming, new Date(), 2000);
-                intermediateFFmpegAndRecxxxService.execute(adaptiveBitrateStreaming);
+                ffmpegHLSMediaSegmentDetectorService.schedule(adaptiveBitrateStreaming, new Date(), 2000);
+                if(future != null){
+                    future.cancel(true);
+                }
+                future = ffmpegAndRecxxxService.submit(adaptiveBitrateStreaming);
             } else if(streamingType == StreamingType.OKKAKE) {
                 intermediateChukasaHLSSegmenterService.schedule(adaptiveBitrateStreaming, new Date(), 2000);
             } else {
@@ -69,11 +93,17 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
             final int adaptiveBitrateStreaming = chukasaModel.getAdaptiveBitrateStreaming();
             if(streamingType == StreamingType.WEBCAM
                     || chukasaModel.getChukasaSettings().getStreamingType() == StreamingType.FILE) {
-                intermediateFFmpegHLSMediaSegmentDetectorService.cancel(adaptiveBitrateStreaming);
-                intermediateFFmpegService.cancel(adaptiveBitrateStreaming);
+                ffmpegHLSMediaSegmentDetectorService.cancel(adaptiveBitrateStreaming);
+                ffmpegService.cancel(adaptiveBitrateStreaming);
+                if(future != null){
+                    future.cancel(true);
+                }
             } else if(streamingType == StreamingType.TUNER) {
-                intermediateFFmpegHLSMediaSegmentDetectorService.cancel(adaptiveBitrateStreaming);
-                intermediateFFmpegAndRecxxxService.cancel(adaptiveBitrateStreaming);
+                ffmpegHLSMediaSegmentDetectorService.cancel(adaptiveBitrateStreaming);
+                ffmpegAndRecxxxService.cancel(adaptiveBitrateStreaming);
+                if(future != null){
+                    future.cancel(true);
+                }
             } else if(streamingType == StreamingType.OKKAKE) {
                 intermediateChukasaHLSSegmenterService.cancel(adaptiveBitrateStreaming);
             } else {
@@ -86,7 +116,7 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
     public void stop() {
         chukasaModelManagementComponent.get().forEach(chukasaModel -> {
             final int adaptiveBitrateStreaming = chukasaModel.getAdaptiveBitrateStreaming();
-            intermediateFFmpegStopperService.submit(adaptiveBitrateStreaming);
+            ffmpegStopperService.stop();
         });
     }
 
@@ -94,7 +124,7 @@ public class TaskCoordinatorService implements ITaskCoordinatorService {
     public void remove() {
         chukasaModelManagementComponent.get().forEach(chukasaModel -> {
             final String streamPath = chukasaModel.getStreamPath();
-            intermediateChukasaHLSFileRemoverService.remove(streamPath);
+            chukasaHLSFileRemoverService.remove(streamPath);
         });
     }
 }

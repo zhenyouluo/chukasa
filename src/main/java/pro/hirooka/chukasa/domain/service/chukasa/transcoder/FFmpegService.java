@@ -2,6 +2,7 @@ package pro.hirooka.chukasa.domain.service.chukasa.transcoder;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import pro.hirooka.chukasa.domain.model.chukasa.ChukasaModel;
@@ -44,6 +45,7 @@ public class FFmpegService implements IFFmpegService {
         this.chukasaModelManagementComponent = requireNonNull(chukasaModelManagementComponent, "chukasaModelManagementComponent");
     }
 
+    @Async
     @Override
     public Future<Integer> submit(int adaptiveBitrateStreaming) {
 

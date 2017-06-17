@@ -2,13 +2,11 @@ package pro.hirooka.chukasa.api.v1.helper;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import pro.hirooka.chukasa.domain.configuration.SystemConfiguration;
 import pro.hirooka.chukasa.domain.model.chukasa.ChukasaModel;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.StreamingType;
 import pro.hirooka.chukasa.domain.model.chukasa.enums.HardwareAccelerationType;
 import pro.hirooka.chukasa.domain.service.chukasa.IChukasaModelManagementComponent;
-import pro.hirooka.chukasa.domain.service.chukasa.transcoder.FFmpegInitializer;
 
 import java.io.File;
 import java.io.IOException;

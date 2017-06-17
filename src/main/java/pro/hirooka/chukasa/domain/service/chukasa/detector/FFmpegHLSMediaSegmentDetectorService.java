@@ -14,13 +14,13 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Service
-public class IntermediateFFmpegHLSMediaSegmentDetectorService implements IIntermediateFFmpegHLSMediaSegmentDetectorService, ApplicationListener<LastMediaSegmentSequenceEvent> {
+public class FFmpegHLSMediaSegmentDetectorService implements IFFmpegHLSMediaSegmentDetectorService, ApplicationListener<LastMediaSegmentSequenceEvent> {
 
     private final FFmpegHLSMediaSegmentDetector ffmpegHLSMediaSegmentDetector;
     private ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
     @Autowired
-    public IntermediateFFmpegHLSMediaSegmentDetectorService(FFmpegHLSMediaSegmentDetector ffmpegHLSMediaSegmentDetector) {
+    public FFmpegHLSMediaSegmentDetectorService(FFmpegHLSMediaSegmentDetector ffmpegHLSMediaSegmentDetector) {
         this.ffmpegHLSMediaSegmentDetector = requireNonNull(ffmpegHLSMediaSegmentDetector, "ffmpegHLSMediaSegmentDetector");
     }
 
